@@ -7,7 +7,7 @@ namespace BomberMan_SuperAI
     {
         public void Initialize()
         {
-            
+
         }
 
         public string Answer(string instanseName, DateTime startTime, uint time, string board)
@@ -21,9 +21,25 @@ namespace BomberMan_SuperAI
              
              */
 
-            Console.WriteLine(board);
+            var move = new[]
+            {
+                "UP",
+                "DOWN",
+                "LEFT",
+                "RIGHT",
+            };
 
-            return string.Empty;
+            var act = "ACT";
+
+            var m = new Random().Next(4);
+            var a = new Random().Next(2);
+            var b = new Random().Next(2);
+
+            var rsp = a == 1 ? b == 1 ? $"{act},{move[m]}" : $"{move[m]},{act}" : move[m];
+
+            Console.WriteLine($"{m} {a} {b} {rsp}");
+
+            return rsp;
         }
 
         public event EventHandler<string> BoardLoaded;
