@@ -7,6 +7,6 @@ namespace DataProvider
         void Initialize();
 
         string Answer(string instanseName, DateTime startTime, uint time, string board);
-        //event EventHandler<Board> BoardLoaded;
+        event EventHandler<string> BoardLoaded;
     }
 }

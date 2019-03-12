@@ -33,25 +33,25 @@ namespace DataProvider
             if (IdentityUser.IsEmty) return;
 
             Time = 0;
-            //MainWindow.Log(Time, $"Open {IdentityUser}");
+            Console.WriteLine($"Open {IdentityUser}");
             _webSocket = new WebSocket(IdentityUser.ToString());
 
             _webSocket.MessageReceived += WebSocketOnMessageReceived;
 
             _webSocket.Opened += (sender, args) =>
             {
-                //MainWindow.Log(Time, "Opened");
+                Console.WriteLine("Opened");
             };
             _webSocket.Closed += (sender, args) =>
             {
-                //MainWindow.Log(Time, "Closed");
+                Console.WriteLine("Closed");
                 Stop();
                 Start();
             };
 
             _webSocket.Error += (sender, args) =>
             {
-                //MainWindow.Log(Time, $"Error occurred: {args.Exception}");
+                Console.WriteLine($"Error occurred: {args.Exception}");
             };
 
             _webSocket.Open();
@@ -59,7 +59,7 @@ namespace DataProvider
 
         private void WebSocketOnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            //DataReceived?.Invoke(this, new DataFrame { Board = ProcessMessage(e.Message), Time = Time });
+            DataReceived?.Invoke(this, new DataFrame { Board = ProcessMessage(e.Message), Time = Time });
 
             Time++;
         }
@@ -72,7 +72,7 @@ namespace DataProvider
             _webSocket.Dispose();
             _webSocket = null;
 
-            //MainWindow.Log(0, "Stoped");
+            Console.WriteLine("Stoped");
         }
 
         public void SendResponse(string response) => _webSocket?.Send(response);

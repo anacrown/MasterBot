@@ -22,6 +22,7 @@ namespace DataProvider
             UserName = userName;
         }
 
+        //http://codenjoy.com/codenjoy-contest/board/player/j99lpu1l8skamhdzbyq9?code=7040034271572867319
         public override string ToString() => $"{ServerUri}?user={UserName}&code={SecretCode}";
     }
 }

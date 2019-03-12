@@ -74,6 +74,7 @@
     <Compile Include="DataFrame.cs" />
     <Compile Include="IDataProvider.cs" />
     <Compile Include="IdentityUser.cs" />
+    <Compile Include="WebSocketDataLogger.cs" />
     <Compile Include="WebSocketDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
