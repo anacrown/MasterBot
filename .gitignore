@@ -1,6 +1,4 @@
-.vs/
-CodenjoyBot/bin/
-CodenjoyBot/obj/
-DataProvider/bin/
-DataProvider/obj/
+.vs/*
+**/bin/*
+**/obj/*
 packages/
