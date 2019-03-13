@@ -1,6 +1,6 @@
 using System.Configuration;
 
-namespace DataProvider
+namespace CodenjoyBot.DataProvider
 {
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     public class IdentityUser

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataProvider
+namespace CodenjoyBot.Interfaces
 {
     public interface ISolver
     {

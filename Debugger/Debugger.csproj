@@ -96,10 +96,6 @@
       <Project>{3d3dbb7e-341a-4a52-9f9e-eb364b372c42}</Project>
       <Name>CodenjoyBot</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataProvider\DataProvider.csproj">
-      <Project>{F609424B-FB83-4886-B452-B849A49EA6B3}</Project>
-      <Name>DataProvider</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

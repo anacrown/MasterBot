@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using CodenjoyBot.Interfaces;
 using WebSocket4Net;
 
-namespace DataProvider
+namespace CodenjoyBot.DataProvider
 {
     public class WebSocketDataProvider : IDataProvider
     {

@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 
 using CodenjoyBot;
-using DataProvider;
 using BomberMan_SuperAI;
+using CodenjoyBot.DataProvider;
 
 namespace Debugger
 {

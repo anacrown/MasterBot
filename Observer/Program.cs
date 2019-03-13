@@ -2,7 +2,8 @@
 using System.Text;
 using System.Windows.Forms;
 using CodenjoyBot;
-using DataProvider;
+using CodenjoyBot.DataProvider;
+using CodenjoyBot.Interfaces;
 
 namespace Observer
 {

@@ -1,5 +1,6 @@
 ﻿using System;
-using DataProvider;
+using CodenjoyBot;
+using CodenjoyBot.Interfaces;
 
 namespace BomberMan_SuperAI
 {

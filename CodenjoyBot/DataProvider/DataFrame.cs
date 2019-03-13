@@ -1,4 +1,4 @@
-namespace DataProvider
+namespace CodenjoyBot.DataProvider
 {
     public struct DataFrame
     {

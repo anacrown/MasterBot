@@ -1,5 +1,6 @@
 ﻿using System;
-using DataProvider;
+using CodenjoyBot.DataProvider;
+using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot
 {

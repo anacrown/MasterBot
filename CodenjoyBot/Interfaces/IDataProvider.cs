@@ -1,6 +1,7 @@
 using System;
+using CodenjoyBot.DataProvider;
 
-namespace DataProvider
+namespace CodenjoyBot.Interfaces
 {
     public interface IDataProvider
     {
