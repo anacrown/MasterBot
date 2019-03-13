@@ -6,7 +6,6 @@ using CodenjoyBot.Board;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 using Application = System.Windows.Forms.Application;
-using Control = System.Windows.Controls.Control;
 
 namespace Observer
 {

@@ -1,9 +1,10 @@
-﻿namespace CodenjoyBot.Board
+﻿using System;
+
+namespace CodenjoyBot.Board
 {
     public class Cell
     {
-        private readonly char _c;
-
+        public char C { get; }
         public CodenjoyBot.Board.Board Board { get; }
 
         public Point Pos { get; }
@@ -12,7 +13,7 @@
 
         public Cell(char c, Point position, CodenjoyBot.Board.Board board)
         {
-            _c = c;
+            C = c;
             Board = board;
             Pos = position;
         }

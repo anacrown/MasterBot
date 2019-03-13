@@ -55,22 +55,22 @@ namespace CodenjoyBot
 
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
-            try
-            {
+//            try
+//            {
                 var response = Solver.Answer(new Board.Board(Name, StartTime, frame));
                 DataProvider.SendResponse(response);
 
                 //MainWindow.Log(frame.Time, $"{Name}: {response}");
                 WebSocketDataLogger.Instance.Log(Name, StartTime, frame.Time, frame.Board, response);
-            }
-            catch (Exception e)
-            {
-                WebSocketDataLogger.Instance.Log(Name, StartTime, frame.Time, e);
-
-                Stop();
-
-                Start();
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                WebSocketDataLogger.Instance.Log(Name, StartTime, frame.Time, e);
+//
+//                Stop();
+//
+//                Start();
+//            }
         }
     }
 }
