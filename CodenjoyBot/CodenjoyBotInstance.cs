@@ -6,9 +6,9 @@ namespace CodenjoyBot
 {
     public class CodenjoyBotInstance
     {
-        public readonly ISolver Solver;
         private IDataProvider _dataProvider;
 
+        public ISolver Solver { get; }
         public IDataProvider DataProvider
         {
             get => _dataProvider;
@@ -57,7 +57,7 @@ namespace CodenjoyBot
         {
             try
             {
-                var response = Solver.Answer(Name, StartTime, frame.Time, frame.Board);
+                var response = Solver.Answer(new Board.Board(Name, StartTime, frame));
                 DataProvider.SendResponse(response);
 
                 //MainWindow.Log(frame.Time, $"{Name}: {response}");

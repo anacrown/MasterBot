@@ -4,9 +4,43 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Debugger"
+        xmlns:controls="clr-namespace:Debugger.Controls"
+        xmlns:codenjoyBot="clr-namespace:CodenjoyBot;assembly=CodenjoyBot"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Loaded="MainWindow_OnLoaded">
+        Title="MainWindow" Height="800" Width="950" 
+        Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing">
     <Grid>
+        
+        <TabControl>
+            <TabItem Header="CodenjoyBot Instances">
+                <controls:BotInstanceList x:Name="BotInstanceList" Margin="10" 
+                                          InstanceModels="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}"/>
+            </TabItem>
+            <TabItem Header="Monitor">
+                <Grid>
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <ContentPresenter Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=SelectedBotInstance.Solver.Control}"/>
+
+                    <ComboBox x:Name="BattleBotInstanceComboBox" Grid.Row="1" VerticalContentAlignment="Center" Margin="10" MinWidth="390" SelectedIndex="0"
+                              SelectionChanged="BattleBotInstanceComboBox_OnSelectionChanged"
+                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}">
+                        <ComboBox.Resources>
+                            <DataTemplate DataType="{x:Type codenjoyBot:CodenjoyBotInstance}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.Resources>
+                    </ComboBox>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
         
     </Grid>
 </Window>
+

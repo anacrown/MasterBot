@@ -77,6 +77,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Board\Board.cs" />
+    <Compile Include="Board\Cell.cs" />
     <Compile Include="CodenjoyBotInstance.cs" />
     <Compile Include="DataProvider\WebSocketDataLogger.cs" />
     <Compile Include="DataProvider\WebSocketDataProvider.cs" />
@@ -84,9 +86,13 @@
   <ItemGroup>
     <Compile Include="DataProvider\DataFrame.cs" />
     <Compile Include="DataProvider\FileSystemDataProvider.cs" />
+    <Compile Include="Board\Direction.cs" />
+    <Compile Include="Board\Frame.cs" />
+    <Compile Include="Board\FrameBuffer.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="DataProvider\IdentityUser.cs" />
     <Compile Include="Interfaces\ISolver.cs" />
+    <Compile Include="Board\Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

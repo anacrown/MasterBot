@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Text;
-using System.Windows.Forms;
+using System.Windows;
 using CodenjoyBot;
+using CodenjoyBot.Board;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
+using Application = System.Windows.Forms.Application;
+using Control = System.Windows.Controls.Control;
 
 namespace Observer
 {
@@ -23,19 +26,19 @@ namespace Observer
 
     class EmptySolver : ISolver
     {
-        private int _size;
+        private System.Windows.Controls.Label _label;
         private readonly StringBuilder _sb = new StringBuilder();
 
         public void Initialize() { }
 
-        public string Answer(string instanseName, DateTime startTime, uint time, string board)
-        {
-            if (_size == 0)
-                _size = (int)Math.Sqrt(board.Length);
+        public UIElement Control => _label ?? (_label = new System.Windows.Controls.Label());
 
+
+        public string Answer(Board board)
+        {
             _sb.Clear();
-            for (var i = 0; i < _size; i++)
-                _sb.AppendLine(board.Substring(i * _size, _size));
+            for (var i = 0; i < board.Size; i++)
+                _sb.AppendLine(board.ToString().Substring(i * board.Size, board.Size));
 
             Console.Clear();
             Console.WriteLine(_sb.ToString());
@@ -43,6 +46,6 @@ namespace Observer
             return string.Empty;
         }
 
-        public event EventHandler<string> BoardLoaded;
+        public event EventHandler<Board> BoardLoaded;
     }
 }

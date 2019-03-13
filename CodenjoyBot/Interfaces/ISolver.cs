@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace CodenjoyBot.Interfaces
 {
@@ -6,7 +8,8 @@ namespace CodenjoyBot.Interfaces
     {
         void Initialize();
 
-        string Answer(string instanseName, DateTime startTime, uint time, string board);
-        event EventHandler<string> BoardLoaded;
+        UIElement Control { get; }
+
+        string Answer(Board.Board board);
     }
 }

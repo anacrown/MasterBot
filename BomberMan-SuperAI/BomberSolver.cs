@@ -1,17 +1,26 @@
 ﻿using System;
-using CodenjoyBot;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using BomberMan_SuperAI.Annotations;
+using CodenjoyBot.Board;
 using CodenjoyBot.Interfaces;
 
 namespace BomberMan_SuperAI
 {
-    public class BomberSolver : ISolver
+    public class BomberSolver : ISolver, INotifyPropertyChanged
     {
+        private UserControl _control;
+
         public void Initialize()
         {
-
+            
         }
 
-        public string Answer(string instanseName, DateTime startTime, uint time, string board)
+        public UIElement Control => _control ?? (_control = new BomberSolverControl(this));
+
+        public string Answer(Board board)
         {
             /*
              
@@ -43,6 +52,12 @@ namespace BomberMan_SuperAI
             return rsp;
         }
 
-        public event EventHandler<string> BoardLoaded;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

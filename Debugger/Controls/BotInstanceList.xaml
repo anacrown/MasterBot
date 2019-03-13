@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Debugger.Controls.BotInstanceList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Debugger"
+             xmlns:codenjoyBot="clr-namespace:CodenjoyBot;assembly=CodenjoyBot"
+             xmlns:controls="clr-namespace:Debugger.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView x:Name="ListView" HorizontalContentAlignment="Stretch" Grid.ColumnSpan="3"
+                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:BotInstanceList}}, Path=InstanceModels}">
+                <ListView.Resources>
+                    <DataTemplate DataType="{x:Type codenjoyBot:CodenjoyBotInstance}">
+                        <controls:BotInstance CodenjoyBotInstance="{Binding}"/>
+                    </DataTemplate>
+                </ListView.Resources>
+            </ListView>
+
+            <Button x:Name="AddBotInstance" Content="Add Instance" Grid.Row="1" HorizontalAlignment="Left" Margin="10" Width="90" Click="AddBotInstance_OnClick"/>
+            <Button x:Name="RemoveBotInstance" Content="Remove Instance" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="10" Width="120" Click="RemoveBotInstance_OnClick"/>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>
