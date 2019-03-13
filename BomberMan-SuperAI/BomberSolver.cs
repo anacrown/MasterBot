@@ -3,7 +3,7 @@ using DataProvider;
 
 namespace BomberMan_SuperAI
 {
-    public class BotSolver : ISolver
+    public class BomberSolver : ISolver
     {
         public void Initialize()
         {

@@ -3,7 +3,7 @@ using DataProvider;
 
 namespace CodenjoyBot
 {
-    class CodenjoyBotInstance
+    public class CodenjoyBotInstance
     {
         public readonly ISolver Solver;
         private IDataProvider _dataProvider;

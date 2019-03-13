@@ -36,37 +36,6 @@ namespace DataProvider
             return dir;
         }
 
-        public void LogDead(string battleBotInstanceName, DateTime startTime, uint time)
-        {
-            var dir = GetLogDirForBattleBotInstance(startTime, battleBotInstanceName);
-            var deadFile = Path.Combine(dir, "Dead.txt");
-
-            if (!_lockerLockSlims.ContainsKey(battleBotInstanceName))
-                _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
-
-            while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld)
-                //MainWindow.Log(time, $"{battleBotInstanceName} write is hold");
-
-            _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
-
-            try
-            {
-                using (var deadWriter = File.AppendText(deadFile))
-                {
-                    deadWriter.Write($"[{time}]: DEAD{Environment.NewLine}");
-                    deadWriter.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                //MainWindow.Log(time, ex.ToString());
-            }
-            finally
-            {
-                _lockerLockSlims[battleBotInstanceName].ExitWriteLock();
-            }
-        }
-
         public void Log(string battleBotInstanceName, DateTime startTime, uint time, Exception e)
         {
             var dir = GetLogDirForBattleBotInstance(startTime, battleBotInstanceName);
@@ -127,6 +96,37 @@ namespace DataProvider
                 }
 
                 //MainWindow.Log(time, $"{battleBotInstanceName} damp saved");
+            }
+            catch (Exception ex)
+            {
+                //MainWindow.Log(time, ex.ToString());
+            }
+            finally
+            {
+                _lockerLockSlims[battleBotInstanceName].ExitWriteLock();
+            }
+        }
+
+        public void LogDead(string battleBotInstanceName, DateTime startTime, uint time)
+        {
+            var dir = GetLogDirForBattleBotInstance(startTime, battleBotInstanceName);
+            var deadFile = Path.Combine(dir, "Dead.txt");
+
+            if (!_lockerLockSlims.ContainsKey(battleBotInstanceName))
+                _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
+
+            while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld)
+                //MainWindow.Log(time, $"{battleBotInstanceName} write is hold");
+
+                _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
+
+            try
+            {
+                using (var deadWriter = File.AppendText(deadFile))
+                {
+                    deadWriter.Write($"[{time}]: DEAD{Environment.NewLine}");
+                    deadWriter.Close();
+                }
             }
             catch (Exception ex)
             {

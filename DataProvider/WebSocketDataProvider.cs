@@ -46,7 +46,6 @@ namespace DataProvider
             {
                 Console.WriteLine("Closed");
                 Stop();
-                Start();
             };
 
             _webSocket.Error += (sender, args) =>

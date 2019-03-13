@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3D3DBB7E-341A-4A52-9F9E-EB364B372C42}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>CodenjoyBot</RootNamespace>
-    <AssemblyName>CodenjoyBot</AssemblyName>
+    <ProjectGuid>{4A2A0299-1E37-44FE-AAC4-9CB24004B686}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Debugger</RootNamespace>
+    <AssemblyName>Debugger</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -33,9 +33,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,7 +44,22 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodenjoyBotInstance.cs" />
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -76,6 +88,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BomberMan-SuperAI\BomberMan-SuperAI.csproj">
+      <Project>{112643C0-0B46-45A7-B9DB-D086C968A193}</Project>
+      <Name>BomberMan-SuperAI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
+      <Project>{3d3dbb7e-341a-4a52-9f9e-eb364b372c42}</Project>
+      <Name>CodenjoyBot</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataProvider\DataProvider.csproj">
       <Project>{F609424B-FB83-4886-B452-B849A49EA6B3}</Project>
       <Name>DataProvider</Name>
