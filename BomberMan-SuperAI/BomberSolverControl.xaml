@@ -7,6 +7,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Canvas x:Name="Canvas"/>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="792"/>
+            <ColumnDefinition Width="*" MinWidth="400"/>
+        </Grid.ColumnDefinitions>
+        
+        <Canvas x:Name="Canvas" Grid.Column="0" Margin="3"/>
+        
+        <TextBlock x:Name="LogTextBlock" Grid.Column="1" Margin="3"/>
     </Grid>
 </UserControl>

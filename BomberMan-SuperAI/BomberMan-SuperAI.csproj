@@ -50,6 +50,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ResourceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">

@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:Debugger.Controls"
         xmlns:codenjoyBot="clr-namespace:CodenjoyBot;assembly=CodenjoyBot"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="950" 
+        Title="MainWindow" Width="1300" Height="900"
         Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing">
     <Grid>
         
