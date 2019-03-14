@@ -4,17 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BomberMan_SuperAI"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="700">
     <Grid>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="792"/>
-            <ColumnDefinition Width="*" MinWidth="400"/>
-        </Grid.ColumnDefinitions>
-        
-        <Canvas x:Name="Canvas" Grid.Column="0" Margin="3"/>
-        
-        <TextBlock x:Name="LogTextBlock" Grid.Column="1" Margin="3"/>
+        <Canvas x:Name="Canvas" Margin="3"/>
     </Grid>
 </UserControl>

@@ -1,0 +1,66 @@
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using BomberMan_SuperAI.Annotations;
+using CodenjoyBot.DataProvider;
+
+namespace Debugger.Controls
+{
+    public partial class WebSocketDataProviderControl : INotifyPropertyChanged
+    {
+        public static readonly DependencyProperty DataProviderProperty = DependencyProperty.Register(
+            "DataProvider", typeof(WebSocketDataProvider), typeof(WebSocketDataProviderControl), new PropertyMetadata(default(WebSocketDataProvider)));
+
+        public WebSocketDataProvider DataProvider
+        {
+            get => (WebSocketDataProvider)GetValue(DataProviderProperty);
+            set => SetValue(DataProviderProperty, value);
+        }
+
+        public WebSocketDataProviderControl()
+        {
+            InitializeComponent();
+        }
+
+        public string ServerUri
+        {
+            get => DataProvider?.IdentityUser.ServerUri;
+            set
+            {
+                if (value == DataProvider?.IdentityUser.ServerUri) return;
+                if (DataProvider != null) DataProvider.IdentityUser.ServerUri = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string UserName
+        {
+            get => DataProvider?.IdentityUser.UserName;
+            set
+            {
+                if (value == DataProvider?.IdentityUser.UserName) return;
+                if (DataProvider != null) DataProvider.IdentityUser.UserName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SecretCode
+        {
+            get => DataProvider?.IdentityUser.SecretCode;
+            set
+            {
+                if (value == DataProvider?.IdentityUser.SecretCode) return;
+                if (DataProvider != null) DataProvider.IdentityUser.SecretCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Windows;
 using CodenjoyBot.Interfaces;
 using WebSocket4Net;
 
@@ -7,6 +8,9 @@ namespace CodenjoyBot.DataProvider
 {
     public class WebSocketDataProvider : IDataProvider
     {
+        public UIElement Control { get; }
+        public UIElement DebugControl { get; }
+
         public IdentityUser IdentityUser
         {
             get => _identityUser ?? (_identityUser = new IdentityUser());
@@ -87,5 +91,8 @@ namespace CodenjoyBot.DataProvider
 
             return match.Groups[1].Value;
         }
+
+        public event EventHandler<LogRecord> LogDataReceived;
+        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
     }
 }

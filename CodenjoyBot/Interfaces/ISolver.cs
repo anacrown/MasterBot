@@ -2,11 +2,9 @@
 
 namespace CodenjoyBot.Interfaces
 {
-    public interface ISolver
+    public interface ISolver : ILogger, ISupportControls
     {
         void Initialize();
-
-        UIElement Control { get; }
 
         string Answer(Board.Board board);
     }

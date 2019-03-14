@@ -3,7 +3,7 @@ using CodenjoyBot.DataProvider;
 
 namespace CodenjoyBot.Interfaces
 {
-    public interface IDataProvider
+    public interface IDataProvider : ILogger, ISupportControls
     {
         string Name { get; }
 

@@ -80,19 +80,28 @@
     <Compile Include="Board\Board.cs" />
     <Compile Include="Board\Cell.cs" />
     <Compile Include="CodenjoyBotInstance.cs" />
-    <Compile Include="DataProvider\WebSocketDataLogger.cs" />
-    <Compile Include="DataProvider\WebSocketDataProvider.cs" />
+    <Compile Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderControl.xaml.cs">
+      <DependentUpon>FileSystemDataProviderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderControl.xaml.cs">
+      <DependentUpon>WebSocketDataProviderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataLogger.cs" />
+    <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataProvider\DataFrame.cs" />
-    <Compile Include="DataProvider\FileSystemDataProvider.cs" />
+    <Compile Include="DataProvider\FileSystemDataProvider\FileSystemDataProvider.cs" />
     <Compile Include="Board\Direction.cs" />
     <Compile Include="Board\Frame.cs" />
     <Compile Include="Board\FrameBuffer.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="DataProvider\IdentityUser.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\ISolver.cs" />
     <Compile Include="Board\Point.cs" />
+    <Compile Include="Interfaces\ISupportControls.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -118,6 +127,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

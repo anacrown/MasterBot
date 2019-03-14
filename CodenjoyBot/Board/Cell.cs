@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CodenjoyBot.Board
+﻿namespace CodenjoyBot.Board
 {
     public class Cell
     {

@@ -4,14 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Timers;
+using System.Windows;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.DataProvider
 {
     public class FileSystemDataProvider : IDataProvider
     {
-        public string Name { get; private set; }
+        public UIElement Control { get; }
+        public UIElement DebugControl { get; }
 
+        public string Name { get; private set; }
+        
         private string _boardFile;
         public string BoardFile
         {
@@ -122,5 +126,6 @@ namespace CodenjoyBot.DataProvider
         protected virtual void OnIndexChanged(uint time) => TimeChanged?.Invoke(this, time);
 
         protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame { Board = board, Time = time });
+        public event EventHandler<LogRecord> LogDataReceived;
     }
 }

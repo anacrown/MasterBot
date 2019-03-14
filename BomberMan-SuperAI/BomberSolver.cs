@@ -83,13 +83,11 @@ namespace BomberMan_SuperAI
 
         public event EventHandler<Board> BoardChanged;
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler<Tuple<DataFrame, string>> LogDataReceived;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected virtual void OnBoardChanged() => BoardChanged?.Invoke(this, Board);
-        protected virtual void OnLogDataReceived(DataFrame frame, string data) => LogDataReceived?.Invoke(this, new Tuple<DataFrame, string>(frame, data));
     }
 
     public enum Element
