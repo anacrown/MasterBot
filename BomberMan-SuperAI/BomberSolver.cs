@@ -2,27 +2,34 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Windows;
-using System.Windows.Controls;
 using BomberMan_SuperAI.Annotations;
+using BomberMan_SuperAI.Controls;
 using CodenjoyBot.Board;
-using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace BomberMan_SuperAI
 {
+    [Serializable]
     public class BomberSolver : ISolver, INotifyPropertyChanged
     {
-        private UserControl _control;
         private int _size;
         private Board _board;
+        private UIElement _control;
+        private UIElement _debugControl;
+
+        public BomberSolver() { }
+
+        protected BomberSolver(SerializationInfo info, StreamingContext context) : this()
+        {
+            
+        }
 
         public void Initialize()
         {
             
         }
-
-        public UIElement Control => _control ?? (_control = new BomberSolverControl(this));
 
         public int Size
         {
@@ -88,6 +95,17 @@ namespace BomberMan_SuperAI
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected virtual void OnBoardChanged() => BoardChanged?.Invoke(this, Board);
+
+        public event EventHandler<LogRecord> LogDataReceived;
+        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+
+        public UIElement Control => _control ?? (_control = new BomberSolverControl(this));
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new BomberSolverDebugControl(this));
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+
+        }
     }
 
     public enum Element

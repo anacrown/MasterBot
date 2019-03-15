@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using BomberMan_SuperAI;
-using CodenjoyBot.DataProvider;
+using CodenjoyBot.DataProvider.WebSocketDataProvider;
 
 namespace Debugger.Controls
 {

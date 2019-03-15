@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using BomberMan_SuperAI.Annotations;
-using CodenjoyBot.DataProvider;
+using CodenjoyBot.Annotations;
 
-namespace Debugger.Controls
+namespace CodenjoyBot.DataProvider.WebSocketDataProvider
 {
     public partial class WebSocketDataProviderControl : INotifyPropertyChanged
     {
@@ -20,6 +19,11 @@ namespace Debugger.Controls
         public WebSocketDataProviderControl()
         {
             InitializeComponent();
+        }
+
+        public WebSocketDataProviderControl(WebSocketDataProvider dataProvider) : this ()
+        {
+            DataProvider = dataProvider;
         }
 
         public string ServerUri

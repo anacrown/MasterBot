@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using CodenjoyBot.Interfaces;
 
-namespace CodenjoyBot.DataProvider
+namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
+    [Serializable]
     public class FileSystemDataProvider : IDataProvider
     {
-        public UIElement Control { get; }
-        public UIElement DebugControl { get; }
-
         public string Name { get; private set; }
         
         private string _boardFile;
@@ -33,6 +33,8 @@ namespace CodenjoyBot.DataProvider
         private Dictionary<uint, string> _boards;
         private static readonly Regex Pattern = new Regex(@"^\[(\d*)\]:\s(.*)$");
         private readonly Timer _timer = new Timer(700);
+        private UIElement _control;
+        private UIElement _debugControl;
 
         public FileSystemDataProvider()
         {
@@ -43,6 +45,11 @@ namespace CodenjoyBot.DataProvider
         public FileSystemDataProvider(string boardFile) : this()
         {
             BoardFile = boardFile;
+        }
+
+        protected FileSystemDataProvider(SerializationInfo info, StreamingContext context) : this()
+        {
+            BoardFile = info.GetString("BoardFile");
         }
 
         private string GetNameFromDir(string file)
@@ -122,10 +129,21 @@ namespace CodenjoyBot.DataProvider
         public event EventHandler<uint> TimeChanged;
 
         public event EventHandler<DataFrame> DataReceived;
+        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame { Board = board, Time = time });
 
         protected virtual void OnIndexChanged(uint time) => TimeChanged?.Invoke(this, time);
 
-        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame { Board = board, Time = time });
         public event EventHandler<LogRecord> LogDataReceived;
+        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+
+        public UIElement Control => _control ?? (_control = new FileSystemDataProviderControl(this));
+
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new FileSystemDataProviderDebugControl(this));
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("BoardFile", BoardFile);
+        }
     }
 }

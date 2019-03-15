@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using System.Runtime.Serialization;
 
 namespace CodenjoyBot.Interfaces
 {
-    public interface ISolver : ILogger, ISupportControls
+    public interface ISolver : ILogger, ISupportControls, ISerializable
     {
         void Initialize();
 

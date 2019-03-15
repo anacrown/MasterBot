@@ -4,6 +4,7 @@ using System.Windows;
 using CodenjoyBot;
 using CodenjoyBot.Board;
 using CodenjoyBot.DataProvider;
+using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using CodenjoyBot.Interfaces;
 using Application = System.Windows.Forms.Application;
 
@@ -31,6 +32,7 @@ namespace Observer
         public void Initialize() { }
 
         public UIElement Control => _label ?? (_label = new System.Windows.Controls.Label());
+        public UIElement DebugControl => Control;
 
 
         public string Answer(Board board)
@@ -46,5 +48,6 @@ namespace Observer
         }
 
         public event EventHandler<Board> BoardLoaded;
+        public event EventHandler<LogRecord> LogDataReceived;
     }
 }

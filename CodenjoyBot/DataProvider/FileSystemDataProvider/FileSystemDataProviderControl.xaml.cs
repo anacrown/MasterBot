@@ -2,10 +2,10 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using CodenjoyBot.Annotations;
-using CodenjoyBot.DataProvider;
+using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using Microsoft.Win32;
 
-namespace Debugger.Controls
+namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
     public partial class FileSystemDataProviderControl : INotifyPropertyChanged
     {
@@ -21,6 +21,11 @@ namespace Debugger.Controls
         public FileSystemDataProviderControl()
         {
             InitializeComponent();
+        }
+
+        public FileSystemDataProviderControl(FileSystemDataProvider dataProvider) : this()
+        {
+            DataProvider = dataProvider;
         }
 
         public string Dir

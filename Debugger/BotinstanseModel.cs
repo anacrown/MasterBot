@@ -3,15 +3,12 @@ using CodenjoyBot.DataProvider;
 
 namespace Debugger
 {
-    public enum DataProviderType
-    {
-        WebSocket, FileSystem
-    }
-
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     public class BotinstanseModel
     {
-        public DataProviderType ProviderType { get; set; }
+        public string SolverType { get; set; }
+
+        public string DataProviderType { get; set; }
 
         public IdentityUser IdentityUser { get; set; }
 

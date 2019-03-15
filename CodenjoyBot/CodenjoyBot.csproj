@@ -80,8 +80,17 @@
     <Compile Include="Board\Board.cs" />
     <Compile Include="Board\Cell.cs" />
     <Compile Include="CodenjoyBotInstance.cs" />
+    <Compile Include="CodenjoyBotInstanceControl.xaml.cs">
+      <DependentUpon>CodenjoyBotInstanceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CodenjoyBotInstanceDebugControl.xaml.cs">
+      <DependentUpon>CodenjoyBotInstanceDebugControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderControl.xaml.cs">
       <DependentUpon>FileSystemDataProviderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderDebugControl.xaml.cs">
+      <DependentUpon>FileSystemDataProviderDebugControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderControl.xaml.cs">
       <DependentUpon>WebSocketDataProviderControl.xaml</DependentUpon>
@@ -95,12 +104,16 @@
     <Compile Include="Board\Direction.cs" />
     <Compile Include="Board\Frame.cs" />
     <Compile Include="Board\FrameBuffer.cs" />
+    <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderDebugControl.xaml.cs">
+      <DependentUpon>WebSocketDataProviderDebugControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="DataProvider\IdentityUser.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\ISolver.cs" />
     <Compile Include="Board\Point.cs" />
     <Compile Include="Interfaces\ISupportControls.cs" />
+    <Compile Include="PluginLoader.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -129,13 +142,29 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CodenjoyBotInstanceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CodenjoyBotInstanceDebugControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderDebugControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderDebugControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

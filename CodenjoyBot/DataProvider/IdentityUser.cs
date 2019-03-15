@@ -1,8 +1,9 @@
+using System;
 using System.Configuration;
 
 namespace CodenjoyBot.DataProvider
 {
-    [SettingsSerializeAs(SettingsSerializeAs.Xml)]
+    [Serializable]
     public class IdentityUser
     {
         public string ServerUri { get; set; }

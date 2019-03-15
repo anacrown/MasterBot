@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows;
 using CodenjoyBot.Interfaces;
 using WebSocket4Net;
 
-namespace CodenjoyBot.DataProvider
+namespace CodenjoyBot.DataProvider.WebSocketDataProvider
 {
+    [Serializable]
     public class WebSocketDataProvider : IDataProvider
     {
-        public UIElement Control { get; }
-        public UIElement DebugControl { get; }
-
         public IdentityUser IdentityUser
         {
             get => _identityUser ?? (_identityUser = new IdentityUser());
@@ -19,6 +19,8 @@ namespace CodenjoyBot.DataProvider
 
         private WebSocket _webSocket;
         private IdentityUser _identityUser;
+        private UIElement _control;
+        private UIElement _debugControl;
         private static readonly Regex Pattern = new Regex("^board=(.*)$");
 
         public event EventHandler<DataFrame> DataReceived;
@@ -30,6 +32,11 @@ namespace CodenjoyBot.DataProvider
             IdentityUser = identityUser;
         }
 
+        protected WebSocketDataProvider(SerializationInfo info, StreamingContext context)
+        {
+            IdentityUser = info.GetValue("IdentityUser", typeof(IdentityUser)) as IdentityUser;
+        }
+
         public uint Time { get; private set; }
         public string Name => $"WEB [{IdentityUser?.UserName}]";
 
@@ -38,24 +45,24 @@ namespace CodenjoyBot.DataProvider
             if (IdentityUser.IsEmty) return;
 
             Time = 0;
-            Console.WriteLine($"Open {IdentityUser}");
+            OnLogDataReceived(Time, $"Open {IdentityUser}");
             _webSocket = new WebSocket(IdentityUser.ToString());
 
             _webSocket.MessageReceived += WebSocketOnMessageReceived;
 
             _webSocket.Opened += (sender, args) =>
             {
-                Console.WriteLine("Opened");
+                OnLogDataReceived(Time, "Opened");
             };
             _webSocket.Closed += (sender, args) =>
             {
-                Console.WriteLine("Closed");
+                OnLogDataReceived(Time, "Closed");
                 Stop();
             };
 
             _webSocket.Error += (sender, args) =>
             {
-                Console.WriteLine($"Error occurred: {args.Exception}");
+                OnLogDataReceived(Time, $"Error occurred: {args.Exception}");
             };
 
             _webSocket.Open();
@@ -76,7 +83,7 @@ namespace CodenjoyBot.DataProvider
             _webSocket.Dispose();
             _webSocket = null;
 
-            Console.WriteLine("Stoped");
+            OnLogDataReceived(Time, "Stoped");
         }
 
         public void SendResponse(string response) => _webSocket?.Send(response);
@@ -93,6 +100,22 @@ namespace CodenjoyBot.DataProvider
         }
 
         public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+        protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame() { Time = time }, message));
+
+        public UIElement Control
+        {
+            get { return _control ?? (_control = new WebSocketDataProviderControl(this)); }
+        }
+
+        public UIElement DebugControl
+        {
+            get { return _debugControl ?? (_debugControl = new WebSocketDataProviderDebugControl(this)); }
+        }
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("IdentityUser", IdentityUser);
+        }
     }
 }

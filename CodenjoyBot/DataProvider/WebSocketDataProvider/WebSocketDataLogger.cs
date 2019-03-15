@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using CodenjoyBot.Interfaces;
 
-namespace CodenjoyBot.DataProvider
+namespace CodenjoyBot.DataProvider.WebSocketDataProvider
 {
-    public class WebSocketDataLogger
+    public class WebSocketDataLogger : ILogger
     {
         private static WebSocketDataLogger _instance;
         public static WebSocketDataLogger Instance => _instance ?? (_instance = new WebSocketDataLogger());
@@ -45,7 +46,7 @@ namespace CodenjoyBot.DataProvider
                 _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
 
             while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld) ;
-                //MainWindow.Log(time, $"{battleBotInstanceName} write is hold");
+                OnLogDataReceived(time, battleBotInstanceName, "write is hold");
 
             _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
 
@@ -59,7 +60,7 @@ namespace CodenjoyBot.DataProvider
             }
             catch (Exception ex)
             {
-                //MainWindow.Log(time, ex.ToString());
+                OnLogDataReceived(time, battleBotInstanceName, ex.ToString());
             }
             finally
             {
@@ -77,7 +78,7 @@ namespace CodenjoyBot.DataProvider
                 _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
 
             while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld) ;
-                //MainWindow.Log(time, $"{battleBotInstanceName} write is hold");
+                OnLogDataReceived(time, battleBotInstanceName, "write is hold");
 
             _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
 
@@ -95,11 +96,11 @@ namespace CodenjoyBot.DataProvider
                     responseWriter.Close();
                 }
 
-                //MainWindow.Log(time, $"{battleBotInstanceName} damp saved");
+                OnLogDataReceived(time, battleBotInstanceName, "damp saved");
             }
             catch (Exception ex)
             {
-                //MainWindow.Log(time, ex.ToString());
+                OnLogDataReceived(time, battleBotInstanceName, ex.ToString());
             }
             finally
             {
@@ -116,7 +117,7 @@ namespace CodenjoyBot.DataProvider
                 _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
 
             while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld)
-                //MainWindow.Log(time, $"{battleBotInstanceName} write is hold");
+                OnLogDataReceived(time, battleBotInstanceName, "write is hold");
 
                 _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
 
@@ -130,12 +131,16 @@ namespace CodenjoyBot.DataProvider
             }
             catch (Exception ex)
             {
-                //MainWindow.Log(time, ex.ToString());
+                OnLogDataReceived(time, battleBotInstanceName, ex.ToString());
             }
             finally
             {
                 _lockerLockSlims[battleBotInstanceName].ExitWriteLock();
             }
         }
+
+        public event EventHandler<LogRecord> LogDataReceived;
+        protected virtual void OnLogDataReceived(uint time, string battleBotInstanceName, string message) => 
+            LogDataReceived?.Invoke(this, new LogRecord(new DataFrame(){Time = time}, $"{battleBotInstanceName}: {message}"));
     }
 }

@@ -1,13 +1,20 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+using System.Windows;
 using CodenjoyBot.DataProvider;
+using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot
 {
-    public class CodenjoyBotInstance : ILogger
+    [Serializable]
+    public class CodenjoyBotInstance : ILogger, ISupportControls, ISerializable
     {
         private ISolver _solver;
         private IDataProvider _dataProvider;
+        private UIElement _control;
+        private UIElement _debugControl;
 
         public ISolver Solver
         {
@@ -62,10 +69,34 @@ namespace CodenjoyBot
 
         public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
 
-        public CodenjoyBotInstance(IDataProvider dataProvider = null, ISolver solver = null)
+        public CodenjoyBotInstance()
         {
-            _solver = solver;
+            WebSocketDataLogger.Instance.LogDataReceived += InstanceOnLogDataReceived;
+        }
+
+        public CodenjoyBotInstance(IDataProvider dataProvider, ISolver solver) : this()
+        {
+            Solver = solver;
             DataProvider = dataProvider;
+        }
+
+        protected CodenjoyBotInstance(SerializationInfo info, StreamingContext context): this()
+        {
+            var solverTypeName = info.GetString("SolverType");
+            var solverType = PluginLoader.LoadType(solverTypeName);
+
+            Solver = (ISolver) info.GetValue("Solver", solverType);
+
+            var dataProviderTypeName = info.GetString("DataProviderType");
+            var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
+
+            DataProvider = (IDataProvider) info.GetValue("DataProvider", dataProviderType);
+        }
+
+        private void InstanceOnLogDataReceived(object sender, LogRecord logRecord)
+        {
+            if (logRecord.Message.StartsWith($"{Name}: "))
+                OnLogDataReceived(sender, logRecord);
         }
 
         public void Start()
@@ -80,7 +111,7 @@ namespace CodenjoyBot
 
         public void Stop()
         {
-            DataProvider.Stop();
+            DataProvider?.Stop();
 
             IsStarted = false;
         }
@@ -108,5 +139,18 @@ namespace CodenjoyBot
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
         protected virtual void OnLogDataReceived(object sender, LogRecord e) => LogDataReceived?.Invoke(sender, e);
+
+        public UIElement Control => _control ?? (_control = new CodenjoyBotInstanceControl(this));
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this));
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Solver", Solver);
+            info.AddValue("SolverType", Solver.GetType().FullName);
+
+            info.AddValue("DataProvider", DataProvider);
+            info.AddValue("DataProviderType", DataProvider?.GetType().FullName);
+        }
     }
 }

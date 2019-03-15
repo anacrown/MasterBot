@@ -1,9 +1,10 @@
 using System;
+using System.Runtime.Serialization;
 using CodenjoyBot.DataProvider;
 
 namespace CodenjoyBot.Interfaces
 {
-    public interface IDataProvider : ILogger, ISupportControls
+    public interface IDataProvider : ILogger, ISupportControls, ISerializable
     {
         string Name { get; }
 

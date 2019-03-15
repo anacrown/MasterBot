@@ -40,8 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BomberSolver.cs" />
-    <Compile Include="BomberSolverControl.xaml.cs">
+    <Compile Include="Controls\BomberSolverControl.xaml.cs">
       <DependentUpon>BomberSolverControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BomberSolverDebugControl.xaml.cs">
+      <DependentUpon>BomberSolverDebugControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,7 +62,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="BomberSolverControl.xaml">
+    <Page Include="Controls\BomberSolverControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BomberSolverDebugControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

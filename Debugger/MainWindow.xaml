@@ -24,7 +24,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <ContentPresenter Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=SelectedBotInstance.Solver.Control}"/>
+                    <ContentPresenter Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=SelectedBotInstance.DebugControl}"/>
 
                     <ComboBox x:Name="BattleBotInstanceComboBox" Grid.Row="1" VerticalContentAlignment="Center" Margin="10" MinWidth="390" SelectedIndex="0"
                               SelectionChanged="BattleBotInstanceComboBox_OnSelectionChanged"

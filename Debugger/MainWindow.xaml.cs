@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
-using CodenjoyBot;
 using BomberMan_SuperAI;
+using CodenjoyBot;
 using BomberMan_SuperAI.Annotations;
-using CodenjoyBot.DataProvider;
+using CodenjoyBot.DataProvider.FileSystemDataProvider;
+using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace Debugger
@@ -59,55 +64,26 @@ namespace Debugger
 
         private void DefaultSettingsLoad()
         {
-            if (Properties.Settings.Default.BotinstanseModels == null)
+            if (!File.Exists("Settings.bin"))
                 return;
 
-            foreach (var botInstanceModel in Properties.Settings.Default.BotinstanseModels)
+            IFormatter formatter = new BinaryFormatter();
+            using (Stream stream = new FileStream("Settings.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                IDataProvider dataProvider;
-                switch (botInstanceModel.ProviderType)
-                {
-                    case DataProviderType.WebSocket:
-                        dataProvider = new WebSocketDataProvider(botInstanceModel.IdentityUser);
-                        break;
-                    case DataProviderType.FileSystem:
-                        dataProvider = new FileSystemDataProvider(botInstanceModel.BoardFile);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                CodenjoyBotInstances.Add(new CodenjoyBotInstance(dataProvider, new BomberSolver()));
+                var instances = (CodenjoyBotInstance[])formatter.Deserialize(stream);
+                CodenjoyBotInstances = new ObservableCollection<CodenjoyBotInstance>(instances);
+                stream.Close();
             }
         }
 
         private void DefaultSettingsSave()
         {
-            var list = new List<BotinstanseModel>();
-            foreach (var codenjoyBotInstance in CodenjoyBotInstances)
+            IFormatter formatter = new BinaryFormatter();
+            using (Stream stream = new FileStream("Settings.bin", FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                switch (codenjoyBotInstance.DataProvider)
-                {
-                    case WebSocketDataProvider webSocketDataProvider:
-                        list.Add(new BotinstanseModel()
-                        {
-                            ProviderType = DataProviderType.WebSocket,
-                            IdentityUser = webSocketDataProvider.IdentityUser
-                        });
-                        break;
-                    case FileSystemDataProvider fileSystemDataProvider:
-                        list.Add(new BotinstanseModel()
-                        {
-                            ProviderType = DataProviderType.FileSystem,
-                            BoardFile = fileSystemDataProvider.BoardFile
-                        });
-                        break;
-                }
+                formatter.Serialize(stream, CodenjoyBotInstances.ToArray());
+                stream.Close();
             }
-
-            Properties.Settings.Default.BotinstanseModels = list.ToArray();
-
-            Properties.Settings.Default.Save();
         }
 
         private void BattleBotInstanceComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

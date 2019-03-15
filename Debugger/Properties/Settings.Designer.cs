@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 using System.Collections;
+using CodenjoyBot;
 
 namespace Debugger.Properties
 {
@@ -26,20 +27,6 @@ namespace Debugger.Properties
             get
             {
                 return defaultInstance;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public BotinstanseModel[] BotinstanseModels
-        {
-            get
-            {
-                return ((BotinstanseModel[])(this["BotinstanseModels"]));
-            }
-            set
-            {
-                this["BotinstanseModels"] = value;
             }
         }
     }

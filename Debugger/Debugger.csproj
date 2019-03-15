@@ -48,21 +48,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BotinstanseModel.cs" />
-    <Compile Include="Controls\WebSocketDataProviderControl.xaml.cs">
-      <DependentUpon>WebSocketDataProviderControl.xaml</DependentUpon>
+    <Compile Include="BotInstanceList.xaml.cs">
+      <DependentUpon>BotInstanceList.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\BotInstance.xaml">
-      <SubType>Designer</SubType>
+    <Compile Include="BotinstanseModel.cs" />
+    <Page Include="BotInstanceList.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BotInstanceList.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\FileSystemDataProviderControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -72,23 +64,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controls\BotInstance.xaml.cs">
-      <DependentUpon>BotInstance.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BotInstanceList.xaml.cs">
-      <DependentUpon>BotInstanceList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FileSystemDataProviderControl.xaml.cs">
-      <DependentUpon>FileSystemDataProviderControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Controls\WebSocketDataProviderControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -4,14 +4,14 @@ using Image = System.Windows.Controls.Image;
 
 namespace BomberMan_SuperAI
 {
-    public partial class BomberSolverControl
+    public partial class BomberSolverDebugControl
     {
         private int _size;
         private Image[,] _images;
 
         public BomberSolver BomberSolver { get; }
 
-        public BomberSolverControl(BomberSolver bomberSolver)
+        public BomberSolverDebugControl(BomberSolver bomberSolver)
         {
             InitializeComponent();
 
