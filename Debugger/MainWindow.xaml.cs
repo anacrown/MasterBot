@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -9,12 +7,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
-using BomberMan_SuperAI;
-using CodenjoyBot;
 using BomberMan_SuperAI.Annotations;
-using CodenjoyBot.DataProvider.FileSystemDataProvider;
-using CodenjoyBot.DataProvider.WebSocketDataProvider;
-using CodenjoyBot.Interfaces;
+using CodenjoyBot.CodenjoyBotInstance;
 
 namespace Debugger
 {

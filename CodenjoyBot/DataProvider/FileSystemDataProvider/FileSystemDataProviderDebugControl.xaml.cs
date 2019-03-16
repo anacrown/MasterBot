@@ -3,9 +3,6 @@ using System.Windows.Controls;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
-    /// <summary>
-    /// Interaction logic for FileSystemDataProviderDebugControl.xaml
-    /// </summary>
     public partial class FileSystemDataProviderDebugControl : UserControl
     {
         public static readonly DependencyProperty DataProviderProperty = DependencyProperty.Register(
@@ -25,6 +22,31 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public FileSystemDataProviderDebugControl(FileSystemDataProvider dataProvider) : this()
         {
             DataProvider = dataProvider;
+        }
+
+        private void FrameSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            DataProvider.MoveToFrame((uint)e.NewValue);
+        }
+
+        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DataProvider == null) return;
+
+            PlayButton.IsEnabled = false;
+            StopButton.IsEnabled = true;
+
+            DataProvider.RecordPlay();
+        }
+
+        private void StopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DataProvider == null) return;
+
+            StopButton.IsEnabled = false;
+            PlayButton.IsEnabled = true;
+
+            DataProvider.RecordStop();
         }
     }
 }

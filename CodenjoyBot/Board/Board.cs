@@ -11,10 +11,10 @@ namespace CodenjoyBot.Board
         private readonly Cell[] _cells;
         
         private readonly DateTime _startTime;
-        private readonly DataFrame _frame;
         private readonly string _instanceName;
 
         public int Size { get; }
+        public DataFrame Frame { get; }
 
         public class BoardEnumerator : IEnumerator<Cell>
         {
@@ -37,9 +37,9 @@ namespace CodenjoyBot.Board
         {
             _instanceName = instanceName;
             _startTime = startTime;
-            _frame = frame;
-            Size = (int)Math.Sqrt(_frame.Board.Length);
-            _cells = _frame.Board.Select((t, i) => new Cell(t, new Point(i % Size, i / Size), this)).ToArray();
+            Frame = frame;
+            Size = (int)Math.Sqrt(Frame.Board.Length);
+            _cells = Frame.Board.Select((t, i) => new Cell(t, new Point(i % Size, i / Size), this)).ToArray();
         }
 
         public IEnumerator<Cell> GetEnumerator() => new BoardEnumerator(_cells);
@@ -48,6 +48,6 @@ namespace CodenjoyBot.Board
         public Cell this[int i, int j] => _cells[i + j * Size];
         public Cell this[Point p] => this[p.X, p.Y];
 
-        public override string ToString() => _frame.Board;
+        public override string ToString() => Frame.Board;
     }
 }

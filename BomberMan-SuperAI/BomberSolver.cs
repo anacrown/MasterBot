@@ -7,6 +7,7 @@ using System.Windows;
 using BomberMan_SuperAI.Annotations;
 using BomberMan_SuperAI.Controls;
 using CodenjoyBot.Board;
+using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace BomberMan_SuperAI
@@ -83,7 +84,7 @@ namespace BomberMan_SuperAI
 
             var rsp = a == 1 ? b == 1 ? $"{act},{move[m]}" : $"{move[m]},{act}" : move[m];
 
-            Console.WriteLine($"{m} {a} {b} {rsp}");
+            OnLogDataReceived(board.Frame, $"{m} {a} {b} {rsp}");
 
             return rsp;
         }
@@ -97,7 +98,7 @@ namespace BomberMan_SuperAI
         protected virtual void OnBoardChanged() => BoardChanged?.Invoke(this, Board);
 
         public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+        protected virtual void OnLogDataReceived(DataFrame frame, string message) => LogDataReceived?.Invoke(this, new LogRecord(frame, message));
 
         public UIElement Control => _control ?? (_control = new BomberSolverControl(this));
         public UIElement DebugControl => _debugControl ?? (_debugControl = new BomberSolverDebugControl(this));

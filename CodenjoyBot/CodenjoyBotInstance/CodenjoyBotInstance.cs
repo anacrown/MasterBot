@@ -1,18 +1,22 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Windows;
+using CodenjoyBot.CodenjoyBotInstance.Controls;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using CodenjoyBot.Interfaces;
 
-namespace CodenjoyBot
+namespace CodenjoyBot.CodenjoyBotInstance
 {
     [Serializable]
     public class CodenjoyBotInstance : ILogger, ISupportControls, ISerializable
     {
         private ISolver _solver;
         private IDataProvider _dataProvider;
+        private LogFilterEntry[] _logFilterEntries;
+
         private UIElement _control;
         private UIElement _debugControl;
 
@@ -91,6 +95,8 @@ namespace CodenjoyBot
             var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
 
             DataProvider = (IDataProvider) info.GetValue("DataProvider", dataProviderType);
+
+            _logFilterEntries = (LogFilterEntry[])info.GetValue("LogFilters", typeof(LogFilterEntry[]));
         }
 
         private void InstanceOnLogDataReceived(object sender, LogRecord logRecord)
@@ -141,7 +147,7 @@ namespace CodenjoyBot
         protected virtual void OnLogDataReceived(object sender, LogRecord e) => LogDataReceived?.Invoke(sender, e);
 
         public UIElement Control => _control ?? (_control = new CodenjoyBotInstanceControl(this));
-        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this));
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this, _logFilterEntries));
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -151,6 +157,8 @@ namespace CodenjoyBot
 
             info.AddValue("DataProvider", DataProvider);
             info.AddValue("DataProviderType", DataProvider?.GetType().FullName);
+
+            info.AddValue("LogFilters", (DebugControl as CodenjoyBotInstanceDebugControl)?.LogFilters?.ToArray());
         }
     }
 }

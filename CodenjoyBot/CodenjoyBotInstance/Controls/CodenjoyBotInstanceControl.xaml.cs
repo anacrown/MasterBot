@@ -16,12 +16,12 @@ namespace CodenjoyBot
     public partial class CodenjoyBotInstanceControl : INotifyPropertyChanged
     {
         public static readonly DependencyProperty CodenjoyBotInstanceProperty = DependencyProperty.Register(
-            "CodenjoyBotInstance", typeof(CodenjoyBotInstance), typeof(CodenjoyBotInstanceControl), new PropertyMetadata(default(CodenjoyBotInstance)));
+            "CodenjoyBotInstance", typeof(CodenjoyBotInstance.CodenjoyBotInstance), typeof(CodenjoyBotInstanceControl), new PropertyMetadata(default(CodenjoyBotInstance.CodenjoyBotInstance)));
 
-        public CodenjoyBotInstance CodenjoyBotInstance
+        public CodenjoyBotInstance.CodenjoyBotInstance CodenjoyBotInstance
         {
-            get { return (CodenjoyBotInstance)GetValue(CodenjoyBotInstanceProperty); }
-            set { SetValue(CodenjoyBotInstanceProperty, value); }
+            get => (CodenjoyBotInstance.CodenjoyBotInstance)GetValue(CodenjoyBotInstanceProperty);
+            set => SetValue(CodenjoyBotInstanceProperty, value);
         }
 
         public Type[] DataProviderTypes { get; private set; }
@@ -40,7 +40,7 @@ namespace CodenjoyBot
             InitializeComponent();
         }
 
-        public CodenjoyBotInstanceControl(CodenjoyBotInstance codenjoyBotInstance) : this()
+        public CodenjoyBotInstanceControl(CodenjoyBotInstance.CodenjoyBotInstance codenjoyBotInstance) : this()
         {
             CodenjoyBotInstance = codenjoyBotInstance;
         }

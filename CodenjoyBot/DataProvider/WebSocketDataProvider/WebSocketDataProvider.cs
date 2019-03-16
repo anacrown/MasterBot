@@ -102,15 +102,9 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame() { Time = time }, message));
 
-        public UIElement Control
-        {
-            get { return _control ?? (_control = new WebSocketDataProviderControl(this)); }
-        }
+        public UIElement Control => _control ?? (_control = new WebSocketDataProviderControl(this));
 
-        public UIElement DebugControl
-        {
-            get { return _debugControl ?? (_debugControl = new WebSocketDataProviderDebugControl(this)); }
-        }
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new WebSocketDataProviderDebugControl(this));
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public void GetObjectData(SerializationInfo info, StreamingContext context)

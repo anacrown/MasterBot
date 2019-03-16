@@ -1,11 +1,17 @@
-﻿<UserControl x:Class="BomberMan_SuperAI.BomberSolverDebugControl"
+﻿<UserControl x:Class="BomberMan_SuperAI.Controls.BomberSolverDebugControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:BomberMan_SuperAI"
-             mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="700">
+             xmlns:controls="clr-namespace:BomberMan_SuperAI.Controls">
     <Grid>
-        <Canvas x:Name="Canvas" Margin="3"/>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <CheckBox x:Name="IsDriveBoardCheckBox" VerticalContentAlignment="Center" Margin="3" Content="Отрисовывать игравое поле"
+                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:BomberSolverDebugControl}}, Path=IsDraw}"/>
+        
+        <Canvas x:Name="Canvas" Grid.Row="1" Margin="3"/>
     </Grid>
 </UserControl>

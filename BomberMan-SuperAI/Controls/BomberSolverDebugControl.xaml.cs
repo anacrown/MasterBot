@@ -1,22 +1,53 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using BomberMan_SuperAI.Annotations;
 using CodenjoyBot.Board;
-using Image = System.Windows.Controls.Image;
 
-namespace BomberMan_SuperAI
+namespace BomberMan_SuperAI.Controls
 {
-    public partial class BomberSolverDebugControl
+    /// <summary>
+    /// Логика взаимодействия для BomberSolverDebugControl.xaml
+    /// </summary>
+    public partial class BomberSolverDebugControl : INotifyPropertyChanged
     {
         private int _size;
         private Image[,] _images;
+        private bool? _isDraw;
 
-        public BomberSolver BomberSolver { get; }
+        public static readonly DependencyProperty BomberSolverProperty = DependencyProperty.Register(
+            "BomberSolver", typeof(BomberSolver), typeof(BomberSolverDebugControl), new PropertyMetadata(default(BomberSolver)));
+
+        public BomberSolver BomberSolver
+        {
+            get => (BomberSolver) GetValue(BomberSolverProperty);
+            set => SetValue(BomberSolverProperty, value);
+        }
+
+        public bool? IsDraw
+        {
+            get => _isDraw;
+            set
+            {
+                if (value == _isDraw) return;
+                _isDraw = value;
+                OnPropertyChanged();
+            }
+        }
 
         public BomberSolverDebugControl(BomberSolver bomberSolver)
         {
+            IsDraw = true;
+
             InitializeComponent();
 
             BomberSolver = bomberSolver;
-            BomberSolver.BoardChanged += (sender, board) => Dispatcher.InvokeAsync(() => UpdateView(board));
+            BomberSolver.BoardChanged += (sender, board) =>
+            {
+                if (IsDraw.HasValue && IsDraw.Value)
+                    Dispatcher.InvokeAsync(() => UpdateView(board));
+            };
         }
 
         private void UpdateView(Board board)
@@ -28,6 +59,9 @@ namespace BomberMan_SuperAI
 
                 var offsetX = Properties.Resources.bomb_bomberman.Width;
                 var offsetY = Properties.Resources.bomb_bomberman.Height;
+
+                Canvas.Width = _size * offsetX;
+                Canvas.Height = _size * offsetY;
 
                 for (var i = 0; i < _size; i++)
                 {
@@ -49,5 +83,10 @@ namespace BomberMan_SuperAI
                 }
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

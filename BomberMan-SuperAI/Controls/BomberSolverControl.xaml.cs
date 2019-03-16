@@ -13,8 +13,8 @@ namespace BomberMan_SuperAI.Controls
 
         public BomberSolver BomberSolver
         {
-            get { return (BomberSolver) GetValue(BomberSolverProperty); }
-            set { SetValue(BomberSolverProperty, value); }
+            get => (BomberSolver) GetValue(BomberSolverProperty);
+            set => SetValue(BomberSolverProperty, value);
         }
 
         public BomberSolverControl()

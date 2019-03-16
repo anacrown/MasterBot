@@ -51,7 +51,6 @@
     <Compile Include="BotInstanceList.xaml.cs">
       <DependentUpon>BotInstanceList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BotinstanseModel.cs" />
     <Page Include="BotInstanceList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

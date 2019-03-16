@@ -2,18 +2,20 @@
 using System.Windows;
 using System.Windows.Controls;
 using BomberMan_SuperAI;
+using CodenjoyBot.CodenjoyBotInstance;
+using CodenjoyBot.DataProvider;
 using CodenjoyBot.DataProvider.WebSocketDataProvider;
 
-namespace Debugger.Controls
+namespace Debugger
 {
     public partial class BotInstanceList : UserControl
     {
         public static readonly DependencyProperty InstanceModelsProperty = DependencyProperty.Register(
-            "InstanceModels", typeof(ObservableCollection<CodenjoyBot.CodenjoyBotInstance>), typeof(BotInstanceList), new PropertyMetadata(default(ObservableCollection<CodenjoyBot.CodenjoyBotInstance>)));
+            "InstanceModels", typeof(ObservableCollection<CodenjoyBotInstance>), typeof(BotInstanceList), new PropertyMetadata(default(ObservableCollection<CodenjoyBotInstance>)));
 
-        public ObservableCollection<CodenjoyBot.CodenjoyBotInstance> InstanceModels
+        public ObservableCollection<CodenjoyBotInstance> InstanceModels
         {
-            get => (ObservableCollection<CodenjoyBot.CodenjoyBotInstance>)GetValue(InstanceModelsProperty);
+            get => (ObservableCollection<CodenjoyBotInstance>)GetValue(InstanceModelsProperty);
             set => SetValue(InstanceModelsProperty, value);
         }
 
@@ -25,20 +27,25 @@ namespace Debugger.Controls
         private void AddBotInstance_OnClick(object sender, RoutedEventArgs e)
         {
             if (InstanceModels == null)
-                InstanceModels = new ObservableCollection<CodenjoyBot.CodenjoyBotInstance>();
+                InstanceModels = new ObservableCollection<CodenjoyBotInstance>();
 
-            InstanceModels.Add(new CodenjoyBot.CodenjoyBotInstance(new WebSocketDataProvider(), new BomberSolver()));
+            InstanceModels.Add(new CodenjoyBotInstance());
         }
 
         private void RemoveBotInstance_OnClick(object sender, RoutedEventArgs e)
         {
-            if (ListView.SelectedItem is CodenjoyBot.CodenjoyBotInstance selectedItem)
+            if (ListView.SelectedItem is CodenjoyBotInstance selectedItem)
             {
                 if (selectedItem.IsStarted)
                     selectedItem.Stop();
 
                 InstanceModels.Remove(selectedItem);
             }
+        }
+
+        private void AddDebugBotInstance_OnClick(object sender, RoutedEventArgs e)
+        {
+            InstanceModels.Add(new CodenjoyBotInstance(new WebSocketDataProvider(new IdentityUser("ws://codenjoy.com/codenjoy-contest/ws", "j99lpu1l8skamhdzbyq9", "7040034271572867319")), new BomberSolver()));
         }
     }
 }
