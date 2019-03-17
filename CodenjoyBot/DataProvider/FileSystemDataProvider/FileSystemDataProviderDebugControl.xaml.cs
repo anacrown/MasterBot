@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider
@@ -22,6 +23,37 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public FileSystemDataProviderDebugControl(FileSystemDataProvider dataProvider) : this()
         {
             DataProvider = dataProvider;
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            if (e.Property == DataProviderProperty)
+            {
+                var oldValue = e.OldValue as FileSystemDataProvider;
+                if (oldValue != null)
+                {
+                    oldValue.TimeChanged -= DataProviderOnTimeChanged;
+                }
+
+                var newValue = e.NewValue as FileSystemDataProvider;
+                if (newValue != null)
+                {
+                    newValue.TimeChanged += DataProviderOnTimeChanged;
+                }
+            }
+        }
+
+        private void DataProviderOnTimeChanged(object sender, uint time)
+        {
+            Dispatcher.InvokeAsync(() => CurrentFrameTextBox.Text = time.ToString());
+        }
+
+        private void CurrentFrameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (uint.TryParse(CurrentFrameTextBox.Text, out uint time) && DataProvider?.Time != time)
+                DataProvider?.MoveToFrame(time);
         }
 
         private void FrameSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

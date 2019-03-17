@@ -16,14 +16,15 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Slider x:Name="FrameSlider" Margin="0 7" VerticalAlignment="Top" TickFrequency="1" IsSnapToTickEnabled="True"
+        <Slider x:Name="FrameSlider" Margin="0 7" VerticalAlignment="Center" TickFrequency="1" IsSnapToTickEnabled="True"
                 Maximum="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FileSystemDataProviderDebugControl}}, Path=DataProvider.FrameMaximumKey}"  
                 ValueChanged="FrameSlider_OnValueChanged"/>
 
-        <Label x:Name="CurrentFrameLabel" Grid.Column="1" Width="30" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="3" Content="0"/>
+        <TextBox x:Name="CurrentFrameTextBox" Grid.Column="1" MinWidth="30" VerticalAlignment="Center" VerticalContentAlignment="Center" 
+                 Margin="3" Text="0" TextChanged="CurrentFrameTextBox_OnTextChanged"/>
 
-        <Button x:Name="PlayButton" Grid.Column="2" Content="Play" Margin="3" VerticalAlignment="Top" IsEnabled="True" Click="PlayButton_OnClick"/>
-        <Button x:Name="StopButton" Grid.Column="3" Content="Stop" Margin="3" VerticalAlignment="Top" IsEnabled="False" Click="StopButton_OnClick"/>
+        <Button x:Name="PlayButton" Grid.Column="2" Content="Play" Margin="3" VerticalAlignment="Center" IsEnabled="True" Click="PlayButton_OnClick"/>
+        <Button x:Name="StopButton" Grid.Column="3" Content="Stop" Margin="3" VerticalAlignment="Center" IsEnabled="False" Click="StopButton_OnClick"/>
 
     </Grid>
 </UserControl>

@@ -33,7 +33,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         private Dictionary<uint, string> _boards;
         private static readonly Regex Pattern = new Regex(@"^\[(\d*)\]:\s(.*)$");
-        private readonly Timer _timer = new Timer(700);
+        private readonly Timer _timer = new Timer(50);
 
         private UIElement _control;
         private UIElement _debugControl;

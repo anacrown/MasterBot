@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
@@ -15,7 +16,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
     {
         private ISolver _solver;
         private IDataProvider _dataProvider;
-        private LogFilterEntry[] _logFilterEntries;
+        private readonly LogFilterEntry[] _logFilterEntries;
 
         private UIElement _control;
         private UIElement _debugControl;
@@ -96,7 +97,16 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
             DataProvider = (IDataProvider) info.GetValue("DataProvider", dataProviderType);
 
-            _logFilterEntries = (LogFilterEntry[])info.GetValue("LogFilters", typeof(LogFilterEntry[]));
+            var filterEntries = new List<LogFilterEntry>();
+            foreach (var filterEntry in (LogFilterEntry[])info.GetValue("LogFilters", typeof(LogFilterEntry[])))
+            {
+                if (filterEntries.Any(t => t.Header == filterEntry.Header))
+                    continue;
+
+                filterEntries.Add(filterEntry);
+            }
+
+            _logFilterEntries = filterEntries.ToArray();
         }
 
         private void InstanceOnLogDataReceived(object sender, LogRecord logRecord)
