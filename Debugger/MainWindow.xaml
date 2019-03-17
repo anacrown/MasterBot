@@ -1,13 +1,10 @@
 ﻿<Window x:Class="Debugger.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Debugger"
-        xmlns:codenjoyBot="clr-namespace:CodenjoyBot;assembly=CodenjoyBot"
         xmlns:codenjoyBotInstance="clr-namespace:CodenjoyBot.CodenjoyBotInstance;assembly=CodenjoyBot"
-        mc:Ignorable="d"
-        Title="CodenjoyBot Debugger" Width="1300" Height="900"
+        Title="CodenjoyBot Debugger" Width="1300" MinHeight="1000"
+        WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
         Closing="MainWindow_OnClosing">
     <Grid>

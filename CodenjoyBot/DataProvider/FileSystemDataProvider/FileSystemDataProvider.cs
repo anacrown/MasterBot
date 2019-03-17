@@ -29,10 +29,12 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         public uint Time { get; private set; }
         public int FrameCount => _boards?.Count ?? 0;
+        public int FrameMaximumKey => _boards?.Count - 1 ?? 0;
 
         private Dictionary<uint, string> _boards;
         private static readonly Regex Pattern = new Regex(@"^\[(\d*)\]:\s(.*)$");
         private readonly Timer _timer = new Timer(700);
+
         private UIElement _control;
         private UIElement _debugControl;
 

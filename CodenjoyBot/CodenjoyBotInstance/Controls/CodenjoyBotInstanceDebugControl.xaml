@@ -36,6 +36,6 @@
         <TextBox x:Name="LogTextBlock" IsReadOnly="True"  Margin="3" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                  MinWidth="300" MinHeight="200"/>
 
-        <ContentPresenter Margin="3" Grid.Row="2" Grid.Column="0" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:CodenjoyBotInstanceDebugControl}}, Path=CodenjoyBotInstance.DataProvider.DebugControl}"/>
+        <ContentPresenter Margin="3" Grid.Row="3" Grid.Column="0" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:CodenjoyBotInstanceDebugControl}}, Path=CodenjoyBotInstance.DataProvider.DebugControl}"/>
     </Grid>
 </UserControl>
