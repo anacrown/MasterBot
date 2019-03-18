@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
@@ -47,13 +48,19 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         private void DataProviderOnTimeChanged(object sender, uint time)
         {
-            Dispatcher.InvokeAsync(() => CurrentFrameTextBox.Text = time.ToString());
+            Dispatcher.InvokeAsync(() =>
+            {
+                FrameSlider.Value = time;
+                CurrentFrameTextBox.Text = time.ToString();
+            });
         }
 
         private void CurrentFrameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             if (uint.TryParse(CurrentFrameTextBox.Text, out uint time) && DataProvider?.Time != time)
-                DataProvider?.MoveToFrame(time);
+            {
+                DataProvider?.MoveToFrame((uint)Math.Min(time, DataProvider.FrameMaximumKey));
+            }
         }
 
         private void FrameSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

@@ -7,9 +7,6 @@ using CodenjoyBot.Board;
 
 namespace BomberMan_SuperAI.Controls
 {
-    /// <summary>
-    /// Логика взаимодействия для BomberSolverDebugControl.xaml
-    /// </summary>
     public partial class BomberSolverDebugControl : INotifyPropertyChanged
     {
         private int _size;

@@ -96,7 +96,7 @@
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderControl.xaml.cs">
       <DependentUpon>WebSocketDataProviderControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataLogger.cs" />
+    <Compile Include="DataProvider\FileSystemDataLogger\FileSystemDataLogger.cs" />
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProvider.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +108,7 @@
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderDebugControl.xaml.cs">
       <DependentUpon>WebSocketDataProviderDebugControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IDataLogger.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="DataProvider\IdentityUser.cs" />
     <Compile Include="Interfaces\ILogger.cs" />

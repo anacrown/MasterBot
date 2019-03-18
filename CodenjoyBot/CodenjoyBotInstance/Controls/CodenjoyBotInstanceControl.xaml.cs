@@ -25,9 +25,11 @@ namespace CodenjoyBot
         }
 
         public Type[] DataProviderTypes { get; private set; }
+        public Type[] DataLoggerTypes { get; private set; }
         public Type[] SolverTypes { get; private set; }
 
         public IDataProvider DataProvider => CodenjoyBotInstance?.DataProvider;
+        public IDataLogger DataLogger => CodenjoyBotInstance?.DataLogger;
         public ISolver Solver => CodenjoyBotInstance?.Solver;
 
         public bool IsStarted => CodenjoyBotInstance?.IsStarted ?? false;
@@ -49,6 +51,7 @@ namespace CodenjoyBot
         {
             var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
+            //------------------------------------------------------------------------------------------------------------------
             var dataProviderTypes = PluginLoader.LoadPlugins(path, typeof(IDataProvider)).ToArray();
 
             DataProviderTypes = dataProviderTypes;
@@ -59,6 +62,18 @@ namespace CodenjoyBot
 
             DataProviderComboBox.SelectionChanged += DataProviderComboBox_OnSelectionChanged;
 
+            //------------------------------------------------------------------------------------------------------------------
+            var dataLoggerTypes = PluginLoader.LoadPlugins(path, typeof(IDataLogger)).ToArray();
+
+            DataLoggerTypes = dataLoggerTypes;
+            OnPropertyChanged(nameof(DataLoggerTypes));
+
+            if (DataLogger != null)
+                DataLoggerComboBox.SelectedIndex = Array.IndexOf(DataLoggerTypes, DataLogger.GetType());
+
+            DataLoggerComboBox.SelectionChanged += DataLoggerComboBoxOnSelectionChanged;
+
+            //------------------------------------------------------------------------------------------------------------------
             var solverTypes = PluginLoader.LoadPlugins(path, typeof(ISolver)).ToArray();
 
             SolverTypes = solverTypes;
@@ -94,6 +109,16 @@ namespace CodenjoyBot
                 CodenjoyBotInstance.DataProvider = (IDataProvider)Activator.CreateInstance(newValue);
 
             OnPropertyChanged(nameof(DataProvider));
+        }
+
+        private void DataLoggerComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
+
+            if (newValue != null && CodenjoyBotInstance != null)
+                CodenjoyBotInstance.DataLogger = (IDataLogger)Activator.CreateInstance(newValue);
+
+            OnPropertyChanged(nameof(DataLogger));
         }
 
         private void SolverComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)

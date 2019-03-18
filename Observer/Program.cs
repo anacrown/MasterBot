@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows;
 using CodenjoyBot;
 using CodenjoyBot.Board;
+using CodenjoyBot.CodenjoyBotInstance;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using CodenjoyBot.Interfaces;
@@ -28,6 +30,12 @@ namespace Observer
     {
         private System.Windows.Controls.Label _label;
         private readonly StringBuilder _sb = new StringBuilder();
+
+        public EmptySolver() { }
+
+        protected EmptySolver(SerializationInfo info, StreamingContext context) : this() { }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context) { }
 
         public void Initialize() { }
 

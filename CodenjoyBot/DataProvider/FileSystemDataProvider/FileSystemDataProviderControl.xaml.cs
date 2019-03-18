@@ -41,7 +41,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         private void OpenFileButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog { InitialDirectory = System.IO.Path.GetFullPath(WebSocketDataLogger.Instance.MainLogDir) };
+            var dialog = new OpenFileDialog { InitialDirectory = System.IO.Path.GetFullPath(FileSystemDataLogger.FileSystemDataLogger.MainLogDir) };
             if (dialog.ShowDialog(Application.Current.MainWindow) == true)
             {
                 Dir = dialog.FileName;

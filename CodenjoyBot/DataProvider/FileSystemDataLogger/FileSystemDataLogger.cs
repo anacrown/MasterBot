@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Threading;
 using CodenjoyBot.Interfaces;
 
-namespace CodenjoyBot.DataProvider.WebSocketDataProvider
+namespace CodenjoyBot.DataProvider.FileSystemDataLogger
 {
-    public class WebSocketDataLogger : ILogger
+    [Serializable]
+    public class FileSystemDataLogger : IDataLogger
     {
-        private static WebSocketDataLogger _instance;
-        public static WebSocketDataLogger Instance => _instance ?? (_instance = new WebSocketDataLogger());
+        public static string MainLogDir { get; } = Path.GetFullPath("./Logs");
 
-        public string MainLogDir { get; } = Path.GetFullPath("./Logs");
-
-        private readonly Dictionary<string, ReaderWriterLockSlim> _lockerLockSlims =
+        private static readonly Dictionary<string, ReaderWriterLockSlim> _lockerLockSlims =
             new Dictionary<string, ReaderWriterLockSlim>();
 
-        private WebSocketDataLogger()
+        public FileSystemDataLogger()
         {
             if (!Directory.Exists(MainLogDir))
                 Directory.CreateDirectory(MainLogDir);
         }
+
+        public FileSystemDataLogger(SerializationInfo info, StreamingContext context) : this() { }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context) { }
 
         private string GetLogDirForBattleBotInstance(DateTime starTime, string battleBotInstanceName)
         {
