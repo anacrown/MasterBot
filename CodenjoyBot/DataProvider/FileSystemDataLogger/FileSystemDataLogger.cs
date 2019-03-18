@@ -10,7 +10,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
     [Serializable]
     public class FileSystemDataLogger : IDataLogger
     {
-        public static string MainLogDir { get; } = Path.GetFullPath("./Logs");
+        public static string MainLogDir { get; } = Path.Combine(AppDomain.CurrentDomain.GetData("DataDirectory").ToString(), "Logs");
 
         private static readonly Dictionary<string, ReaderWriterLockSlim> _lockerLockSlims =
             new Dictionary<string, ReaderWriterLockSlim>();

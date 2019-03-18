@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -45,6 +46,8 @@ namespace Debugger
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            AppData.Set();
+             
             DefaultSettingsLoad();
         }
 
@@ -58,11 +61,14 @@ namespace Debugger
 
         private void DefaultSettingsLoad()
         {
-            if (!File.Exists("Settings.bin"))
+            var settingsFile = Path.Combine(AppDomain.CurrentDomain.GetData("DataDirectory").ToString(),
+                "Settings.bin");
+
+            if (!File.Exists(settingsFile))
                 return;
 
             IFormatter formatter = new BinaryFormatter();
-            using (Stream stream = new FileStream("Settings.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (Stream stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var instances = (CodenjoyBotInstance[])formatter.Deserialize(stream);
                 CodenjoyBotInstances = new ObservableCollection<CodenjoyBotInstance>(instances);
@@ -73,7 +79,7 @@ namespace Debugger
         private void DefaultSettingsSave()
         {
             IFormatter formatter = new BinaryFormatter();
-            using (Stream stream = new FileStream("Settings.bin", FileMode.Create, FileAccess.Write, FileShare.None))
+            using (Stream stream = new FileStream(Path.Combine(AppDomain.CurrentDomain.GetData("DataDirectory").ToString(), "Settings.bin"), FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 formatter.Serialize(stream, CodenjoyBotInstances.ToArray());
                 stream.Close();
