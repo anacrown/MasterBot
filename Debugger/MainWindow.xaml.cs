@@ -67,12 +67,23 @@ namespace Debugger
             if (!File.Exists(settingsFile))
                 return;
 
-            IFormatter formatter = new BinaryFormatter();
-            using (Stream stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            try
             {
-                var instances = (CodenjoyBotInstance[])formatter.Deserialize(stream);
-                CodenjoyBotInstances = new ObservableCollection<CodenjoyBotInstance>(instances);
-                stream.Close();
+                IFormatter formatter = new BinaryFormatter();
+                using (Stream stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    var instances = (CodenjoyBotInstance[])formatter.Deserialize(stream);
+                    CodenjoyBotInstances = new ObservableCollection<CodenjoyBotInstance>(instances);
+                    stream.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                if (MessageBox.Show(this, $"{e}\r\n\r\nУдалить файл настроек?", "Exception", MessageBoxButton.YesNo, MessageBoxImage.Error,
+                        MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    File.Delete(settingsFile);
+                }
             }
         }
 

@@ -95,6 +95,13 @@
     </Compile>
     <Compile Include="CodenjoyBotInstance\Controls\LogFilterEntry.cs" />
     <Compile Include="DataProvider\DataBaseDataLogger\DataBaseDataLogger.cs" />
+    <Compile Include="DataProvider\DataBaseDataProvider\DataBaseDataProvider.cs" />
+    <Compile Include="DataProvider\DataBaseDataProvider\DataBaseDataProviderControl.xaml.cs">
+      <DependentUpon>DataBaseDataProviderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataProvider\DataBaseDataProvider\DataBaseDataProviderDebugControl.xaml.cs">
+      <DependentUpon>DataBaseDataProviderDebugControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataProvider\DataBaseModel\DataFrameModel.cs" />
     <Compile Include="DataProvider\DataBaseModel\ExceptionModel.cs" />
     <Compile Include="DataProvider\DataBaseModel\LaunchModel.cs" />
@@ -157,6 +164,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CodenjoyBotInstance\Controls\CodenjoyBotInstanceDebugControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataProvider\DataBaseDataProvider\DataBaseDataProviderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataProvider\DataBaseDataProvider\DataBaseDataProviderDebugControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

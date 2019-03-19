@@ -119,10 +119,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 
     public class DMPContext : DbContext
     {
-        public DMPContext() : base("DefaultConnection")
-        {
-            
-        }
+        public DMPContext() : base("DefaultConnection") { }
 
         public DbSet<LaunchModel> LaunchModels { get; set; }
         public DbSet<DataFrameModel> DataFrameModels { get; set; }

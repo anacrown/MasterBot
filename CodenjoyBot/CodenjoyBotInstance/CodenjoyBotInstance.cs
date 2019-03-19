@@ -114,19 +114,30 @@ namespace CodenjoyBot.CodenjoyBotInstance
         protected CodenjoyBotInstance(SerializationInfo info, StreamingContext context): this()
         {
             var solverTypeName = info.GetString("SolverType");
-            var solverType = PluginLoader.LoadType(solverTypeName);
+            if (!string.IsNullOrEmpty(solverTypeName))
+            {
+                var solverType = PluginLoader.LoadType(solverTypeName);
 
-            Solver = (ISolver) info.GetValue("Solver", solverType);
+                Solver = (ISolver) info.GetValue("Solver", solverType);
+            }
 
             var dataLoggerTypeName = info.GetString("DataLoggerType");
-            var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
+            if (!string.IsNullOrEmpty(dataLoggerTypeName))
+            {
+                var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
 
-            DataLogger = (IDataLogger)info.GetValue("DataLogger", dataLoggerType);
+                DataLogger = (IDataLogger) info.GetValue("DataLogger", dataLoggerType);
+
+            }
 
             var dataProviderTypeName = info.GetString("DataProviderType");
-            var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
+            if (!string.IsNullOrEmpty(dataProviderTypeName))
+            {
+                var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
 
-            DataProvider = (IDataProvider) info.GetValue("DataProvider", dataProviderType);
+                DataProvider = (IDataProvider) info.GetValue("DataProvider", dataProviderType);
+
+            }
 
             var filterEntries = new List<LogFilterEntry>();
             foreach (var filterEntry in (LogFilterEntry[])info.GetValue("LogFilters", typeof(LogFilterEntry[])))
@@ -144,7 +155,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Solver", Solver);
-            info.AddValue("SolverType", Solver.GetType().FullName);
+            info.AddValue("SolverType", Solver?.GetType().FullName);
 
             info.AddValue("DataLogger", DataLogger);
             info.AddValue("DataLoggerType", DataLogger?.GetType().FullName);
