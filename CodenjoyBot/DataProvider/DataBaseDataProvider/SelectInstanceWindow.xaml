@@ -1,0 +1,24 @@
+﻿<Window x:Class="CodenjoyBot.DataProvider.DataBaseDataProvider.SelectInstanceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dataBaseModel="clr-namespace:CodenjoyBot.DataProvider.DataBaseModel"
+        mc:Ignorable="d"
+        Title="SelectInstanceWindow" Height="300" Width="300"
+        Loaded="SelectInstanceWindow_OnLoaded"
+        Closing="SelectInstanceWindow_OnClosing">
+    <Grid>
+        <TreeView x:Name="TreeView">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type dataBaseModel:LaunchModel}" ItemsSource="{Binding Frames}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding BotInstanceName}"/>
+                        <TextBlock Text="{Binding LaunchTime}"/>
+                        <TextBlock Text="{Binding Frames.Count}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </Grid>
+</Window>
