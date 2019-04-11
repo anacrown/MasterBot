@@ -1,11 +1,11 @@
 namespace CodenjoyBot.Board
 {
-    public class Frame
+    public class Frame<T> where T: class
     {
-        public CodenjoyBot.Board.Board Board { get; }
+        public T Board { get; }
         public uint Time { get; }
 
-        public Frame(CodenjoyBot.Board.Board board, uint time)
+        public Frame(T board, uint time)
         {
             Board = board;
             Time = time;

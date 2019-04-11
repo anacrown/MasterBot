@@ -46,7 +46,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BattleSolver\ABetterMap.cs" />
+    <Compile Include="BattleSolver\BattleBoard.cs" />
     <Compile Include="BattleSolver\BattleSolver.cs" />
+    <Compile Include="BattleSolver\Bullet.cs" />
+    <Compile Include="BattleSolver\BattleCell.cs" />
+    <Compile Include="BattleSolver\Cross.cs" />
+    <Compile Include="BattleSolver\CrossCell.cs" />
+    <Compile Include="BattleSolver\DirectionExtention.cs" />
+    <Compile Include="BattleSolver\Enemy.cs" />
+    <Compile Include="BattleSolver\Map.cs" />
     <Compile Include="BattleSolver\SolverCommand.cs" />
     <Compile Include="Controls\BattleSolverControl.xaml.cs">
       <DependentUpon>BattleSolverControl.xaml</DependentUpon>

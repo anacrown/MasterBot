@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace CodenjoyBot.Board
 {
-    public class FrameBuffer
+    public class FrameBuffer<T> where T: class
     {
         public int MaxSize { get; }
 
-        private readonly SortedDictionary<uint, Frame> _frames = new SortedDictionary<uint, Frame>();
+        private readonly SortedDictionary<uint, Frame<T>> _frames = new SortedDictionary<uint, Frame<T>>();
 
         public FrameBuffer(int maxSize)
         {
@@ -16,7 +16,7 @@ namespace CodenjoyBot.Board
 
         public void Clear() => _frames?.Clear();
 
-        public void AddFrame(Frame frame)
+        public void AddFrame(Frame<T> frame)
         {
             if (!_frames.ContainsKey(frame.Time))
                 _frames.Add(frame.Time, frame);
@@ -25,6 +25,6 @@ namespace CodenjoyBot.Board
                 _frames.Remove(_frames.Select(t => t.Key).Min());
         }
 
-        public Frame this[uint time] => _frames.ContainsKey(time) ? _frames[time] : null;
+        public Frame<T> this[uint time] => _frames.ContainsKey(time) ? _frames[time] : null;
     }
 }
