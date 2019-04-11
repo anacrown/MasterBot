@@ -1,0 +1,12 @@
+[0]: LEFT
+[1]: LEFT
+[2]: LEFT,ACT
+[3]: LEFT
+[4]: LEFT,ACT
+[5]: LEFT,ACT
+[6]: LEFT,ACT
+[7]: LEFT,ACT
+[8]: LEFT,ACT
+[9]: LEFT
+[10]: 
+[11]: LEFT,ACT

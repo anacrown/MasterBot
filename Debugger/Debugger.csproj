@@ -56,13 +56,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppData.cs" />
-    <Compile Include="BotInstanceList.xaml.cs">
-      <DependentUpon>BotInstanceList.xaml</DependentUpon>
-    </Compile>
-    <Page Include="BotInstanceList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -37,8 +37,8 @@ namespace BattleBot_SuperAI.BattleSolver
             Player = _cells.FirstOrDefault(t => t.MetaType == BattleCell.CellMetaType.TANK);
             if (Player == null)
             {
-//                WebSocketDataLogger.Instance.LogDead(instanceName, startTime, time);
-//                Player = frameBuffer[time - 1]?.Board.Player;
+                //WebSocketDataLogger.Instance.LogDead(instanceName, startTime, time);
+                Player = _frameBuffer[board.Frame.Time - 1]?.Board.Player;
             }
 
             var weights = GetWeights();

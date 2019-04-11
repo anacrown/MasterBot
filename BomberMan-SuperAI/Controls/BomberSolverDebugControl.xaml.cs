@@ -68,7 +68,8 @@ namespace BomberMan_SuperAI.Controls
                         _images[i, j] = new Image()
                         {
                             Width = offsetX,
-                            Height = offsetY
+                            Height = offsetY,
+                            SnapsToDevicePixels = true
                         };
 
                         Canvas.Children.Add(_images[i, j]);

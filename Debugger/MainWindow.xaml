@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Debugger"
+        xmlns:controls="clr-namespace:CodenjoyBot.CodenjoyBotInstance.Controls;assembly=CodenjoyBot"
         xmlns:codenjoyBotInstance="clr-namespace:CodenjoyBot.CodenjoyBotInstance;assembly=CodenjoyBot"
         Title="CodenjoyBot Debugger" Width="1300" MinHeight="1000"
         WindowStartupLocation="CenterScreen"
@@ -11,7 +12,7 @@
         
         <TabControl>
             <TabItem Header="CodenjoyBot Instances">
-                <local:BotInstanceList x:Name="BotInstanceList" Margin="10" 
+                <controls:BotInstanceList x:Name="BotInstanceList" Margin="10" 
                                           InstanceModels="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}"/>
             </TabItem>
             <TabItem Header="Monitor">

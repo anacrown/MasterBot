@@ -12,7 +12,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <CheckBox x:Name="IsDriveBoardCheckBox" VerticalContentAlignment="Center" Margin="3" Content="Отрисовывать игравое поле"
+        <CheckBox x:Name="IsDriveBoardCheckBox" VerticalContentAlignment="Center" Margin="3" Content="Draw game board"
                   IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BattleSolverDebugControl}}, Path=IsDraw}"/>
 
         <Canvas x:Name="Canvas" Grid.Row="1" Margin="3"/>

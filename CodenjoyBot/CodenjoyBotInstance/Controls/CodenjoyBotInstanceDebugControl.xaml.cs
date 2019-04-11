@@ -54,27 +54,21 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
 
         private void CodenjoyBotInstanceOnLogDataReceived(object sender, LogRecord logRecord)
         {
-            var logSourceFilter = LogFilters.FirstOrDefault(t => t.Header == sender?.GetType().Name);
-
-            if (logSourceFilter == null)
+            Dispatcher.InvokeAsync(() =>
             {
-                Dispatcher.InvokeAsync(() =>
+                var logSourceFilter = LogFilters.FirstOrDefault(t => t.Header == sender?.GetType().Name);
+
+                if (logSourceFilter == null)
                 {
-                    LogFilters.Add(logSourceFilter = new LogFilterEntry() { Header = sender.GetType().Name, IsEnabled = true });
+                    LogFilters.Add(logSourceFilter = new LogFilterEntry()
+                    { Header = sender.GetType().Name, IsEnabled = true });
+                }
 
-                    LogTextBlock.AppendText($"[{sender.GetType().Name}][{logRecord.DataFrame?.Time}] {logRecord.Message}{Environment.NewLine}");
-                    LogTextBlock.ScrollToEnd();
-                });
-            }
-            else
-            {
-                if (logSourceFilter.IsEnabled.HasValue && logSourceFilter.IsEnabled.Value)
-                    Dispatcher.InvokeAsync(() =>
-                    {
-                        LogTextBlock.AppendText($"[{sender.GetType().Name}][{logRecord.DataFrame?.Time}] {logRecord.Message}{Environment.NewLine}");
-                        LogTextBlock.ScrollToEnd();
-                    });
-            }
+                LogTextBlock.AppendText(
+                        $"[{sender.GetType().Name}][{logRecord.DataFrame?.Time}] {logRecord.Message}{Environment.NewLine}");
+                LogTextBlock.ScrollToEnd();
+
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

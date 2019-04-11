@@ -87,6 +87,9 @@
     <Compile Include="Board\Board.cs" />
     <Compile Include="Board\Cell.cs" />
     <Compile Include="CodenjoyBotInstance\CodenjoyBotInstance.cs" />
+    <Compile Include="CodenjoyBotInstance\Controls\BotInstanceList.xaml.cs">
+      <DependentUpon>BotInstanceList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CodenjoyBotInstance\Controls\CodenjoyBotInstanceControl.xaml.cs">
       <DependentUpon>CodenjoyBotInstanceControl.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CodenjoyBotInstance\Controls\BotInstanceList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CodenjoyBotInstance\Controls\CodenjoyBotInstanceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
