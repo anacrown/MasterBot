@@ -1,43 +1,55 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using BomberMan_SuperAI.Annotations;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using CodenjoyBot.Board;
 
-namespace BomberMan_SuperAI.Controls
+namespace BattleBot_SuperAI.Controls
 {
-    public partial class BomberSolverDebugControl
+    /// <summary>
+    /// Логика взаимодействия для BattleSolverDebugControl.xaml
+    /// </summary>
+    public partial class BattleSolverDebugControl : UserControl
     {
         private int _size;
         private Image[,] _images;
 
-        public static readonly DependencyProperty BomberSolverProperty = DependencyProperty.Register(
-            "BomberSolver", typeof(BomberSolver), typeof(BomberSolverDebugControl), new PropertyMetadata(default(BomberSolver)));
+        public static readonly DependencyProperty BattleSolverProperty = DependencyProperty.Register(
+            "BattleSolver", typeof(BattleSolver), typeof(BattleSolverDebugControl), new PropertyMetadata(default(BattleSolver)));
 
-        public BomberSolver BomberSolver
+        public BattleSolver BattleSolver
         {
-            get => (BomberSolver) GetValue(BomberSolverProperty);
-            set => SetValue(BomberSolverProperty, value);
+            get => (BattleSolver)GetValue(BattleSolverProperty);
+            set => SetValue(BattleSolverProperty, value);
         }
 
         public static readonly DependencyProperty IsDrawProperty = DependencyProperty.Register(
-            "IsDraw", typeof(bool?), typeof(BomberSolverDebugControl), new PropertyMetadata(default(bool?)));
+            "IsDraw", typeof(bool?), typeof(BattleSolverDebugControl), new PropertyMetadata(default(bool?)));
 
         public bool? IsDraw
         {
-            get => (bool?) GetValue(IsDrawProperty);
+            get => (bool?)GetValue(IsDrawProperty);
             set => SetValue(IsDrawProperty, value);
         }
 
-        public BomberSolverDebugControl(BomberSolver bomberSolver)
+        public BattleSolverDebugControl(BattleSolver battleSolver)
         {
             IsDraw = true;
 
             InitializeComponent();
 
-            BomberSolver = bomberSolver;
-            BomberSolver.BoardChanged += (sender, board) =>
+            BattleSolver = battleSolver;
+            BattleSolver.BoardChanged += (sender, board) =>
             {
                 if (IsDraw.HasValue && IsDraw.Value)
                     Dispatcher.InvokeAsync(() => UpdateView(board));
@@ -51,8 +63,8 @@ namespace BomberMan_SuperAI.Controls
                 _size = board.Size;
                 _images = new Image[_size, _size];
 
-                var offsetX = Properties.Resources.bomb_bomberman.Width;
-                var offsetY = Properties.Resources.bomb_bomberman.Height;
+                var offsetX = Properties.Resources.none.Width;
+                var offsetY = Properties.Resources.none.Height;
 
                 Canvas.Width = _size * offsetX;
                 Canvas.Height = _size * offsetY;
