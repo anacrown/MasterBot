@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using BomberMan_SuperAI.BattleSolver;
 
 namespace BomberMan_SuperAI
 {

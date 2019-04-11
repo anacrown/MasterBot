@@ -16,5 +16,8 @@
                   IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BattleSolverDebugControl}}, Path=IsDraw}"/>
 
         <Canvas x:Name="Canvas" Grid.Row="1" Margin="3"/>
+
+        <!-- <Image Source="../Resources/tank_down.png" Width="23" Height="23" Grid.Row="1"></Image> -->
+
     </Grid>
 </UserControl>

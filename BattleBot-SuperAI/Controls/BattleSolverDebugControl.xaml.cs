@@ -12,25 +12,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BattleBot_SuperAI.BattleSolver;
 using CodenjoyBot.Board;
 
 namespace BattleBot_SuperAI.Controls
 {
-    /// <summary>
-    /// Логика взаимодействия для BattleSolverDebugControl.xaml
-    /// </summary>
     public partial class BattleSolverDebugControl : UserControl
     {
         private int _size;
         private Image[,] _images;
 
         public static readonly DependencyProperty BattleSolverProperty = DependencyProperty.Register(
-            "BattleSolver", typeof(BattleSolver), typeof(BattleSolverDebugControl), new PropertyMetadata(default(BattleSolver)));
+            "BattleSolver", typeof(BattleSolver.BattleSolver), typeof(BattleSolverDebugControl), new PropertyMetadata(default(BattleSolver.BattleSolver)));
 
-        public BattleSolver BattleSolver
+        public BattleSolver.BattleSolver BattleSolver
         {
-            get => (BattleSolver)GetValue(BattleSolverProperty);
-            set => SetValue(BattleSolverProperty, value);
+            get { return (BattleSolver.BattleSolver)GetValue(BattleSolverProperty); }
+            set { SetValue(BattleSolverProperty, value); }
         }
 
         public static readonly DependencyProperty IsDrawProperty = DependencyProperty.Register(
@@ -42,17 +40,20 @@ namespace BattleBot_SuperAI.Controls
             set => SetValue(IsDrawProperty, value);
         }
 
-        public BattleSolverDebugControl(BattleSolver battleSolver)
+        public BattleSolverDebugControl(BattleSolver.BattleSolver battleSolver)
         {
-            IsDraw = true;
-
             InitializeComponent();
+
+            IsDraw = true;
 
             BattleSolver = battleSolver;
             BattleSolver.BoardChanged += (sender, board) =>
             {
-                if (IsDraw.HasValue && IsDraw.Value)
-                    Dispatcher.InvokeAsync(() => UpdateView(board));
+                Dispatcher.InvokeAsync(() =>
+                {
+                    if (IsDraw.Value)
+                        UpdateView(board);
+                });
             };
         }
 
@@ -73,7 +74,12 @@ namespace BattleBot_SuperAI.Controls
                 {
                     for (var j = 0; j < _size; j++)
                     {
-                        _images[i, j] = new Image();
+                        _images[i, j] = new Image()
+                        {
+                            Width = offsetX,
+                            Height = offsetY
+                        };
+
                         Canvas.Children.Add(_images[i, j]);
                         Canvas.SetLeft(_images[i, j], i * offsetY);
                         Canvas.SetTop(_images[i, j], j * offsetX);

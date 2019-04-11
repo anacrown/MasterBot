@@ -4,12 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using BattleBot_SuperAI.BattleSolver;
 
 namespace BattleBot_SuperAI
 {
     static class ResourceManager
     {
-        private static Dictionary<Element, BitmapImage> _bitmapImages = new Dictionary<Element, BitmapImage>();
+        private static readonly Dictionary<Element, BitmapImage> _bitmapImages = new Dictionary<Element, BitmapImage>();
 
         public static ImageSource GetSource(Element element)
         {

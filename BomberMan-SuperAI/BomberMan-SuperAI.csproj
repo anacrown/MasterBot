@@ -39,7 +39,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BomberSolver.cs" />
+    <Compile Include="BattleSolver\BomberSolver.cs" />
     <Compile Include="Controls\BomberSolverControl.xaml.cs">
       <DependentUpon>BomberSolverControl.xaml</DependentUpon>
     </Compile>

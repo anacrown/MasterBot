@@ -7,7 +7,6 @@ using System.Windows;
 using CodenjoyBot.CodenjoyBotInstance.Controls;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.DataProvider.FileSystemDataLogger;
-using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.CodenjoyBotInstance

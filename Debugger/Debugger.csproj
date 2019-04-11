@@ -102,6 +102,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BattleBot-SuperAI\BattleBot-SuperAI.csproj">
+      <Project>{e42ba438-e1b2-4f7f-b2db-26c4d718b82e}</Project>
+      <Name>BattleBot-SuperAI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BomberMan-SuperAI\BomberMan-SuperAI.csproj">
       <Project>{112643C0-0B46-45A7-B9DB-D086C968A193}</Project>
       <Name>BomberMan-SuperAI</Name>

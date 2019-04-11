@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using BomberMan_SuperAI.Annotations;
+using BomberMan_SuperAI.BattleSolver;
 using CodenjoyBot.Board;
 
 namespace BomberMan_SuperAI.Controls
@@ -17,7 +18,7 @@ namespace BomberMan_SuperAI.Controls
 
         public BomberSolver BomberSolver
         {
-            get => (BomberSolver) GetValue(BomberSolverProperty);
+            get => (BomberSolver)GetValue(BomberSolverProperty);
             set => SetValue(BomberSolverProperty, value);
         }
 
@@ -26,21 +27,24 @@ namespace BomberMan_SuperAI.Controls
 
         public bool? IsDraw
         {
-            get => (bool?) GetValue(IsDrawProperty);
+            get => (bool?)GetValue(IsDrawProperty);
             set => SetValue(IsDrawProperty, value);
         }
 
         public BomberSolverDebugControl(BomberSolver bomberSolver)
         {
-            IsDraw = true;
-
             InitializeComponent();
+
+            IsDraw = true;
 
             BomberSolver = bomberSolver;
             BomberSolver.BoardChanged += (sender, board) =>
             {
-                if (IsDraw.HasValue && IsDraw.Value)
-                    Dispatcher.InvokeAsync(() => UpdateView(board));
+                Dispatcher.InvokeAsync(() =>
+                {
+                    if (IsDraw.Value)
+                        UpdateView(board);
+                });
             };
         }
 
@@ -51,8 +55,8 @@ namespace BomberMan_SuperAI.Controls
                 _size = board.Size;
                 _images = new Image[_size, _size];
 
-                var offsetX = Properties.Resources.bomb_bomberman.Width;
-                var offsetY = Properties.Resources.bomb_bomberman.Height;
+                var offsetX = Properties.Resources.none.Width;
+                var offsetY = Properties.Resources.none.Height;
 
                 Canvas.Width = _size * offsetX;
                 Canvas.Height = _size * offsetY;
@@ -61,7 +65,12 @@ namespace BomberMan_SuperAI.Controls
                 {
                     for (var j = 0; j < _size; j++)
                     {
-                        _images[i, j] = new Image();
+                        _images[i, j] = new Image()
+                        {
+                            Width = offsetX,
+                            Height = offsetY
+                        };
+
                         Canvas.Children.Add(_images[i, j]);
                         Canvas.SetLeft(_images[i, j], i * offsetY);
                         Canvas.SetTop(_images[i, j], j * offsetX);

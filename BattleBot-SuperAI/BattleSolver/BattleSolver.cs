@@ -1,39 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Windows;
+using BattleBot_SuperAI.Controls;
+using CodenjoyBot.Annotations;
 using CodenjoyBot.Board;
 using CodenjoyBot.Interfaces;
 
-namespace BattleBot_SuperAI
+namespace BattleBot_SuperAI.BattleSolver
 {
-    public class BattleSolver : ISolver
+    [Serializable]
+    public class BattleSolver : ISolver, INotifyPropertyChanged
     {
-        public event EventHandler<LogRecord> LogDataReceived;
-        public UIElement Control { get; }
-        public UIElement DebugControl { get; }
+        private int _size;
+        private Board _board;
+        private UIElement _control;
+        private UIElement _debugControl;
+        
+        public UIElement Control => _control ?? (_control = new BattleSolverControl(this));
 
-        protected BattleSolver(SerializationInfo info, StreamingContext context)
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new BattleSolverDebugControl(this));
+
+        public BattleSolver() { }
+
+        protected BattleSolver(SerializationInfo info, StreamingContext context) : this()
         {
-            throw new NotImplementedException();
+            
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Initialize()
         {
-            throw new NotImplementedException();
+            
+        }
+
+        public int Size
+        {
+            get => _size;
+            set
+            {
+                if (value == _size) return;
+                _size = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Board Board
+        {
+            get => _board;
+            private set
+            {
+                if (Equals(value, _board)) return;
+                _board = value;
+                OnBoardChanged();
+                OnPropertyChanged();
+            }
         }
 
         public string Answer(Board board)
         {
-            throw new NotImplementedException();
+            Board = board;
+
+            return "";
         }
 
+        public event EventHandler<LogRecord> LogDataReceived;
+        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+
         public event EventHandler<Board> BoardChanged;
-        protected virtual void OnBoardChanged(Board e) => BoardChanged?.Invoke(this, e);
+        protected virtual void OnBoardChanged() => BoardChanged?.Invoke(this, Board);
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     public enum Element

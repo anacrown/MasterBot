@@ -10,7 +10,7 @@ using CodenjoyBot.Board;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 
-namespace BomberMan_SuperAI
+namespace BomberMan_SuperAI.BattleSolver
 {
     [Serializable]
     public class BomberSolver : ISolver, INotifyPropertyChanged

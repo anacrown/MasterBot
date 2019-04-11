@@ -1,0 +1,9 @@
+[0]: DOWN
+[1]: ACT,LEFT
+[2]: DOWN
+[3]: ACT,LEFT
+[4]: UP
+[5]: UP
+[6]: ACT,RIGHT
+[7]: DOWN
+[8]: ACT,RIGHT
