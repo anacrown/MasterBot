@@ -155,5 +155,10 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         //Никогда не останавливается? ...
         protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

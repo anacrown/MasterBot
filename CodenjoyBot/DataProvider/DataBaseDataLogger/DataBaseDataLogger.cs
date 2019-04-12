@@ -120,7 +120,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
         }
     }
 
-    public sealed class CodenjoyDbContext : DbContext
+    public class CodenjoyDbContext : DbContext
     {
         public CodenjoyDbContext()
         {
