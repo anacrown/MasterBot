@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="CodenjoyBot.DataProvider.FileSystemDataLogger.FIleSystemLaunchObserver"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CodenjoyBot.DataProvider.FileSystemDataLogger"
+             xmlns:resources="clr-namespace:CodenjoyBot.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TreeView ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:FIleSystemLaunchObserver}}, Path=LaunchNodes}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type local:FileSystemLaunchNode}" ItemsSource="{Binding Launches}">
+                    <TextBlock Text="{Binding Name}"/>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type local:FileSystemLaunchInfo}">
+                    <TextBlock>
+                        <Run Text="{Binding StartTime, StringFormat=yyyy.MM.dd hh.mm.ss, Mode=OneWay}"/>
+                        <!-- <Run Text="{Binding LaunchDir, Mode=OneWay}"/> -->
+                    </TextBlock>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </Grid>
+</UserControl>

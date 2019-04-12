@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using CodenjoyBot.Interfaces;
+using CodenjoyBot.Properties;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataLogger
 {
@@ -12,8 +15,18 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
     {
         public static string MainLogDir { get; } = Path.Combine(AppDomain.CurrentDomain.GetData("DataDirectory").ToString(), "Logs");
 
-        private static readonly Dictionary<string, ReaderWriterLockSlim> _lockerLockSlims =
-            new Dictionary<string, ReaderWriterLockSlim>();
+        private static readonly Dictionary<string, ReaderWriterLockSlim> LockerLockSlims = new Dictionary<string, ReaderWriterLockSlim>();
+
+        public static IEnumerable<FileSystemLaunchInfo> GetLaunches()
+        {
+            foreach (var nameDir in Directory.GetDirectories(MainLogDir))
+            {
+                foreach (var launchDir in Directory.GetDirectories(nameDir))
+                {
+                    yield return new FileSystemLaunchInfo(nameDir, launchDir);
+                }
+            }
+        }
 
         public FileSystemDataLogger()
         {
@@ -32,7 +45,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
             if (!Directory.Exists(botInstanceDir))
                 Directory.CreateDirectory(botInstanceDir);
 
-            var dir = Path.Combine(botInstanceDir, starTime.ToString("yyyy.MM.dd hh.mm.ss"));
+            var dir = Path.Combine(botInstanceDir, starTime.ToString(Resources.DateFormat));
 
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
@@ -40,18 +53,18 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
             return dir;
         }
 
-        public void Log(string battleBotInstanceName, DateTime startTime, uint time, Exception e)
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, Exception e)
         {
-            var dir = GetLogDirForBattleBotInstance(startTime, battleBotInstanceName);
+            var dir = GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name);
             var exceptionFile = Path.Combine(dir, "Exception.txt");
 
-            if (!_lockerLockSlims.ContainsKey(battleBotInstanceName))
-                _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
 
-            while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld) ;
-                OnLogDataReceived(time, battleBotInstanceName, "write is hold");
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld) ;
+            OnLogDataReceived(time, botInstance.Name, "write is hold");
 
-            _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
 
             try
             {
@@ -63,27 +76,27 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(time, battleBotInstanceName, ex.ToString());
+                OnLogDataReceived(time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                _lockerLockSlims[battleBotInstanceName].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
-        public void Log(string battleBotInstanceName, DateTime startTime, uint time, string board, string response)
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, string board, string response)
         {
-            var dir = GetLogDirForBattleBotInstance(startTime, battleBotInstanceName);
+            var dir = GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name);
             var boardFile = Path.Combine(dir, "Board.txt");
             var responseFile = Path.Combine(dir, "Response.txt");
 
-            if (!_lockerLockSlims.ContainsKey(battleBotInstanceName))
-                _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
 
-            while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld) ;
-                OnLogDataReceived(time, battleBotInstanceName, "write is hold");
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld) ;
+            OnLogDataReceived(time, botInstance.Name, "write is hold");
 
-            _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
 
             try
             {
@@ -99,30 +112,30 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
                     responseWriter.Close();
                 }
 
-                OnLogDataReceived(time, battleBotInstanceName, "damp saved");
+                OnLogDataReceived(time, botInstance.Name, "damp saved");
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(time, battleBotInstanceName, ex.ToString());
+                OnLogDataReceived(time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                _lockerLockSlims[battleBotInstanceName].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
-        public void LogDead(string battleBotInstanceName, DateTime startTime, uint time)
+        public void LogDead(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time)
         {
-            var dir = GetLogDirForBattleBotInstance(startTime, battleBotInstanceName);
+            var dir = GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name);
             var deadFile = Path.Combine(dir, "Dead.txt");
 
-            if (!_lockerLockSlims.ContainsKey(battleBotInstanceName))
-                _lockerLockSlims.Add(battleBotInstanceName, new ReaderWriterLockSlim());
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
 
-            while (_lockerLockSlims[battleBotInstanceName].IsWriteLockHeld)
-                OnLogDataReceived(time, battleBotInstanceName, "write is hold");
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld)
+                OnLogDataReceived(time, botInstance.Name, "write is hold");
 
-                _lockerLockSlims[battleBotInstanceName].EnterWriteLock();
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
 
             try
             {
@@ -134,16 +147,36 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(time, battleBotInstanceName, ex.ToString());
+                OnLogDataReceived(time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                _lockerLockSlims[battleBotInstanceName].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
         public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(uint time, string battleBotInstanceName, string message) => 
-            LogDataReceived?.Invoke(this, new LogRecord(new DataFrame(){Time = time}, $"{battleBotInstanceName}: {message}"));
+        protected virtual void OnLogDataReceived(uint time, string battleBotInstanceName, string message) =>
+            LogDataReceived?.Invoke(this, new LogRecord(new DataFrame() { Time = time }, $"{battleBotInstanceName}: {message}"));
+    }
+
+    public class FileSystemLaunchInfo : ILaunchInfo
+    {
+        public DateTime StartTime { get; }
+        public string BotInstanceName { get; }
+        public string BotInstanceTitle { get; }
+
+        public string LaunchDir { get; }
+
+        public FileSystemLaunchInfo() { }
+
+        public FileSystemLaunchInfo(string nameDir, string launchDir) : this()
+        {
+            LaunchDir = launchDir;
+            BotInstanceName = Path.GetFileName(nameDir);
+            StartTime = DateTime.ParseExact(Path.GetFileName(launchDir), Resources.DateFormat, CultureInfo.CurrentCulture);
+
+            BotInstanceTitle = "";
+        }
     }
 }

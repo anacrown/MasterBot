@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Serialization;
 using CodenjoyBot.DataProvider.DataBaseModel;
 using CodenjoyBot.Interfaces;
+using DbContextOptionsBuilder = Microsoft.EntityFrameworkCore.DbContextOptionsBuilder;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 {
@@ -20,19 +22,20 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 
         }
 
-        public void Log(string battleBotInstanceName, DateTime startTime, uint time, Exception e)
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, Exception e)
         {
-            using (var db = new DMPContext())
+            using (var db = new CodenjoyDbContext())
             {
                 var launch = db.LaunchModels.FirstOrDefault(
-                    t => t.BotInstanceName == battleBotInstanceName && t.LaunchTime == startTime);
+                    t => t.BotInstanceName == botInstance.Name && t.LaunchTime == botInstance.StartTime);
 
                 if (launch == null)
                 {
                     launch = new LaunchModel()
                     {
-                        LaunchTime = startTime,
-                        BotInstanceName = battleBotInstanceName
+                        LaunchTime = botInstance.StartTime,
+                        BotInstanceName = botInstance.Name,
+                        BotInstanceTitle = botInstance.Title
                     };
 
                     db.LaunchModels.Add(launch);
@@ -54,19 +57,20 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
             }
         }
 
-        public void Log(string battleBotInstanceName, DateTime startTime, uint time, string board, string response)
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, string board, string response)
         {
-            using (var db = new DMPContext())
+            using (var db = new CodenjoyDbContext())
             {
                 var launch = db.LaunchModels.FirstOrDefault(
-                    t => t.BotInstanceName == battleBotInstanceName && t.LaunchTime == startTime);
+                    t => t.BotInstanceName == botInstance.Name && t.LaunchTime == botInstance.StartTime);
 
                 if (launch == null)
                 {
                     launch = new LaunchModel()
                     {
-                        LaunchTime = startTime,
-                        BotInstanceName = battleBotInstanceName
+                        LaunchTime = botInstance.StartTime,
+                        BotInstanceName = botInstance.Name,
+                        BotInstanceTitle = botInstance.Title
                     };
 
                     db.LaunchModels.Add(launch);
@@ -89,19 +93,20 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
             }
         }
 
-        public void LogDead(string battleBotInstanceName, DateTime startTime, uint time)
+        public void LogDead(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time)
         {
-            using (var db = new DMPContext())
+            using (var db = new CodenjoyDbContext())
             {
                 var launch = db.LaunchModels.FirstOrDefault(
-                    t => t.BotInstanceName == battleBotInstanceName && t.LaunchTime == startTime);
+                    t => t.BotInstanceName == botInstance.Name && t.LaunchTime == botInstance.StartTime);
 
                 if (launch == null)
                 {
                     launch = new LaunchModel()
                     {
-                        LaunchTime = startTime,
-                        BotInstanceName = battleBotInstanceName
+                        LaunchTime = botInstance.StartTime,
+                        BotInstanceName = botInstance.Name,
+                        BotInstanceTitle = botInstance.Title
                     };
 
                     db.LaunchModels.Add(launch);
@@ -117,12 +122,17 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
         }
     }
 
-    public class DMPContext : DbContext
+    public class CodenjoyDbContext : DbContext
     {
-        public DMPContext() : base("DefaultConnection") { }
+        public CodenjoyDbContext() : base("DefaultConnection") { }
 
         public DbSet<LaunchModel> LaunchModels { get; set; }
         public DbSet<DataFrameModel> DataFrameModels { get; set; }
         public DbSet<ExceptionModel> ExceptionModels { get; set; }
+
+        protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=usersdb;Username=postgres;Password=password");
+        }
     }
 }

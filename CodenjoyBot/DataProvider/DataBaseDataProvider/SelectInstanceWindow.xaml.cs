@@ -22,7 +22,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
     /// </summary>
     public partial class SelectInstanceWindow : Window
     {
-        private DMPContext db;
+        private CodenjoyDbContext _db;
 
         public SelectInstanceWindow()
         {
@@ -31,15 +31,15 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         private void SelectInstanceWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            db = new DMPContext();
-            db.LaunchModels.Load();
+            _db = new CodenjoyDbContext();
+            _db.LaunchModels.Load();
 
-            TreeView.ItemsSource = db.LaunchModels.Local.ToBindingList();
+            TreeView.ItemsSource = _db.LaunchModels.Local.ToBindingList();
         }
 
         private void SelectInstanceWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            db.Dispose();
+            _db.Dispose();
         }
     }
 }

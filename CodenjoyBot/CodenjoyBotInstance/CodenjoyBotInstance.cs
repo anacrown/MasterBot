@@ -211,7 +211,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
             DataProvider.SendResponse(response);
 
-            DataLogger.Log(Name, StartTime, frame.Time, frame.Board, response);
+            DataLogger.Log(this, frame.Time, frame.Board, response);
         }
 
         public event EventHandler<IDataProvider> Started;
