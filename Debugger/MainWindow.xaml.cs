@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -8,21 +7,19 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
-using System.Xml.Serialization;
 using BomberMan_SuperAI.Annotations;
 using CodenjoyBot.CodenjoyBotInstance;
-using System.Runtime.Serialization.Formatters.Soap;
 
 namespace Debugger
 {
     public partial class MainWindow : INotifyPropertyChanged
     {
-        private CodenjoyBotCollection _codenjoyBotInstances;
+        private CodenjoyBotInstanceCollection _codenjoyBotInstances;
         private CodenjoyBotInstance _selectedBotInstance;
 
-        public CodenjoyBotCollection CodenjoyBotInstances
+        public CodenjoyBotInstanceCollection CodenjoyBotInstances
         {
-            get => _codenjoyBotInstances ?? (_codenjoyBotInstances = new CodenjoyBotCollection());
+            get => _codenjoyBotInstances ?? (_codenjoyBotInstances = new CodenjoyBotInstanceCollection());
             private set
             {
                 if (Equals(value, _codenjoyBotInstances)) return;
@@ -89,7 +86,7 @@ namespace Debugger
                 using (Stream stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     var instances = (CodenjoyBotInstance[])formatter.Deserialize(stream);
-                    CodenjoyBotInstances = new CodenjoyBotCollection(instances);
+                    CodenjoyBotInstances = new CodenjoyBotInstanceCollection(instances);
                     stream.Close();
                 }
             }

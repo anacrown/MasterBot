@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows;
-using CodenjoyBot;
 using CodenjoyBot.Board;
 using CodenjoyBot.CodenjoyBotInstance;
 using CodenjoyBot.DataProvider;

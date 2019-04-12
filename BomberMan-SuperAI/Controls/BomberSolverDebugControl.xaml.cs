@@ -1,8 +1,5 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using BomberMan_SuperAI.Annotations;
 using BomberMan_SuperAI.BattleSolver;
 using CodenjoyBot.Board;
 

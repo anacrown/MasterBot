@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace CodenjoyBot.DataProvider.DataBaseModel
+﻿namespace CodenjoyBot.DataProvider.DataBaseModel
 {
     public class DataFrameModel
     {

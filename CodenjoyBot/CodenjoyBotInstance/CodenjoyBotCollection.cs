@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using CodenjoyBot.CodenjoyBotInstance;
 using CodenjoyBot.Interfaces;
 
-namespace Debugger
+namespace CodenjoyBot.CodenjoyBotInstance
 {
-    public class CodenjoyBotCollection : ObservableCollection<CodenjoyBotInstance>
+    public class CodenjoyBotInstanceCollection : ObservableCollection<CodenjoyBotInstance>
     {
-        public CodenjoyBotCollection()
+        public CodenjoyBotInstanceCollection()
         {
         }
 
-        public CodenjoyBotCollection(IEnumerable<CodenjoyBotInstance> collection) : base(collection)
+        public CodenjoyBotInstanceCollection(IEnumerable<CodenjoyBotInstance> collection) : base(collection)
         {
             foreach (var botInstance in collection)
             {

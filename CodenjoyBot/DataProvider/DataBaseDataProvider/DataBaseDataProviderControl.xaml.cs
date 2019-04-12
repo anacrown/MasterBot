@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using CodenjoyBot.DataProvider.DataBaseDataLogger;
-using CodenjoyBot.DataProvider.DataBaseModel;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 {

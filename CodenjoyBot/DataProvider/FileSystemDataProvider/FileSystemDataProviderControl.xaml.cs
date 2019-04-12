@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using CodenjoyBot.Annotations;
-using CodenjoyBot.DataProvider.WebSocketDataProvider;
 using Microsoft.Win32;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider

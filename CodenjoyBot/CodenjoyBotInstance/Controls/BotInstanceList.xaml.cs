@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using CodenjoyBot.DataProvider;
-using CodenjoyBot.DataProvider.WebSocketDataProvider;
 
 namespace CodenjoyBot.CodenjoyBotInstance.Controls
 {

@@ -78,6 +78,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\bomb_bomberman.png" />
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Serialization;
 using CodenjoyBot.DataProvider.DataBaseModel;
 using CodenjoyBot.Interfaces;
-using DbContextOptionsBuilder = Microsoft.EntityFrameworkCore.DbContextOptionsBuilder;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 {
@@ -122,17 +120,20 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
         }
     }
 
-    public class CodenjoyDbContext : DbContext
+    public sealed class CodenjoyDbContext : DbContext
     {
-        public CodenjoyDbContext() : base("DefaultConnection") { }
+        public CodenjoyDbContext()
+        {
+            Database.EnsureCreated();
+        }
 
         public DbSet<LaunchModel> LaunchModels { get; set; }
         public DbSet<DataFrameModel> DataFrameModels { get; set; }
         public DbSet<ExceptionModel> ExceptionModels { get; set; }
 
-        protected void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=usersdb;Username=postgres;Password=password");
+            optionsBuilder.UseSqlite("Data Source = DMPStore.db");
         }
     }
 }
