@@ -21,6 +21,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) { }
 
+        public string Title { get; }
         public string Name { get; }
 
         public void Start()
@@ -37,6 +38,9 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         {
             
         }
+
+        public event EventHandler Started;
+        public event EventHandler Stopped;
 
         public event EventHandler<DataFrame> DataReceived;
 

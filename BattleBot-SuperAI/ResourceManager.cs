@@ -77,28 +77,28 @@ namespace BattleBot_SuperAI
                         bitmapImage = SourceFromBitmap(Properties.Resources.bullet);
                         break;
                     case Element.TANK_UP:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_up);
-                        break;
-                    case Element.TANK_RIGHT:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_right);
-                        break;
-                    case Element.TANK_DOWN:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_down);
-                        break;
-                    case Element.TANK_LEFT:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_left);
-                        break;
-                    case Element.PLAYER_TANK_UP:
                         bitmapImage = SourceFromBitmap(Properties.Resources.tank_up);
                         break;
-                    case Element.PLAYER_TANK_RIGHT:
+                    case Element.TANK_RIGHT:
                         bitmapImage = SourceFromBitmap(Properties.Resources.tank_right);
                         break;
-                    case Element.PLAYER_TANK_DOWN:
+                    case Element.TANK_DOWN:
                         bitmapImage = SourceFromBitmap(Properties.Resources.tank_down);
                         break;
-                    case Element.PLAYER_TANK_LEFT:
+                    case Element.TANK_LEFT:
                         bitmapImage = SourceFromBitmap(Properties.Resources.tank_left);
+                        break;
+                    case Element.PLAYER_TANK_UP:
+                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_up);
+                        break;
+                    case Element.PLAYER_TANK_RIGHT:
+                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_right);
+                        break;
+                    case Element.PLAYER_TANK_DOWN:
+                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_down);
+                        break;
+                    case Element.PLAYER_TANK_LEFT:
+                        bitmapImage = SourceFromBitmap(Properties.Resources.other_tank_left);
                         break;
                     case Element.OTHER_TANK_UP:
                         bitmapImage = SourceFromBitmap(Properties.Resources.ai_tank_up);

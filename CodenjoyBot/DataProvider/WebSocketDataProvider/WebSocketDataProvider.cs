@@ -1,9 +1,8 @@
-﻿using System;
+﻿using CodenjoyBot.Interfaces;
+using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows;
-using CodenjoyBot.Interfaces;
 using WebSocket4Net;
 
 namespace CodenjoyBot.DataProvider.WebSocketDataProvider
@@ -23,26 +22,39 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
         private UIElement _debugControl;
         private static readonly Regex Pattern = new Regex("^board=(.*)$");
 
-        public event EventHandler<DataFrame> DataReceived;
+        public UIElement Control => _control ?? (_control = new WebSocketDataProviderControl(this));
+
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new WebSocketDataProviderDebugControl(this));
 
         public WebSocketDataProvider() { }
 
-        public WebSocketDataProvider(IdentityUser identityUser)
+        public WebSocketDataProvider(IdentityUser identityUser) : this()
         {
             IdentityUser = identityUser;
         }
 
-        protected WebSocketDataProvider(SerializationInfo info, StreamingContext context)
+        protected WebSocketDataProvider(SerializationInfo info, StreamingContext context) : this()
         {
             IdentityUser = info.GetValue("IdentityUser", typeof(IdentityUser)) as IdentityUser;
         }
 
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("IdentityUser", IdentityUser);
+        }
+
         public uint Time { get; private set; }
+
+        public string Title => IdentityUser.ToString();
+
         public string Name => $"WEB [{IdentityUser?.UserName}]";
 
         public void Start()
         {
-            if (IdentityUser.IsEmty) return;
+            if (IdentityUser.IsEmty)
+            {
+                return;
+            }
 
             Time = 0;
             OnLogDataReceived(Time, $"Open {IdentityUser}");
@@ -53,16 +65,19 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
             _webSocket.Opened += (sender, args) =>
             {
                 OnLogDataReceived(Time, "Opened");
+                OnStarted();
             };
             _webSocket.Closed += (sender, args) =>
             {
                 OnLogDataReceived(Time, "Closed");
                 Stop();
+                OnStopped();
             };
 
             _webSocket.Error += (sender, args) =>
             {
                 OnLogDataReceived(Time, $"Error occurred: {args.Exception}");
+                OnStopped();
             };
 
             _webSocket.Open();
@@ -77,16 +92,22 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
 
         public void Stop()
         {
-            if (_webSocket == null) return;
+            if (_webSocket == null)
+            {
+                return;
+            }
 
             _webSocket.Close();
             _webSocket.Dispose();
             _webSocket = null;
 
-            OnLogDataReceived(Time, "Stoped");
+            OnLogDataReceived(Time, "Stopped");
         }
 
-        public void SendResponse(string response) => _webSocket?.Send(response);
+        public void SendResponse(string response)
+        {
+            _webSocket?.Send(response);
+        }
 
         private static string ProcessMessage(string message)
         {
@@ -99,17 +120,15 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
             return match.Groups[1].Value;
         }
 
+        public event EventHandler Started;
+        public event EventHandler Stopped;
+
+        public event EventHandler<DataFrame> DataReceived;
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame() { Time = time }, message));
 
-        public UIElement Control => _control ?? (_control = new WebSocketDataProviderControl(this));
+        protected virtual void OnStarted() => Started?.Invoke(this, EventArgs.Empty);
 
-        public UIElement DebugControl => _debugControl ?? (_debugControl = new WebSocketDataProviderDebugControl(this));
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("IdentityUser", IdentityUser);
-        }
+        protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
     }
 }

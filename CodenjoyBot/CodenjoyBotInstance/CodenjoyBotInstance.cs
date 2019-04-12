@@ -1,13 +1,13 @@
-﻿using System;
+﻿using CodenjoyBot.CodenjoyBotInstance.Controls;
+using CodenjoyBot.DataProvider;
+using CodenjoyBot.DataProvider.FileSystemDataLogger;
+using CodenjoyBot.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Windows;
-using CodenjoyBot.CodenjoyBotInstance.Controls;
-using CodenjoyBot.DataProvider;
-using CodenjoyBot.DataProvider.FileSystemDataLogger;
-using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.CodenjoyBotInstance
 {
@@ -21,7 +21,10 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
         private UIElement _control;
         private UIElement _debugControl;
-        
+
+        public UIElement Control => _control ?? (_control = new CodenjoyBotInstanceControl(this));
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this, _logFilterEntries));
+
         public ISolver Solver
         {
             get => _solver;
@@ -42,8 +45,10 @@ namespace CodenjoyBot.CodenjoyBotInstance
             }
         }
 
-        private void SolverOnLogDataReceived(object sender, LogRecord logRecord) =>
+        private void SolverOnLogDataReceived(object sender, LogRecord logRecord)
+        {
             OnLogDataReceived(sender, logRecord);
+        }
 
         public IDataProvider DataProvider
         {
@@ -54,6 +59,9 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 {
                     _dataProvider.DataReceived -= DataProviderOnDataReceived;
                     _dataProvider.LogDataReceived -= DataProviderOnLogDataReceived;
+
+                    _dataProvider.Started -= DataProviderOnStarted;
+                    _dataProvider.Stopped -= DataProviderOnStopped;
                 }
 
                 _dataProvider = value;
@@ -62,13 +70,22 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 {
                     _dataProvider.DataReceived += DataProviderOnDataReceived;
                     _dataProvider.LogDataReceived += DataProviderOnLogDataReceived;
+
+                    _dataProvider.Started += DataProviderOnStarted;
+                    _dataProvider.Stopped += DataProviderOnStopped;
                 }
 
             }
         }
 
-        private void DataProviderOnLogDataReceived(object sender, LogRecord logRecord) =>
+        private void DataProviderOnStarted(object sender, EventArgs e) => OnStarted(DataProvider);
+
+        private void DataProviderOnStopped(object sender, EventArgs e) => OnStopped(DataProvider);
+
+        private void DataProviderOnLogDataReceived(object sender, LogRecord logRecord)
+        {
             OnLogDataReceived(sender, logRecord);
+        }
 
         public IDataLogger DataLogger
         {
@@ -89,11 +106,15 @@ namespace CodenjoyBot.CodenjoyBotInstance
             }
         }
 
-        private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) =>
+        private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord)
+        {
             OnLogDataReceived(sender, logRecord);
+        }
 
         public bool IsStarted { get; private set; }
         public DateTime StartTime { get; private set; }
+
+        public string Title => $"[{Solver?.GetType().Name ?? "EMPTY SOLVER"}] {DataProvider?.Title ?? "EMPTY PROVIDER"}";
 
         public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
 
@@ -110,14 +131,14 @@ namespace CodenjoyBot.CodenjoyBotInstance
             DataProvider = dataProvider;
         }
 
-        protected CodenjoyBotInstance(SerializationInfo info, StreamingContext context): this()
+        protected CodenjoyBotInstance(SerializationInfo info, StreamingContext context) : this()
         {
             var solverTypeName = info.GetString("SolverType");
             if (!string.IsNullOrEmpty(solverTypeName))
             {
                 var solverType = PluginLoader.LoadType(solverTypeName);
 
-                Solver = (ISolver) info.GetValue("Solver", solverType);
+                Solver = (ISolver)info.GetValue("Solver", solverType);
             }
 
             var dataLoggerTypeName = info.GetString("DataLoggerType");
@@ -125,7 +146,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
             {
                 var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
 
-                DataLogger = (IDataLogger) info.GetValue("DataLogger", dataLoggerType);
+                DataLogger = (IDataLogger)info.GetValue("DataLogger", dataLoggerType);
 
             }
 
@@ -134,7 +155,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
             {
                 var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
 
-                DataProvider = (IDataProvider) info.GetValue("DataProvider", dataProviderType);
+                DataProvider = (IDataProvider)info.GetValue("DataProvider", dataProviderType);
 
             }
 
@@ -142,7 +163,9 @@ namespace CodenjoyBot.CodenjoyBotInstance
             foreach (var filterEntry in (LogFilterEntry[])info.GetValue("LogFilters", typeof(LogFilterEntry[])))
             {
                 if (filterEntries.Any(t => t.Header == filterEntry.Header))
+                {
                     continue;
+                }
 
                 filterEntries.Add(filterEntry);
             }
@@ -191,11 +214,18 @@ namespace CodenjoyBot.CodenjoyBotInstance
             DataLogger.Log(Name, StartTime, frame.Time, frame.Board, response);
         }
 
-        public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
-        protected virtual void OnLogDataReceived(object sender, LogRecord e) => LogDataReceived?.Invoke(sender, e);
+        public event EventHandler<IDataProvider> Started;
+        public event EventHandler<IDataProvider> Stopped;
 
-        public UIElement Control => _control ?? (_control = new CodenjoyBotInstanceControl(this));
-        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this, _logFilterEntries));
+        public event EventHandler<LogRecord> LogDataReceived;
+
+        protected virtual void OnLogDataReceived(object sender, LogRecord e)
+        {
+            LogDataReceived?.Invoke(sender, e);
+        }
+
+        protected virtual void OnStarted(IDataProvider e) => Started?.Invoke(this, e);
+
+        protected virtual void OnStopped(IDataProvider e) => Stopped?.Invoke(this, e);
     }
 }

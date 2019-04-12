@@ -8,23 +8,39 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Serialization;
 using BomberMan_SuperAI.Annotations;
 using CodenjoyBot.CodenjoyBotInstance;
+using System.Runtime.Serialization.Formatters.Soap;
 
 namespace Debugger
 {
     public partial class MainWindow : INotifyPropertyChanged
     {
-        private ObservableCollection<CodenjoyBotInstance> _codenjoyBotInstances;
+        private CodenjoyBotCollection _codenjoyBotInstances;
         private CodenjoyBotInstance _selectedBotInstance;
 
-        public ObservableCollection<CodenjoyBotInstance> CodenjoyBotInstances
+        public CodenjoyBotCollection CodenjoyBotInstances
         {
-            get => _codenjoyBotInstances ?? (_codenjoyBotInstances = new ObservableCollection<CodenjoyBotInstance>());
+            get => _codenjoyBotInstances ?? (_codenjoyBotInstances = new CodenjoyBotCollection());
             private set
             {
                 if (Equals(value, _codenjoyBotInstances)) return;
+
+                if (_codenjoyBotInstances != null)
+                {
+                    _codenjoyBotInstances.Started -= CodenjoyBotInstancesOnStarted;
+                    _codenjoyBotInstances.Stopped -= CodenjoyBotInstancesOnStopped;
+                }
+
                 _codenjoyBotInstances = value;
+
+                if (_codenjoyBotInstances != null)
+                {
+                    _codenjoyBotInstances.Started += CodenjoyBotInstancesOnStarted;
+                    _codenjoyBotInstances.Stopped += CodenjoyBotInstancesOnStopped;
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -73,7 +89,7 @@ namespace Debugger
                 using (Stream stream = new FileStream(settingsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     var instances = (CodenjoyBotInstance[])formatter.Deserialize(stream);
-                    CodenjoyBotInstances = new ObservableCollection<CodenjoyBotInstance>(instances);
+                    CodenjoyBotInstances = new CodenjoyBotCollection(instances);
                     stream.Close();
                 }
             }
@@ -103,6 +119,16 @@ namespace Debugger
             var oldValue = e.RemovedItems.Count > 0 ? e.RemovedItems[0] as CodenjoyBotInstance : null;
 
             SelectedBotInstance = newValue;
+        }
+
+        private void CodenjoyBotInstancesOnStarted(object sender, CodenjoyBotInstance e)
+        {
+            MessageBox.Show($"{e.Title} Started", "Information");
+        }
+
+        private void CodenjoyBotInstancesOnStopped(object sender, CodenjoyBotInstance e)
+        {
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

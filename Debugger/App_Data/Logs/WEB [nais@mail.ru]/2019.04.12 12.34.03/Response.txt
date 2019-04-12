@@ -1,0 +1,24 @@
+[0]: UP
+[1]: UP
+[2]: UP
+[3]: UP
+[4]: DOWN
+[5]: RIGHT,ACT
+[6]: LEFT
+[7]: RIGHT,ACT
+[8]: RIGHT,ACT
+[9]: UP
+[10]: RIGHT,ACT
+[11]: RIGHT,ACT
+[12]: RIGHT
+[13]: DOWN
+[14]: 
+[15]: RIGHT
+[16]: LEFT
+[17]: RIGHT
+[18]: DOWN
+[19]: DOWN
+[20]: LEFT
+[21]: UP,ACT
+[22]: RIGHT
+[23]: DOWN

@@ -14,6 +14,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
     [Serializable]
     public class FileSystemDataProvider : IDataProvider
     {
+        public string Title => BoardFile;
         public string Name { get; private set; }
         
         private string _boardFile;
@@ -37,6 +38,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         private UIElement _control;
         private UIElement _debugControl;
+        public UIElement Control => _control ?? (_control = new FileSystemDataProviderControl(this));
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new FileSystemDataProviderDebugControl(this));
 
         public FileSystemDataProvider()
         {
@@ -97,6 +100,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
             OnIndexChanged(Time);
             _boards = File.ReadAllLines(BoardFile).Select(ProcessMessage)
                 .ToDictionary(frame => frame.Time, frame => frame.Board);
+
+            OnStarted();
         }
 
         public void Stop()
@@ -135,17 +140,21 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         protected virtual void OnIndexChanged(uint time) => TimeChanged?.Invoke(this, time);
 
+        public event EventHandler Started;
+        public event EventHandler Stopped;
+
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
 
-        public UIElement Control => _control ?? (_control = new FileSystemDataProviderControl(this));
-
-        public UIElement DebugControl => _debugControl ?? (_debugControl = new FileSystemDataProviderDebugControl(this));
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("BoardFile", BoardFile);
         }
+
+        protected virtual void OnStarted() => Started?.Invoke(this, EventArgs.Empty);
+
+
+        //Никогда не останавливается? ...
+        protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
     }
 }
