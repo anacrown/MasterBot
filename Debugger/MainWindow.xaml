@@ -4,20 +4,57 @@
         xmlns:local="clr-namespace:Debugger"
         xmlns:controls="clr-namespace:CodenjoyBot.CodenjoyBotInstance.Controls;assembly=CodenjoyBot"
         xmlns:codenjoyBotInstance="clr-namespace:CodenjoyBot.CodenjoyBotInstance;assembly=CodenjoyBot"
+        xmlns:entity="clr-namespace:CodenjoyBot.Entity;assembly=CodenjoyBot"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         Title="CodenjoyBot Debugger" Width="1300" MinHeight="1000"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
         Closing="MainWindow_OnClosing">
     <Grid>
-        
-        <TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="1">
             <TabItem Header="CodenjoyBot Instances">
-                <controls:BotInstanceList x:Name="BotInstanceList" Margin="10" 
-                                          InstanceModels="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Menu>
+                        <MenuItem Header="File">
+                            <MenuItem Header="Latest configurations" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}, Path=UnVisibleSettings}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="{x:Type MenuItem}">
+                                        <Setter Property="Command" Value="{Binding Command}"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                                <MenuItem.ItemTemplate>
+                                    <HierarchicalDataTemplate DataType="{x:Type local:SettingsViewModel}">
+                                        <TextBlock Text="{Binding Title}"/>
+                                    </HierarchicalDataTemplate>
+                                </MenuItem.ItemTemplate>
+
+                            </MenuItem>
+
+                            <Separator/>
+
+                            <MenuItem Command="Close"/>
+
+                        </MenuItem>
+                    </Menu>
+
+                    <controls:BotInstanceList x:Name="BotInstanceList" Grid.Row="1" Margin="10" 
+                                          InstanceModels="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}"
+                                          RemoveInstance="BotInstanceList_OnRemoveInstance"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Monitor">
                 <Grid>
-                    
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
@@ -38,8 +75,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        
-        
+
     </Grid>
 </Window>
 

@@ -194,13 +194,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 var settings = db.LaunchSettingsModels.Find(SettingsId);
                 if (settings == null || settings.HashCode != hashCode)
                 {
-                    settings = new LaunchSettingsModel()
-                    {
-                        Visibility = true,
-                        HashCode = hashCode,
-                        CreateTime = DateTime.Now,
-                        Data = GetData(this)
-                    };
+                    settings = GetSettings(this);
 
                     db.LaunchSettingsModels.Add(settings);
                 }
@@ -270,7 +264,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
             }
         }
 
-        public static byte[] GetData(CodenjoyBotInstance botInstance)
+        private static byte[] GetData(CodenjoyBotInstance botInstance)
         {
             IFormatter formatter = new BinaryFormatter();
             using (var stream = new MemoryStream())
@@ -279,7 +273,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 return stream.ToArray();
             }
         }
-        public static CodenjoyBotInstance FromData(byte[] data)
+        private static CodenjoyBotInstance FromData(byte[] data)
         {
             IFormatter formatter = new BinaryFormatter();
             using (var stream = new MemoryStream(data))
@@ -287,6 +281,16 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 stream.Position = 0;
                 return (CodenjoyBotInstance)formatter.Deserialize(stream);
             }
+        }
+        public static LaunchSettingsModel GetSettings(CodenjoyBotInstance botInstance)
+        {
+            return new LaunchSettingsModel
+            {
+                CreateTime = DateTime.Now,
+                HashCode = botInstance.GetHashCode(),
+                Data = GetData(botInstance),
+                Title = $"{botInstance.Name} {botInstance.Title}"
+            };
         }
         public static CodenjoyBotInstance FromSettings(LaunchSettingsModel settingsModel)
         {

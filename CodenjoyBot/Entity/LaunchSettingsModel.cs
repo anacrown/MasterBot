@@ -9,6 +9,8 @@ namespace CodenjoyBot.Entity
     {
         public int Id { get; set; }
 
+        public string Title { get; set; }
+
         public byte[] Data { get; set; }
 
         public bool Visibility { get; set; }

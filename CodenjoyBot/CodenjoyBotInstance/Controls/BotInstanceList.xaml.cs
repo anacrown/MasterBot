@@ -16,6 +16,8 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
             set => SetValue(InstanceModelsProperty, value);
         }
 
+        public event EventHandler<CodenjoyBotInstance> RemoveInstance;
+
         public BotInstanceList()
         {
             InitializeComponent();
@@ -33,20 +35,7 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
         {
             if (ListView.SelectedItem is CodenjoyBotInstance selectedItem)
             {
-                if (selectedItem.IsStarted)
-                    selectedItem.Stop();
-
-                using (var db = new CodenjoyDbContext())
-                {
-                    var settings = db.LaunchSettingsModels.Find(selectedItem.SettingsId);
-                    if (settings == null)
-                        throw new Exception("Settings not found");
-
-                    settings.Visibility = false;
-
-                    db.SaveChanges();
-                }
-
+                RemoveInstance?.Invoke(this, selectedItem);
                 InstanceModels.Remove(selectedItem);
             }
         }

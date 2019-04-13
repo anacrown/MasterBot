@@ -40,7 +40,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public UIElement Control => _control ?? (_control = new FileSystemDataProviderControl(this));
         public UIElement DebugControl => _debugControl ?? (_debugControl = new FileSystemDataProviderDebugControl(this));
 
-        private FileSystemDataProvider()
+        public FileSystemDataProvider()
         {
             _timer.AutoReset = true;
             _timer.Elapsed += TimerOnElapsed;
