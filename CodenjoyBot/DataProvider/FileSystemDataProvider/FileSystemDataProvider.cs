@@ -40,7 +40,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public UIElement Control => _control ?? (_control = new FileSystemDataProviderControl(this));
         public UIElement DebugControl => _debugControl ?? (_debugControl = new FileSystemDataProviderDebugControl(this));
 
-        public FileSystemDataProvider()
+        private FileSystemDataProvider()
         {
             _timer.AutoReset = true;
             _timer.Elapsed += TimerOnElapsed;
@@ -156,9 +156,25 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         //Никогда не останавливается? ...
         protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
 
+        protected bool Equals(FileSystemDataProvider other)
+        {
+            return string.Equals(_boardFile, other._boardFile) && string.Equals(Name, other.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FileSystemDataProvider) obj);
+        }
+
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            unchecked
+            {
+                return ((_boardFile != null ? _boardFile.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+            }
         }
     }
 }

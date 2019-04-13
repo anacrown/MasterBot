@@ -25,21 +25,27 @@ namespace CodenjoyBot.CodenjoyBotInstance
         {
             base.OnCollectionChanged(e);
 
-            foreach (var eOldItem in e.OldItems)
+            if (e.OldItems != null)
             {
-                if (eOldItem is CodenjoyBotInstance botInstance)
+                foreach (var eOldItem in e.OldItems)
                 {
-                    botInstance.Started -= BotInstanceOnStarted;
-                    botInstance.Stopped -= BotInstanceOnStopped;
+                    if (eOldItem is CodenjoyBotInstance botInstance)
+                    {
+                        botInstance.Started -= BotInstanceOnStarted;
+                        botInstance.Stopped -= BotInstanceOnStopped;
+                    }
                 }
             }
 
-            foreach (var eNewItem in e.NewItems)
+            if (e.NewItems != null)
             {
-                if (eNewItem is CodenjoyBotInstance botInstance)
+                foreach (var eNewItem in e.NewItems)
                 {
-                    botInstance.Started += BotInstanceOnStarted;
-                    botInstance.Stopped += BotInstanceOnStopped;
+                    if (eNewItem is CodenjoyBotInstance botInstance)
+                    {
+                        botInstance.Started += BotInstanceOnStarted;
+                        botInstance.Stopped += BotInstanceOnStopped;
+                    }
                 }
             }
         }

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using CodenjoyBot.DataProvider.DataBaseDataLogger;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataProvider

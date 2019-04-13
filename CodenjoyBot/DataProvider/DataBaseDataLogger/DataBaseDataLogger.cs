@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using CodenjoyBot.DataProvider.DataBaseModel;
+using CodenjoyBot.Entity;
 using CodenjoyBot.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 {
@@ -11,10 +10,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
     public class DataBaseDataLogger : IDataLogger
     {
         public DataBaseDataLogger() { }
-
         protected DataBaseDataLogger(SerializationInfo info, StreamingContext context) : this() { }
-
-        public event EventHandler<LogRecord> LogDataReceived;
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
 
@@ -24,20 +20,9 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
         {
             using (var db = new CodenjoyDbContext())
             {
-                var launch = db.LaunchModels.FirstOrDefault(
-                    t => t.BotInstanceName == botInstance.Name && t.LaunchTime == botInstance.StartTime);
-
+                var launch = db.LaunchModels.Find(botInstance.LaunchId);
                 if (launch == null)
-                {
-                    launch = new LaunchModel()
-                    {
-                        LaunchTime = botInstance.StartTime,
-                        BotInstanceName = botInstance.Name,
-                        BotInstanceTitle = botInstance.Title
-                    };
-
-                    db.LaunchModels.Add(launch);
-                }
+                    throw new Exception("Launch not found");
 
                 var exception = new ExceptionModel()
                 {
@@ -59,20 +44,9 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
         {
             using (var db = new CodenjoyDbContext())
             {
-                var launch = db.LaunchModels.FirstOrDefault(
-                    t => t.BotInstanceName == botInstance.Name && t.LaunchTime == botInstance.StartTime);
-
+                var launch = db.LaunchModels.Find(botInstance.LaunchId);
                 if (launch == null)
-                {
-                    launch = new LaunchModel()
-                    {
-                        LaunchTime = botInstance.StartTime,
-                        BotInstanceName = botInstance.Name,
-                        BotInstanceTitle = botInstance.Title
-                    };
-
-                    db.LaunchModels.Add(launch);
-                }
+                    throw new Exception("Launch not found");
 
                 var frame = new DataFrameModel()
                 {
@@ -95,20 +69,9 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
         {
             using (var db = new CodenjoyDbContext())
             {
-                var launch = db.LaunchModels.FirstOrDefault(
-                    t => t.BotInstanceName == botInstance.Name && t.LaunchTime == botInstance.StartTime);
-
+                var launch = db.LaunchModels.Find(botInstance.LaunchId);
                 if (launch == null)
-                {
-                    launch = new LaunchModel()
-                    {
-                        LaunchTime = botInstance.StartTime,
-                        BotInstanceName = botInstance.Name,
-                        BotInstanceTitle = botInstance.Title
-                    };
-
-                    db.LaunchModels.Add(launch);
-                }
+                    throw new Exception("Launch not found");
 
                 var frame = db.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == launch.Id && t.Time == time);
                 if (frame == null) return;
@@ -118,22 +81,8 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
                 db.SaveChanges();
             }
         }
-    }
 
-    public class CodenjoyDbContext : DbContext
-    {
-        public CodenjoyDbContext()
-        {
-            Database.EnsureCreated();
-        }
-
-        public DbSet<LaunchModel> LaunchModels { get; set; }
-        public DbSet<DataFrameModel> DataFrameModels { get; set; }
-        public DbSet<ExceptionModel> ExceptionModels { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source = DMPStore.db");
-        }
+        public event EventHandler<LogRecord> LogDataReceived;
+        protected virtual void OnLogDataReceived(DataFrame frame, string message) => LogDataReceived?.Invoke(this, new LogRecord(frame, message));
     }
 }

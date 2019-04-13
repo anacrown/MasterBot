@@ -1,6 +1,9 @@
 ﻿
-namespace CodenjoyBot.DataProvider.DataBaseModel
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CodenjoyBot.Entity
 {
+    [Table("Exceptions")]
     public class ExceptionModel
     {
         public int Id { get; set; }

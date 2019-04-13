@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -34,6 +35,17 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
             {
                 if (selectedItem.IsStarted)
                     selectedItem.Stop();
+
+                using (var db = new CodenjoyDbContext())
+                {
+                    var settings = db.LaunchSettingsModels.Find(selectedItem.SettingsId);
+                    if (settings == null)
+                        throw new Exception("Settings not found");
+
+                    settings.Visibility = false;
+
+                    db.SaveChanges();
+                }
 
                 InstanceModels.Remove(selectedItem);
             }

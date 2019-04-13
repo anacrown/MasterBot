@@ -80,14 +80,26 @@ namespace CodenjoyBot.Board
         public static bool operator <=(Point p, int i) => p.X <= i && p.Y <= i;
 
         public override string ToString() => $"({X}:{Y})";
-        public override bool Equals(object obj) => obj is Point point ? point == this : base.Equals(obj);
+
+        protected bool Equals(Point other)
+        {
+            return X == other.X && Y == other.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Point) obj);
+        }
 
         public override int GetHashCode()
         {
-            var hashCode = 1861411795;
-            hashCode = hashCode * -1521134295 + X.GetHashCode();
-            hashCode = hashCode * -1521134295 + Y.GetHashCode();
-            return hashCode;
+            unchecked
+            {
+                return (X * 397) ^ Y;
+            }
         }
     }
 }

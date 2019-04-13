@@ -1,8 +1,7 @@
 ﻿<UserControl x:Class="CodenjoyBot.DataProvider.DataBaseDataProvider.DataBaseDataProviderControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:dataBaseDataProvider="clr-namespace:CodenjoyBot.DataProvider.DataBaseDataProvider"
-             xmlns:dataBaseModel="clr-namespace:CodenjoyBot.DataProvider.DataBaseModel">
+             xmlns:dataBaseDataProvider="clr-namespace:CodenjoyBot.DataProvider.DataBaseDataProvider">
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>

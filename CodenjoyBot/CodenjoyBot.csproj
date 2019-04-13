@@ -96,6 +96,9 @@
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore">
+      <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\PresentationCore.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
@@ -114,7 +117,9 @@
     <Reference Include="SuperSocket.ClientEngine, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.10.0\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
@@ -179,7 +184,6 @@
       <HintPath>..\packages\WebSocket4Net.0.15.2\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +201,7 @@
       <DependentUpon>CodenjoyBotInstanceDebugControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodenjoyBotInstance\Controls\LogFilterEntry.cs" />
+    <Compile Include="CodenjoyDbContext.cs" />
     <Compile Include="DataProvider\DataBaseDataLogger\DataBaseDataLogger.cs" />
     <Compile Include="DataProvider\DataBaseDataProvider\DataBaseDataProvider.cs" />
     <Compile Include="DataProvider\DataBaseDataProvider\DataBaseDataProviderControl.xaml.cs">
@@ -208,9 +213,9 @@
     <Compile Include="DataProvider\DataBaseDataProvider\SelectInstanceWindow.xaml.cs">
       <DependentUpon>SelectInstanceWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataProvider\DataBaseModel\DataFrameModel.cs" />
-    <Compile Include="DataProvider\DataBaseModel\ExceptionModel.cs" />
-    <Compile Include="DataProvider\DataBaseModel\LaunchModel.cs" />
+    <Compile Include="Entity\DataFrameModel.cs" />
+    <Compile Include="Entity\ExceptionModel.cs" />
+    <Compile Include="Entity\LaunchModel.cs" />
     <Compile Include="DataProvider\FileSystemDataLogger\FIleSystemLaunchObserver.xaml.cs">
       <DependentUpon>FIleSystemLaunchObserver.xaml</DependentUpon>
     </Compile>
@@ -235,6 +240,7 @@
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderDebugControl.xaml.cs">
       <DependentUpon>WebSocketDataProviderDebugControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Entity\LaunchSettingsModel.cs" />
     <Compile Include="Interfaces\IDataLogger.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="DataProvider\IdentityUser.cs" />

@@ -1,5 +1,8 @@
-﻿namespace CodenjoyBot.DataProvider.DataBaseModel
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CodenjoyBot.Entity
 {
+    [Table("DataFrames")]
     public class DataFrameModel
     {
         public int Id { get; set; }

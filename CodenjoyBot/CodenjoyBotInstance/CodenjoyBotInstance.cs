@@ -4,10 +4,12 @@ using CodenjoyBot.DataProvider.FileSystemDataLogger;
 using CodenjoyBot.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
+using CodenjoyBot.Entity;
 
 namespace CodenjoyBot.CodenjoyBotInstance
 {
@@ -21,6 +23,13 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
         private UIElement _control;
         private UIElement _debugControl;
+
+        public bool IsStarted { get; private set; }
+        public DateTime StartTime { get; private set; }
+        public string Title => $"[{Solver?.GetType().Name ?? "EMPTY SOLVER"}] {DataProvider?.Title ?? "EMPTY PROVIDER"}";
+        public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
+        public int? LaunchId { get; private set; }
+        public int? SettingsId { get; private set; }
 
         public UIElement Control => _control ?? (_control = new CodenjoyBotInstanceControl(this));
         public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this, _logFilterEntries));
@@ -44,12 +53,6 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 }
             }
         }
-
-        private void SolverOnLogDataReceived(object sender, LogRecord logRecord)
-        {
-            OnLogDataReceived(sender, logRecord);
-        }
-
         public IDataProvider DataProvider
         {
             get => _dataProvider;
@@ -77,16 +80,6 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
             }
         }
-
-        private void DataProviderOnStarted(object sender, EventArgs e) => OnStarted(DataProvider);
-
-        private void DataProviderOnStopped(object sender, EventArgs e) => OnStopped(DataProvider);
-
-        private void DataProviderOnLogDataReceived(object sender, LogRecord logRecord)
-        {
-            OnLogDataReceived(sender, logRecord);
-        }
-
         public IDataLogger DataLogger
         {
             get => _dataLogger;
@@ -105,19 +98,6 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 }
             }
         }
-
-        private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord)
-        {
-            OnLogDataReceived(sender, logRecord);
-        }
-
-        public bool IsStarted { get; private set; }
-        public DateTime StartTime { get; private set; }
-
-        public string Title => $"[{Solver?.GetType().Name ?? "EMPTY SOLVER"}] {DataProvider?.Title ?? "EMPTY PROVIDER"}";
-
-        public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
-
         public CodenjoyBotInstance()
         {
             //WebSocketDataLogger.Instance.LogDataReceived += InstanceOnLogDataReceived;
@@ -173,7 +153,6 @@ namespace CodenjoyBot.CodenjoyBotInstance
             _logFilterEntries = filterEntries.ToArray();
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Solver", Solver);
@@ -190,8 +169,9 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
         public void Start()
         {
-            Solver.Initialize();
             StartTime = DateTime.Now;
+
+            Solver.Initialize();
 
             DataProvider.Start();
 
@@ -205,6 +185,49 @@ namespace CodenjoyBot.CodenjoyBotInstance
             IsStarted = false;
         }
 
+        private void SolverOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
+        private void DataProviderOnStarted(object sender, EventArgs e)
+        {
+            using (var db = new CodenjoyDbContext())
+            {
+                var hashCode = GetHashCode();
+                var settings = db.LaunchSettingsModels.Find(SettingsId);
+                if (settings == null || settings.HashCode != hashCode)
+                {
+                    settings = new LaunchSettingsModel()
+                    {
+                        Visibility = true,
+                        HashCode = hashCode,
+                        CreateTime = DateTime.Now,
+                        Data = GetData(this)
+                    };
+
+                    db.LaunchSettingsModels.Add(settings);
+                }
+
+                settings.Visibility = true;
+
+                var launch = new LaunchModel()
+                {
+                    LaunchTime = StartTime,
+                    BotInstanceName = Name,
+                    BotInstanceTitle = Title,
+                    LaunchSettingsModel = settings
+                };
+
+                db.LaunchModels.Add(launch);
+
+                db.SaveChanges();
+
+                SettingsId = settings.Id;
+                LaunchId = launch.Id;
+            }
+
+            OnStarted(DataProvider);
+        }
+        private void DataProviderOnStopped(object sender, EventArgs e) => OnStopped(DataProvider);
+        private void DataProviderOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
+        private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
             var response = Solver.Answer(new Board.Board(Name, StartTime, frame));
@@ -223,9 +246,53 @@ namespace CodenjoyBot.CodenjoyBotInstance
         {
             LogDataReceived?.Invoke(sender, e);
         }
-
         protected virtual void OnStarted(IDataProvider e) => Started?.Invoke(this, e);
-
         protected virtual void OnStopped(IDataProvider e) => Stopped?.Invoke(this, e);
+        protected bool Equals(CodenjoyBotInstance other)
+        {
+            return Equals(_solver, other._solver) && Equals(_dataLogger, other._dataLogger) && Equals(_dataProvider, other._dataProvider);
+        }
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((CodenjoyBotInstance)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (_solver != null ? _solver.GetType().Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_dataLogger != null ? _dataLogger.GetType().Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_dataProvider != null ? _dataProvider.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public static byte[] GetData(CodenjoyBotInstance botInstance)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, botInstance);
+                return stream.ToArray();
+            }
+        }
+        public static CodenjoyBotInstance FromData(byte[] data)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            using (var stream = new MemoryStream(data))
+            {
+                stream.Position = 0;
+                return (CodenjoyBotInstance)formatter.Deserialize(stream);
+            }
+        }
+        public static CodenjoyBotInstance FromSettings(LaunchSettingsModel settingsModel)
+        {
+            var botInstance = FromData(settingsModel.Data);
+            botInstance.SettingsId = settingsModel.Id;
+            return botInstance;
+        }
     }
 }
