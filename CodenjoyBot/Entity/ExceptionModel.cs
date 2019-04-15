@@ -10,7 +10,10 @@ namespace CodenjoyBot.Entity
         public string Message { get; set; }
         public string StackTrace { get; set; }
 
+        public int? DataFrameModelId { get; set; }
+        public DataFrameModel Frame { get; set; }
+
         public int? LaunchModelId { get; set; }
-        public LaunchModel LaunchModel { get; set; }
+        public LaunchModel Launch { get; set; }
     }
 }

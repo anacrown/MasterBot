@@ -1,4 +1,0 @@
-[0]: UP
-[1]: ACT,LEFT
-[2]: UP
-[3]: ACT,LEFT

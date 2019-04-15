@@ -4,25 +4,29 @@ using CodenjoyBot.DataProvider.FileSystemDataLogger;
 using CodenjoyBot.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
+using CodenjoyBot.Annotations;
 using CodenjoyBot.Entity;
 
 namespace CodenjoyBot.CodenjoyBotInstance
 {
     [Serializable]
-    public class CodenjoyBotInstance : ILogger, ISupportControls, ISerializable
+    public class CodenjoyBotInstance : ILogger, ISupportControls, ISerializable, INotifyPropertyChanged
     {
         private ISolver _solver;
         private IDataLogger _dataLogger;
         private IDataProvider _dataProvider;
-        private readonly LogFilterEntry[] _logFilterEntries;
 
         private UIElement _control;
         private UIElement _debugControl;
+        private ObservableCollection<LogFilterEntry> _logFilterEntries;
 
         public bool IsStarted { get; private set; }
         public DateTime StartTime { get; private set; }
@@ -32,8 +36,18 @@ namespace CodenjoyBot.CodenjoyBotInstance
         public int? SettingsId { get; private set; }
 
         public UIElement Control => _control ?? (_control = new CodenjoyBotInstanceControl(this));
-        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this, _logFilterEntries));
+        public UIElement DebugControl => _debugControl ?? (_debugControl = new CodenjoyBotInstanceDebugControl(this));
 
+        public ObservableCollection<LogFilterEntry> LogFilterEntries
+        {
+            get => _logFilterEntries ?? (_logFilterEntries = new ObservableCollection<LogFilterEntry>());
+            set
+            {
+                if (Equals(value, _logFilterEntries)) return;
+                _logFilterEntries = value;
+                OnPropertyChanged();
+            }
+        }
         public ISolver Solver
         {
             get => _solver;
@@ -51,6 +65,8 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 {
                     _solver.LogDataReceived += SolverOnLogDataReceived;
                 }
+
+                OnPropertyChanged();
             }
         }
         public IDataProvider DataProvider
@@ -78,6 +94,8 @@ namespace CodenjoyBot.CodenjoyBotInstance
                     _dataProvider.Stopped += DataProviderOnStopped;
                 }
 
+                OnPropertyChanged();
+
             }
         }
         public IDataLogger DataLogger
@@ -96,6 +114,8 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 {
                     _dataLogger.LogDataReceived += DataLoggerOnLogDataReceived;
                 }
+
+                OnPropertyChanged();
             }
         }
         public CodenjoyBotInstance()
@@ -150,7 +170,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 filterEntries.Add(filterEntry);
             }
 
-            _logFilterEntries = filterEntries.ToArray();
+            LogFilterEntries = new ObservableCollection<LogFilterEntry>(filterEntries);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -164,7 +184,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
             info.AddValue("DataProvider", DataProvider);
             info.AddValue("DataProviderType", DataProvider?.GetType().FullName);
 
-            info.AddValue("LogFilters", (DebugControl as CodenjoyBotInstanceDebugControl)?.LogFilters?.ToArray());
+            info.AddValue("LogFilters", LogFilterEntries.ToArray());
         }
 
         public void Start()
@@ -224,11 +244,19 @@ namespace CodenjoyBot.CodenjoyBotInstance
         private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
-            var response = Solver.Answer(new Board.Board(Name, StartTime, frame));
 
-            DataProvider.SendResponse(response);
+            try
+            {
+                var response = Solver.Answer(new Board.Board(Name, StartTime, frame));
 
-            DataLogger.Log(this, frame.Time, frame.Board, response);
+                DataProvider.SendResponse(response);
+
+                DataLogger.Log(this, frame, response);
+            }
+            catch (Exception e)
+            {
+                DataLogger.Log(this, frame, e);
+            }
         }
 
         public event EventHandler<IDataProvider> Started;
@@ -298,5 +326,10 @@ namespace CodenjoyBot.CodenjoyBotInstance
             botInstance.SettingsId = settingsModel.Id;
             return botInstance;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

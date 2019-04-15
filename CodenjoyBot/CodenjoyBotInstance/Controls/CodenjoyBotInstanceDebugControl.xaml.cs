@@ -10,7 +10,7 @@ using CodenjoyBot.Interfaces;
 namespace CodenjoyBot.CodenjoyBotInstance.Controls
 {
 
-    public partial class CodenjoyBotInstanceDebugControl : INotifyPropertyChanged
+    public partial class CodenjoyBotInstanceDebugControl
     {
         public static readonly DependencyProperty CodenjoyBotInstanceProperty = DependencyProperty.Register(
             "CodenjoyBotInstance", typeof(CodenjoyBotInstance), typeof(CodenjoyBotInstanceDebugControl), new PropertyMetadata(default(CodenjoyBotInstance)));
@@ -21,20 +21,14 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
             set => SetValue(CodenjoyBotInstanceProperty, value);
         }
 
-        public ObservableCollection<LogFilterEntry> LogFilters { get; } =
-            new ObservableCollection<LogFilterEntry>();
-
         public CodenjoyBotInstanceDebugControl()
         {
             InitializeComponent();
         }
 
-        public CodenjoyBotInstanceDebugControl(CodenjoyBotInstance codenjoyBotInstance, LogFilterEntry[] logFilterEntries = null) : this()
+        public CodenjoyBotInstanceDebugControl(CodenjoyBotInstance codenjoyBotInstance) : this()
         {
             CodenjoyBotInstance = codenjoyBotInstance;
-
-            if (logFilterEntries != null)
-                LogFilters = new ObservableCollection<LogFilterEntry>(logFilterEntries);
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -42,12 +36,10 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
             base.OnPropertyChanged(e);
             if (e.Property == CodenjoyBotInstanceProperty)
             {
-                var oldValue = e.OldValue as CodenjoyBotInstance;
-                if (oldValue != null)
+                if (e.OldValue is CodenjoyBotInstance oldValue)
                     oldValue.LogDataReceived -= CodenjoyBotInstanceOnLogDataReceived;
 
-                var newValue = e.NewValue as CodenjoyBotInstance;
-                if (newValue != null)
+                if (e.NewValue is CodenjoyBotInstance newValue)
                     newValue.LogDataReceived += CodenjoyBotInstanceOnLogDataReceived;
             }
         }
@@ -56,12 +48,11 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
         {
             Dispatcher.InvokeAsync(() =>
             {
-                var logSourceFilter = LogFilters.FirstOrDefault(t => t.Header == sender?.GetType().Name);
+                var logSourceFilter = CodenjoyBotInstance.LogFilterEntries.FirstOrDefault(t => t.Header == sender?.GetType().Name);
 
                 if (logSourceFilter == null)
                 {
-                    LogFilters.Add(logSourceFilter = new LogFilterEntry()
-                    { Header = sender.GetType().Name, IsEnabled = true });
+                    CodenjoyBotInstance.LogFilterEntries.Add(new LogFilterEntry { Header = sender.GetType().Name, IsEnabled = true });
                 }
 
                 LogTextBlock.AppendText(
@@ -70,10 +61,5 @@ namespace CodenjoyBot.CodenjoyBotInstance.Controls
 
             });
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

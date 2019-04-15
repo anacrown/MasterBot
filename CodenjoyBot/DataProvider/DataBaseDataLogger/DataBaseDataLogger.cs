@@ -16,31 +16,42 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 
         }
 
-        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, Exception e)
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame, Exception e)
         {
             using (var db = new CodenjoyDbContext())
             {
                 var launch = db.LaunchModels.Find(botInstance.LaunchId);
                 if (launch == null)
                     throw new Exception("Launch not found");
+
+                var frameModel = launch.Frames.FirstOrDefault(t => t.Time == frame.Time);
+                if (frameModel == null)
+                {
+                    frameModel = new DataFrameModel()
+                    {
+                        Time = frame.Time,
+                        Board = frame.Board,
+                        LaunchModel = launch
+                    };
+
+                    db.DataFrameModels.Add(frameModel);
+                }
 
                 var exception = new ExceptionModel()
                 {
                     Message = e.Message,
                     StackTrace = e.StackTrace,
-
-                    LaunchModel = launch
+                    Launch = launch,
+                    Frame = frameModel
                 };
 
                 db.ExceptionModels.Add(exception);
-
-                launch.Exceptions.Add(exception);
 
                 db.SaveChanges();
             }
         }
 
-        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, string board, string response)
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame, string response)
         {
             using (var db = new CodenjoyDbContext())
             {
@@ -48,24 +59,24 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
                 if (launch == null)
                     throw new Exception("Launch not found");
 
-                var frame = new DataFrameModel()
+                var frameModel = new DataFrameModel()
                 {
-                    Time = time,
-                    Board = board,
+                    Time = frame.Time,
+                    Board = frame.Board,
                     Response = response,
 
                     LaunchModel = launch
                 };
 
-                db.DataFrameModels.Add(frame);
+                db.DataFrameModels.Add(frameModel);
 
-                launch.Frames.Add(frame);
+                launch.Frames.Add(frameModel);
 
                 db.SaveChanges();
             }
         }
 
-        public void LogDead(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time)
+        public void LogDead(CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame)
         {
             using (var db = new CodenjoyDbContext())
             {
@@ -73,10 +84,10 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
                 if (launch == null)
                     throw new Exception("Launch not found");
 
-                var frame = db.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == launch.Id && t.Time == time);
-                if (frame == null) return;
+                var frameModel = db.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == launch.Id && t.Time == frame.Time);
+                if (frameModel == null) return;
 
-                frame.IsDead = true;
+                frameModel.IsDead = true;
 
                 db.SaveChanges();
             }

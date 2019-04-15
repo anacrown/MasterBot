@@ -70,7 +70,6 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
             _webSocket.Closed += (sender, args) =>
             {
                 OnLogDataReceived(Time, "Closed");
-                Stop();
                 OnStopped();
             };
 
@@ -81,13 +80,6 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
             };
 
             _webSocket.Open();
-        }
-
-        private void WebSocketOnMessageReceived(object sender, MessageReceivedEventArgs e)
-        {
-            DataReceived?.Invoke(this, new DataFrame { Board = ProcessMessage(e.Message), Time = Time });
-
-            Time++;
         }
 
         public void Stop()
@@ -126,6 +118,13 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
         public event EventHandler<DataFrame> DataReceived;
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame() { Time = time }, message));
+
+        private void WebSocketOnMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            DataReceived?.Invoke(this, new DataFrame { Board = ProcessMessage(e.Message), Time = Time });
+
+            Time++;
+        }
 
         protected virtual void OnStarted() => Started?.Invoke(this, EventArgs.Empty);
 
