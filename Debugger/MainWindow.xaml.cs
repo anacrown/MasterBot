@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,6 +9,7 @@ using System.Windows.Media.Animation;
 using BomberMan_SuperAI.Annotations;
 using CodenjoyBot;
 using CodenjoyBot.CodenjoyBotInstance;
+using CodenjoyBot.Entity;
 
 namespace Debugger
 {
@@ -83,6 +85,41 @@ namespace Debugger
         {
             foreach (var codenjoyBotInstance in CodenjoyBotInstances)
                 codenjoyBotInstance?.Stop();
+
+            using (var db = new CodenjoyDbContext())
+            {
+                foreach (var botInstance in CodenjoyBotInstances)
+                {
+                    if (botInstance.SettingsId == null)
+                    {
+                        var settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
+                        if (settings == null)
+                        {
+                            settings = CodenjoyBotInstance.GetSettings(botInstance);
+                            db.LaunchSettingsModels.Add(settings);
+                        }
+
+                        settings.Visibility = true;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        var settings = db.LaunchSettingsModels.Find(botInstance.SettingsId);
+                        if (settings == null || settings.HashCode != botInstance.GetHashCode())
+                        {
+                            settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
+                            if (settings != null)
+                            {
+                                settings.Visibility = true;
+                                db.SaveChanges();
+                            } else throw new Exception("Settings not found");
+                        }
+
+                        settings.Visibility = true;
+                        db.SaveChanges();
+                    }
+                }    
+            }
         }
         private void DefaultSettingsLoad()
         {
