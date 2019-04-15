@@ -214,9 +214,12 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 var settings = db.LaunchSettingsModels.Find(SettingsId);
                 if (settings == null || settings.HashCode != hashCode)
                 {
-                    settings = GetSettings(this);
-
-                    db.LaunchSettingsModels.Add(settings);
+                    settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
+                    if (settings == null)
+                    {
+                        settings = GetSettings(this);
+                        db.LaunchSettingsModels.Add(settings);
+                    }
                 }
 
                 settings.Visibility = true;

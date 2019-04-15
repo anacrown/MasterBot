@@ -23,10 +23,19 @@ namespace Debugger
             private set
             {
                 if (Equals(value, _codenjoyBotInstances)) return;
+
+                if (_codenjoyBotInstances != null)
+                    _codenjoyBotInstances.Started -= CodenjoyBotInstancesOnStarted;
+
                 _codenjoyBotInstances = value;
+
+                if (_codenjoyBotInstances != null)
+                    _codenjoyBotInstances.Started += CodenjoyBotInstancesOnStarted;
+
                 OnPropertyChanged();
             }
         }
+
         public SettingsCollection UnVisibleSettings
         {
             get => _unVisibleSettings;
@@ -130,6 +139,12 @@ namespace Debugger
 
                 db.SaveChanges();
             }
+        }
+        private void CodenjoyBotInstancesOnStarted(object sender, CodenjoyBotInstance botInstance)
+        {
+            var settings = UnVisibleSettings.FirstOrDefault(t => t.Id == botInstance.SettingsId);
+            if (settings != null)
+                Dispatcher.Invoke(() => UnVisibleSettings.Remove(settings));
         }
 
 
