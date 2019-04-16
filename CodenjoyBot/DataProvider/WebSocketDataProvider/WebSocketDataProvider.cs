@@ -93,6 +93,7 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
             _webSocket.Dispose();
             _webSocket = null;
 
+            OnStopped();
             OnLogDataReceived(Time, "Stopped");
         }
 

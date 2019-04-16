@@ -27,8 +27,19 @@ namespace CodenjoyBot.CodenjoyBotInstance
         private UIElement _control;
         private UIElement _debugControl;
         private ObservableCollection<LogFilterEntry> _logFilterEntries;
+        private bool _isStarted;
 
-        public bool IsStarted { get; private set; }
+        public bool IsStarted
+        {
+            get => _isStarted;
+            private set
+            {
+                if (value == _isStarted) return;
+                _isStarted = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DateTime StartTime { get; private set; }
         public string Title => $"[{Solver?.GetType().Name ?? "EMPTY SOLVER"}] {DataProvider?.Title ?? "EMPTY PROVIDER"}";
         public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
@@ -194,15 +205,11 @@ namespace CodenjoyBot.CodenjoyBotInstance
             Solver.Initialize();
 
             DataProvider.Start();
-
-            IsStarted = true;
         }
 
         public void Stop()
         {
             DataProvider?.Stop();
-
-            IsStarted = false;
         }
 
         private void SolverOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
@@ -241,8 +248,16 @@ namespace CodenjoyBot.CodenjoyBotInstance
             }
 
             OnStarted(DataProvider);
+
+            IsStarted = true;
         }
-        private void DataProviderOnStopped(object sender, EventArgs e) => OnStopped(DataProvider);
+        private void DataProviderOnStopped(object sender, EventArgs e)
+        {
+            OnStopped(DataProvider);
+
+            IsStarted = false;
+        }
+
         private void DataProviderOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)

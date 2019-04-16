@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 
-namespace CodenjoyBot
+namespace CodenjoyBot.CodenjoyBotInstance.Controls
 {
     /// <summary>
     /// Interaction logic for CodenjoyBotInstanceControl.xaml
@@ -16,11 +16,11 @@ namespace CodenjoyBot
     public partial class CodenjoyBotInstanceControl : INotifyPropertyChanged
     {
         public static readonly DependencyProperty CodenjoyBotInstanceProperty = DependencyProperty.Register(
-            "CodenjoyBotInstance", typeof(CodenjoyBotInstance.CodenjoyBotInstance), typeof(CodenjoyBotInstanceControl), new PropertyMetadata(default(CodenjoyBotInstance.CodenjoyBotInstance)));
+            "CodenjoyBotInstance", typeof(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance), typeof(CodenjoyBotInstanceControl), new PropertyMetadata(default(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance)));
 
-        public CodenjoyBotInstance.CodenjoyBotInstance CodenjoyBotInstance
+        public CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance CodenjoyBotInstance
         {
-            get => (CodenjoyBotInstance.CodenjoyBotInstance)GetValue(CodenjoyBotInstanceProperty);
+            get => (CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance)GetValue(CodenjoyBotInstanceProperty);
             set => SetValue(CodenjoyBotInstanceProperty, value);
         }
 
@@ -32,17 +32,12 @@ namespace CodenjoyBot
         public IDataLogger DataLogger => CodenjoyBotInstance?.DataLogger;
         public ISolver Solver => CodenjoyBotInstance?.Solver;
 
-        public bool IsStarted => CodenjoyBotInstance?.IsStarted ?? false;
-
-        public bool StartButtonIsEnabled => !IsStarted;
-        public bool StopButtonIsEnabled => IsStarted;
-
         public CodenjoyBotInstanceControl()
         {
             InitializeComponent();
         }
 
-        public CodenjoyBotInstanceControl(CodenjoyBotInstance.CodenjoyBotInstance codenjoyBotInstance) : this()
+        public CodenjoyBotInstanceControl(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance codenjoyBotInstance) : this()
         {
             CodenjoyBotInstance = codenjoyBotInstance;
         }
@@ -88,17 +83,11 @@ namespace CodenjoyBot
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             CodenjoyBotInstance.Start();
-            OnPropertyChanged(nameof(IsStarted));
-            OnPropertyChanged(nameof(StartButtonIsEnabled));
-            OnPropertyChanged(nameof(StopButtonIsEnabled));
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             CodenjoyBotInstance.Stop();
-            OnPropertyChanged(nameof(IsStarted));
-            OnPropertyChanged(nameof(StartButtonIsEnabled));
-            OnPropertyChanged(nameof(StopButtonIsEnabled));
         }
 
         private void DataProviderComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

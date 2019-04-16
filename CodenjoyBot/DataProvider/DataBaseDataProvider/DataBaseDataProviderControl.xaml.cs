@@ -30,7 +30,8 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         private void SelectInstance_OnClick(object sender, RoutedEventArgs e)
         {
-            (new SelectInstanceWindow()).ShowDialog();
+            var window = new SelectInstanceWindow {Owner = Application.Current.MainWindow};
+            window.ShowDialog();
         }
     }
 }

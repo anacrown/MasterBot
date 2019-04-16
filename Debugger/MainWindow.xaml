@@ -6,6 +6,7 @@
         xmlns:codenjoyBotInstance="clr-namespace:CodenjoyBot.CodenjoyBotInstance;assembly=CodenjoyBot"
         xmlns:entity="clr-namespace:CodenjoyBot.Entity;assembly=CodenjoyBot"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
         Title="CodenjoyBot Debugger" Width="1300" MinHeight="1000"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
@@ -56,21 +57,29 @@
                 <Grid>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <ContentPresenter Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=SelectedBotInstance.DebugControl}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox x:Name="BattleBotInstanceComboBox" Grid.Row="1" VerticalContentAlignment="Center" MinWidth="200" SelectedIndex="0"
+                                  SelectionChanged="BattleBotInstanceComboBox_OnSelectionChanged"
+                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}">
+                            <ComboBox.Resources>
+                                <DataTemplate DataType="{x:Type codenjoyBotInstance:CodenjoyBotInstance}">
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.Resources>
+                        </ComboBox>
 
-                    <ComboBox x:Name="BattleBotInstanceComboBox" Grid.Row="1" VerticalContentAlignment="Center" Margin="10" MinWidth="390" SelectedIndex="0"
-                              SelectionChanged="BattleBotInstanceComboBox_OnSelectionChanged"
-                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=CodenjoyBotInstances}">
-                        <ComboBox.Resources>
-                            <DataTemplate DataType="{x:Type codenjoyBotInstance:CodenjoyBotInstance}">
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </ComboBox.Resources>
-                    </ComboBox>
+                        <Button x:Name="StartButton" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="22" Content="Start" Click="StartButton_Click"
+                                IsEnabled="{c:Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}, Path='!SelectedBotInstance.IsStarted'}" />
+                        <Button x:Name="StopButton" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="22" Content="Stop" Click="StopButton_Click" 
+                                IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}, Path=SelectedBotInstance.IsStarted}" />
+
+                    </StackPanel>
+
+                    <ContentPresenter Grid.Row="1" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=SelectedBotInstance.DebugControl}"/>
 
                 </Grid>
             </TabItem>

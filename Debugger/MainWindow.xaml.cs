@@ -121,6 +121,16 @@ namespace Debugger
                 }    
             }
         }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedBotInstance?.Start();
+        }
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedBotInstance?.Stop();
+        }
+
         private void DefaultSettingsLoad()
         {
             using (var db = new CodenjoyDbContext())
