@@ -5,12 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dataBaseDataProvider="clr-namespace:CodenjoyBot.DataProvider.DataBaseDataProvider"
         mc:Ignorable="d"
-        WindowStyle="ThreeDBorderWindow" Height="600" Width="1000"
+        WindowStyle="ThreeDBorderWindow" MinHeight="600" MinWidth="1200"
         WindowStartupLocation="CenterOwner"
         Loaded="SelectInstanceWindow_OnLoaded"
         Closing="SelectInstanceWindow_OnClosing">
     <Grid>
-        <TreeView ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dataBaseDataProvider:SelectInstanceWindow}}, Path=Settings}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TreeView ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dataBaseDataProvider:SelectInstanceWindow}}, Path=Settings}"
+                  SelectedItemChanged="TreeView_OnSelectedItemChanged">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type dataBaseDataProvider:SettingsViewModel}" ItemsSource="{Binding Launches}">
                     <TextBlock>
@@ -26,5 +33,19 @@
                 </DataTemplate>
             </TreeView.Resources>
         </TreeView>
+
+        <Grid Grid.Row="1" Margin="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dataBaseDataProvider:SelectInstanceWindow}}, Path=SelectedLaunch.Header}" Margin="5"/>
+
+            <Button x:Name="OKButton" Grid.Column="1" Content="OK" Margin="5" Width="90" Click="OKButton_OnClick" />
+            <Button x:Name="CANCELButton" Grid.Column="2" Content="Cancel" Margin="5" Width="90" Click="CANCELButton_OnClick" />
+
+        </Grid>
     </Grid>
 </Window>

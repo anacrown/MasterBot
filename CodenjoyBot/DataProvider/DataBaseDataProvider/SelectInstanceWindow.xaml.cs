@@ -27,6 +27,15 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
             set => SetValue(SettingsProperty, value);
         }
 
+        public static readonly DependencyProperty SelectedLaunchProperty = DependencyProperty.Register(
+            "SelectedLaunch", typeof(LaunchViewModel), typeof(SelectInstanceWindow), new PropertyMetadata(default(LaunchViewModel)));
+
+        public LaunchViewModel SelectedLaunch
+        {
+            get => (LaunchViewModel) GetValue(SelectedLaunchProperty);
+            set => SetValue(SelectedLaunchProperty, value);
+        }
+
         public SelectInstanceWindow()
         {
             InitializeComponent();
@@ -49,6 +58,24 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         {
 //            _db.Dispose();
         }
+
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            SelectedLaunch = e.NewValue as LaunchViewModel;
+            OKButton.IsEnabled = SelectedLaunch != null;
+        }
+
+        private void OKButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
+
+        private void CANCELButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
     }
 
     public class SettingsViewModel : INotifyPropertyChanged
@@ -57,6 +84,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         private DateTime _createTime;
         private int _launchCount;
         private ObservableCollection<LaunchViewModel> _launches;
+        private int _id;
 
         public SettingsViewModel()
         {
@@ -65,11 +93,23 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         public SettingsViewModel(LaunchSettingsModel model) : this()
         {
+            Id = model.Id;
             Title = model.Title;
             CreateTime = model.CreateTime;
             LaunchCount = model.Launches.Count;
 
             Launches = new ObservableCollection<LaunchViewModel>(model.Launches.Select(t => new LaunchViewModel(t)));
+        }
+
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (value == _id) return;
+                _id = value;
+                OnPropertyChanged();
+            }
         }
 
         public ObservableCollection<LaunchViewModel> Launches
@@ -128,6 +168,9 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
     {
         private string _name;
         private DateTime _launchTime;
+        private int _id;
+        private string _title;
+        private string _header;
 
         public LaunchViewModel()
         {
@@ -136,8 +179,44 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         public LaunchViewModel(LaunchModel model) : this()
         {
+            Id = model.Id;
             Name = model.BotInstanceName;
+            Title = model.BotInstanceTitle;
             LaunchTime = model.LaunchTime;
+            Header = $"{Name} {LaunchTime.ToString(Properties.Resources.DateFormat)} {Title}";
+        }
+
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (value == _id) return;
+                _id = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Header
+        {
+            get => _header;
+            set
+            {
+                if (value == _header) return;
+                _header = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (value == _title) return;
+                _title = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Name
