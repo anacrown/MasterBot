@@ -1,15 +1,12 @@
 ﻿using System;
-using System.CodeDom;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 using BomberMan_SuperAI.Annotations;
 using CodenjoyBot;
 using CodenjoyBot.CodenjoyBotInstance;
-using CodenjoyBot.Entity;
 
 namespace Debugger
 {
