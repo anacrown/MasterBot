@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Windows;
-using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.CodenjoyBotInstance.Controls

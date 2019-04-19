@@ -1,4 +1,6 @@
-﻿namespace CodenjoyBot.Board
+﻿using System.Linq;
+
+namespace CodenjoyBot.Board
 {
     public class Cell
     {
@@ -15,5 +17,7 @@
             Board = board;
             Pos = position;
         }
+
+        public Cell[] GetCrossVicinity() => Pos.GetCrossVicinity(Board.Size).Select(t => Board[t]).ToArray();
     }
 }
