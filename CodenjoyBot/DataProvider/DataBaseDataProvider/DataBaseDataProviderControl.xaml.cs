@@ -31,7 +31,12 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         private void SelectInstance_OnClick(object sender, RoutedEventArgs e)
         {
             var selectInstanceWindow = new SelectInstanceWindow {Owner = Application.Current.MainWindow};
-            SessionTitle.Text = selectInstanceWindow.ShowDialog() == true ? selectInstanceWindow.SelectedLaunch.Header : string.Empty;
+            if (selectInstanceWindow.ShowDialog() == true)
+            {
+                DataProvider.LoadData(selectInstanceWindow.SelectedLaunch.Id);
+                SessionTitle.Text = selectInstanceWindow.SelectedLaunch.Header;
+            }
+            else SessionTitle.Text = string.Empty;
         }
     }
 }
