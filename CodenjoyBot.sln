@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.156
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodenjoyBot", "CodenjoyBot\CodenjoyBot.csproj", "{3D3DBB7E-341A-4A52-9F9E-EB364B372C42}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BomberMan-SuperAI", "BomberMan-SuperAI\BomberMan-SuperAI.csproj", "{112643C0-0B46-45A7-B9DB-D086C968A193}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugger", "Debugger\Debugger.csproj", "{4A2A0299-1E37-44FE-AAC4-9CB24004B686}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Observer", "Observer\Observer.csproj", "{F5BB2E19-4B49-4084-9F34-B4A27EDAC13B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleBot-SuperAI", "BattleBot-SuperAI\BattleBot-SuperAI.csproj", "{E42BA438-E1B2-4F7F-B2DB-26C4D718B82E}"
 EndProject
@@ -33,10 +31,6 @@ Global
 		{4A2A0299-1E37-44FE-AAC4-9CB24004B686}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A2A0299-1E37-44FE-AAC4-9CB24004B686}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A2A0299-1E37-44FE-AAC4-9CB24004B686}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5BB2E19-4B49-4084-9F34-B4A27EDAC13B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5BB2E19-4B49-4084-9F34-B4A27EDAC13B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5BB2E19-4B49-4084-9F34-B4A27EDAC13B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5BB2E19-4B49-4084-9F34-B4A27EDAC13B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E42BA438-E1B2-4F7F-B2DB-26C4D718B82E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E42BA438-E1B2-4F7F-B2DB-26C4D718B82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E42BA438-E1B2-4F7F-B2DB-26C4D718B82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
