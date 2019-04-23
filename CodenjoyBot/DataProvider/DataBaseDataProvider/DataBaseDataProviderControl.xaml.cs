@@ -32,10 +32,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         {
             var selectInstanceWindow = new SelectInstanceWindow {Owner = Application.Current.MainWindow};
             if (selectInstanceWindow.ShowDialog() == true)
-            {
                 DataProvider.LoadData(selectInstanceWindow.SelectedLaunch.Id);
-                SessionTitle.Text = selectInstanceWindow.SelectedLaunch.Header;
-            }
             else SessionTitle.Text = string.Empty;
         }
     }

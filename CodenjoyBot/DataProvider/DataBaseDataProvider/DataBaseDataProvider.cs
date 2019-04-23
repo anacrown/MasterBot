@@ -1,21 +1,27 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Timers;
 using System.Windows;
+using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 {
     [Serializable]
-    public class DataBaseDataProvider : IDataProvider
+    public class DataBaseDataProvider : IDataProvider, INotifyPropertyChanged
     {
         private int? _launchId;
         private UIElement _control;
         private UIElement _debugControl;
         private readonly Timer _timer = new Timer(50);
 
+        private object _lock = new object();
         private CodenjoyDbContext _dbContext;
+        private uint _frameCount;
+        private string _title;
 
         public UIElement Control => _control ?? (_control = new DataBaseDataProviderControl(this));
 
@@ -27,15 +33,46 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
             _timer.Elapsed += TimerOnElapsed;
         }
 
-        protected DataBaseDataProvider(SerializationInfo info, StreamingContext context) : this() { }
+        protected DataBaseDataProvider(SerializationInfo info, StreamingContext context) : this()
+        {
+            _launchId = (int?)info.GetValue("LaunchId", typeof(int?));
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context) { }
+            if (_launchId != null)
+                LoadData(_launchId.Value);
+        }
 
-        public string Title { get; private set; }
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("LaunchId", _launchId);
+        }
+
+        public string Title
+        {
+            get => _title;
+            private set
+            {
+                if (value == _title) return;
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string Name { get; private set; }
         public uint Time { get; private set; }
 
-        public long FrameCount { get; private set; }
+        public uint FrameCount
+        {
+            get => _frameCount;
+            private set
+            {
+                if (value == _frameCount) return;
+                _frameCount = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(FrameMaximumKey));
+            }
+        }
+
+        public uint FrameMaximumKey => Math.Max(FrameCount - 1, 0);
 
         public void LoadData(int launchId)
         {
@@ -56,12 +93,15 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
             Time = 0;
             OnTimeChanged(Time);
             _dbContext = new CodenjoyDbContext();
-            FrameCount = _dbContext.DataFrameModels.LongCount(t => t.LaunchModelId == _launchId);
+            FrameCount = (uint)_dbContext.DataFrameModels.LongCount(t => t.LaunchModelId == _launchId);
+
+            OnStarted();
         }
 
         public void Stop()
         {
-            _dbContext.Dispose();
+            _dbContext?.Dispose();
+            OnStopped();
         }
 
         public void RecordPlay()
@@ -74,15 +114,17 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         }
         public void MoveToFrame(uint time)
         {
-            var frame = _dbContext.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == _launchId && t.Time == time);
-            if (frame == null)
-                throw new Exception("Frame not found");
+            lock (_lock)
+            {
+                var frame = _dbContext.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == _launchId && t.Time == time);
 
-            Time = time;
-            OnTimeChanged(Time);
-            OnDataReceived(frame.Board, time);
+                if (frame == null)
+                    throw new Exception("Frame not found");
 
-            Time++;
+                Time = time;
+                OnTimeChanged(Time);
+                OnDataReceived(frame.Board, time);
+            }
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
@@ -99,7 +141,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         public void SendResponse(string response)
         {
-            
+
         }
 
         public event EventHandler Started;
@@ -110,6 +152,8 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
         public event EventHandler<DataFrame> DataReceived;
 
         public event EventHandler<LogRecord> LogDataReceived;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnTimeChanged(uint e) => TimeChanged?.Invoke(this, e);
 
@@ -123,7 +167,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((DataBaseDataProvider) obj);
+            return Equals((DataBaseDataProvider)obj);
         }
 
         public override int GetHashCode()
@@ -131,6 +175,15 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
             return (Name != null ? Name.GetHashCode() : 0);
         }
 
-        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame(){Board = board, Time = time});
+        protected virtual void OnStarted() => Started?.Invoke(this, EventArgs.Empty);
+
+        protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
+
+        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame() { Board = board, Time = time });
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+
     }
 }

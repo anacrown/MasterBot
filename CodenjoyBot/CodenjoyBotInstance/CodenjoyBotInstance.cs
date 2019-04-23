@@ -131,8 +131,6 @@ namespace CodenjoyBot.CodenjoyBotInstance
         }
         public CodenjoyBotInstance()
         {
-            //WebSocketDataLogger.Instance.LogDataReceived += InstanceOnLogDataReceived;
-
             DataLogger = new FileSystemDataLogger();
         }
 

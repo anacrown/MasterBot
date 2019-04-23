@@ -22,7 +22,8 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" VerticalContentAlignment="Center" Content="Instance name"/>
-            <TextBox x:Name="SessionTitle" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Margin="10 10 0 10" HorizontalAlignment="Stretch" IsReadOnly="True" VerticalContentAlignment="Center" />
+            <TextBox x:Name="SessionTitle" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Margin="10 10 0 10" HorizontalAlignment="Stretch" IsReadOnly="True" VerticalContentAlignment="Center" 
+                     Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dataBaseDataProvider:DataBaseDataProviderControl}}, Path=DataProvider.Title, Mode=OneWay}"/>
 
             <Button x:Name="SelectInstance" Grid.Column="3" Content=". . ." VerticalAlignment="Center" Margin="0 10 10 10" Width="30"
                     Click="SelectInstance_OnClick"/>

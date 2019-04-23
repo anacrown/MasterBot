@@ -29,20 +29,9 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         {
             base.OnPropertyChanged(e);
 
-            if (e.Property == DataProviderProperty)
-            {
-                var oldValue = e.OldValue as FileSystemDataProvider;
-                if (oldValue != null)
-                {
-                    oldValue.TimeChanged -= DataProviderOnTimeChanged;
-                }
-
-                var newValue = e.NewValue as FileSystemDataProvider;
-                if (newValue != null)
-                {
-                    newValue.TimeChanged += DataProviderOnTimeChanged;
-                }
-            }
+            if (e.Property != DataProviderProperty) return;
+            if (e.OldValue is FileSystemDataProvider oldValue) oldValue.TimeChanged -= DataProviderOnTimeChanged;
+            if (e.NewValue is FileSystemDataProvider newValue) newValue.TimeChanged += DataProviderOnTimeChanged;
         }
 
         private void DataProviderOnTimeChanged(object sender, uint time)

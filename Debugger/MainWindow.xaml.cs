@@ -109,13 +109,14 @@ namespace Debugger
                             {
                                 settings.Visibility = true;
                                 db.SaveChanges();
-                            } else throw new Exception("Settings not found");
+                            }
+                            else throw new Exception("Settings not found");
                         }
 
                         settings.Visibility = true;
                         db.SaveChanges();
                     }
-                }    
+                }
             }
         }
 
@@ -130,16 +131,23 @@ namespace Debugger
 
         private void DefaultSettingsLoad()
         {
-            using (var db = new CodenjoyDbContext())
+            try
             {
-                CodenjoyBotInstances = new CodenjoyBotInstanceCollection(
-                    db.LaunchSettingsModels
-                    .Where(settings => settings.Visibility)
-                    .Select(settings => CodenjoyBotInstance.FromSettings(settings)));
+                using (var db = new CodenjoyDbContext())
+                {
+                    CodenjoyBotInstances = new CodenjoyBotInstanceCollection(
+                        db.LaunchSettingsModels
+                        .Where(settings => settings.Visibility)
+                        .Select(settings => CodenjoyBotInstance.FromSettings(settings)));
 
-                UnVisibleSettings = new SettingsCollection(db.LaunchSettingsModels
-                    .Where(settings => !settings.Visibility)
-                    .Select(settings => new SettingsViewModel(settings)).ToArray());
+                    UnVisibleSettings = new SettingsCollection(db.LaunchSettingsModels
+                        .Where(settings => !settings.Visibility)
+                        .Select(settings => new SettingsViewModel(settings)).ToArray());
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
         private void BattleBotInstanceComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
