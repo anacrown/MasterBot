@@ -260,7 +260,6 @@ namespace CodenjoyBot.CodenjoyBotInstance
         private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
-
             try
             {
                 var response = Solver.Answer(new Board.Board(Name, StartTime, frame));

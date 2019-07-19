@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BomberMan_SuperAI.Properties {
+namespace PaperIO_MiniCupsAI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BomberMan_SuperAI.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BomberMan_SuperAI.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PaperIO_MiniCupsAI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,9 +63,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bomb_bomberman {
+        internal static System.Drawing.Bitmap explorer {
             get {
-                object obj = ResourceManager.GetObject("bomb_bomberman", resourceCulture);
+                object obj = ResourceManager.GetObject("explorer", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bomb_timer_1 {
+        internal static System.Drawing.Bitmap flash {
             get {
-                object obj = ResourceManager.GetObject("bomb_timer_1", resourceCulture);
+                object obj = ResourceManager.GetObject("flash", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bomb_timer_2 {
+        internal static System.Drawing.Bitmap me {
             get {
-                object obj = ResourceManager.GetObject("bomb_timer_2", resourceCulture);
+                object obj = ResourceManager.GetObject("me", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bomb_timer_3 {
+        internal static System.Drawing.Bitmap me_line {
             get {
-                object obj = ResourceManager.GetObject("bomb_timer_3", resourceCulture);
+                object obj = ResourceManager.GetObject("me_line", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,89 +103,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bomb_timer_4 {
+        internal static System.Drawing.Bitmap me_territory {
             get {
-                object obj = ResourceManager.GetObject("bomb_timer_4", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap bomb_timer_5 {
-            get {
-                object obj = ResourceManager.GetObject("bomb_timer_5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap bomberman {
-            get {
-                object obj = ResourceManager.GetObject("bomberman", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap boom {
-            get {
-                object obj = ResourceManager.GetObject("boom", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap dead_bomberman {
-            get {
-                object obj = ResourceManager.GetObject("dead_bomberman", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap dead_meat_chopper {
-            get {
-                object obj = ResourceManager.GetObject("dead_meat_chopper", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap destroyable_wall {
-            get {
-                object obj = ResourceManager.GetObject("destroyable_wall", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap destroyed_wall {
-            get {
-                object obj = ResourceManager.GetObject("destroyed_wall", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap meat_chopper {
-            get {
-                object obj = ResourceManager.GetObject("meat_chopper", resourceCulture);
+                object obj = ResourceManager.GetObject("me_territory", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +123,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap other_bomb_bomberman {
+        internal static System.Drawing.Bitmap player {
             get {
-                object obj = ResourceManager.GetObject("other_bomb_bomberman", resourceCulture);
+                object obj = ResourceManager.GetObject("player", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +133,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap other_bomberman {
+        internal static System.Drawing.Bitmap player_line {
             get {
-                object obj = ResourceManager.GetObject("other_bomberman", resourceCulture);
+                object obj = ResourceManager.GetObject("player_line", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +143,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap other_dead_bomberman {
+        internal static System.Drawing.Bitmap player_territory {
             get {
-                object obj = ResourceManager.GetObject("other_dead_bomberman", resourceCulture);
+                object obj = ResourceManager.GetObject("player_territory", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,9 +153,9 @@ namespace BomberMan_SuperAI.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap wall {
+        internal static System.Drawing.Bitmap saw {
             get {
-                object obj = ResourceManager.GetObject("wall", resourceCulture);
+                object obj = ResourceManager.GetObject("saw", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

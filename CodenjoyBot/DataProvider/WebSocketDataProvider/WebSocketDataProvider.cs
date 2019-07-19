@@ -3,7 +3,6 @@ using System;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows;
-using CodenjoyBot.Annotations;
 using WebSocket4Net;
 
 namespace CodenjoyBot.DataProvider.WebSocketDataProvider

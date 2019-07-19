@@ -252,42 +252,42 @@ namespace BattleBot_SuperAI.BattleSolver
 
     public static class CellExtention
     {
-        private static Dictionary<char, Element> _elements = new Dictionary<char, Element>()
+        private static Dictionary<string, Element> _elements = new Dictionary<string, Element>()
         {
-            { ' ',Element.GROUND                                             },
-            { '☼',Element.WALL                                               },
-            { 'Ѡ',Element.DEAD                                               },
-            { '╬',Element.CONSTRUCTION                                       },
-            { '╩',Element.CONSTRUCTION_DESTROYED_DOWN                        },
-            { '╦',Element.CONSTRUCTION_DESTROYED_UP                          },
-            { '╠',Element.CONSTRUCTION_DESTROYED_LEFT                        },
-            { '╣',Element.CONSTRUCTION_DESTROYED_RIGHT                       },
-            { '╨',Element.CONSTRUCTION_DESTROYED_DOWN_TWICE                  },
-            { '╥',Element.CONSTRUCTION_DESTROYED_UP_TWICE                    },
-            { '╞',Element.CONSTRUCTION_DESTROYED_LEFT_TWICE                  },
-            { '╡',Element.CONSTRUCTION_DESTROYED_RIGHT_TWICE                  },
-            { '│',Element.CONSTRUCTION_DESTROYED_LEFT_RIGHT                  },
-            { '─',Element.CONSTRUCTION_DESTROYED_UP_DOWN                     },
-            { '┌',Element.CONSTRUCTION_DESTROYED_UP_LEFT                     },
-            { '┐',Element.CONSTRUCTION_DESTROYED_RIGHT_UP                    },
-            { '└',Element.CONSTRUCTION_DESTROYED_DOWN_LEFT                   },
-            { '┘',Element.CONSTRUCTION_DESTROYED_DOWN_RIGHT                  },
-            { '•',Element.BULLET                                             },
-            
-            { '▲',Element.TANK_UP                                            },
-            { '►',Element.TANK_RIGHT                                         },
-            { '▼',Element.TANK_DOWN                                          },
-            { '◄',Element.TANK_LEFT                                          },
-            
-            { '?',Element.OTHER_TANK_UP                                      },
-            { '»',Element.OTHER_TANK_RIGHT                                   },
-            { '¿',Element.OTHER_TANK_DOWN                                    },
-            { '«',Element.OTHER_TANK_LEFT                                    },
-            
-            { '˄',Element.PLAYER_TANK_UP                                     },
-            { '˃',Element.PLAYER_TANK_RIGHT                                  },
-            { '˅',Element.PLAYER_TANK_DOWN                                   },
-            { '˂',Element.PLAYER_TANK_LEFT                                   }
+            { " ",Element.GROUND                                             },
+            { "☼",Element.WALL                                               },
+            { "Ѡ",Element.DEAD                                               },
+            { "╬",Element.CONSTRUCTION                                       },
+            { "╩",Element.CONSTRUCTION_DESTROYED_DOWN                        },
+            { "╦",Element.CONSTRUCTION_DESTROYED_UP                          },
+            { "╠",Element.CONSTRUCTION_DESTROYED_LEFT                        },
+            { "╣",Element.CONSTRUCTION_DESTROYED_RIGHT                       },
+            { "╨",Element.CONSTRUCTION_DESTROYED_DOWN_TWICE                  },
+            { "╥",Element.CONSTRUCTION_DESTROYED_UP_TWICE                    },
+            { "╞",Element.CONSTRUCTION_DESTROYED_LEFT_TWICE                  },
+            { "╡",Element.CONSTRUCTION_DESTROYED_RIGHT_TWICE                  },
+            { "│",Element.CONSTRUCTION_DESTROYED_LEFT_RIGHT                  },
+            { "─",Element.CONSTRUCTION_DESTROYED_UP_DOWN                     },
+            { "┌",Element.CONSTRUCTION_DESTROYED_UP_LEFT                     },
+            { "┐",Element.CONSTRUCTION_DESTROYED_RIGHT_UP                    },
+            { "└",Element.CONSTRUCTION_DESTROYED_DOWN_LEFT                   },
+            { "┘",Element.CONSTRUCTION_DESTROYED_DOWN_RIGHT                  },
+            { "•",Element.BULLET                                             },
+              
+            { "▲",Element.TANK_UP                                            },
+            { "►",Element.TANK_RIGHT                                         },
+            { "▼",Element.TANK_DOWN                                          },
+            { "◄",Element.TANK_LEFT                                          },
+              
+            { "?",Element.OTHER_TANK_UP                                      },
+            { "»",Element.OTHER_TANK_RIGHT                                   },
+            { "¿",Element.OTHER_TANK_DOWN                                    },
+            { "«",Element.OTHER_TANK_LEFT                                    },
+              
+            { "˄",Element.PLAYER_TANK_UP                                     },
+            { "˃",Element.PLAYER_TANK_RIGHT                                  },
+            { "˅",Element.PLAYER_TANK_DOWN                                   },
+            { "˂",Element.PLAYER_TANK_LEFT                                   }
         };
 
         public static Element GetElement(this Cell cell)

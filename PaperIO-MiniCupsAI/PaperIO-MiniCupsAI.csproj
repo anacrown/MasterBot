@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{112643C0-0B46-45A7-B9DB-D086C968A193}</ProjectGuid>
+    <ProjectGuid>{D46B894E-599B-4D8F-A55D-B5384F01E2D9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BomberMan_SuperAI</RootNamespace>
-    <AssemblyName>BomberMan-SuperAI</AssemblyName>
+    <RootNamespace>PaperIO_MiniCupsAI</RootNamespace>
+    <AssemblyName>PaperIO-MiniCupsAI</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,23 +31,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BattleSolver\BomberSolver.cs" />
-    <Compile Include="Controls\BomberSolverControl.xaml.cs">
-      <DependentUpon>BomberSolverControl.xaml</DependentUpon>
+    <Compile Include="Controls\PaperIoSolverControl.xaml.cs">
+      <DependentUpon>PaperIoSolverControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BomberSolverDebugControl.xaml.cs">
-      <DependentUpon>BomberSolverDebugControl.xaml</DependentUpon>
+    <Compile Include="Controls\PaperIoSolverDebugControl.xaml.cs">
+      <DependentUpon>PaperIoSolverDebugControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Element.cs" />
+    <Compile Include="PaperIoSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -58,16 +67,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
-      <Project>{3D3DBB7E-341A-4A52-9F9E-EB364B372C42}</Project>
+      <Project>{3d3dbb7e-341a-4a52-9f9e-eb364b372c42}</Project>
       <Name>CodenjoyBot</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\BomberSolverControl.xaml">
+    <Page Include="Controls\PaperIoSolverControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\BomberSolverDebugControl.xaml">
+    <Page Include="Controls\PaperIoSolverDebugControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -76,62 +85,40 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Resources\bomb_bomberman.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bomb_timer_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bomb_timer_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bomb_timer_3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bomb_timer_4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bomb_timer_5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bomberman.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\boom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\dead_bomberman.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\dead_meat_chopper.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\destroyable_wall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\destroyed_wall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\meat_chopper.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\none.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\other_bomb_bomberman.png" />
+    <None Include="Resources\me_line.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\other_bomberman.png" />
+    <None Include="Resources\player.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\wall.png" />
+    <None Include="Resources\player_line.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\other_dead_bomberman.png" />
+    <None Include="Resources\saw.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\explorer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\me.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\me_territory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player_territory.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

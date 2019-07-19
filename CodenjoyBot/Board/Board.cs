@@ -38,8 +38,8 @@ namespace CodenjoyBot.Board
             _instanceName = instanceName;
             _startTime = startTime;
             Frame = frame;
-            Size = (int)Math.Sqrt(Frame.Board.Length);
-            _cells = Frame.Board.Select((t, i) => new Cell(t, new Point(i % Size, i / Size), this)).ToArray();
+//            Size = (int)Math.Sqrt(Frame.Board.Length);
+//            _cells = Frame.Board.Select((t, i) => new Cell(t, new Point(i % Size, i / Size), this)).ToArray();
         }
 
         public IEnumerator<Cell> GetEnumerator() => new BoardEnumerator(_cells);

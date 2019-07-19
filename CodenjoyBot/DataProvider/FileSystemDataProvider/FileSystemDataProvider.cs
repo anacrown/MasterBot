@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
+using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
     [Serializable]
-    public class FileSystemDataProvider : IDataProvider
+    public class FileSystemDataProvider : IDataProvider, INotifyPropertyChanged
     {
         public string Title => BoardFile;
         public string Name { get; private set; }
@@ -97,8 +100,10 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
             Time = 0;
             OnIndexChanged(Time);
-            _boards = File.ReadAllLines(BoardFile).Select(ProcessMessage)
-                .ToDictionary(frame => frame.Time, frame => frame.Board);
+            _boards = File.ReadAllLines(BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
+
+            OnPropertyChanged(nameof(FrameCount));
+            OnPropertyChanged(nameof(FrameMaximumKey));
 
             OnStarted();
         }
@@ -176,5 +181,10 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
                 return ((_boardFile != null ? _boardFile.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

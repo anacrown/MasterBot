@@ -151,26 +151,26 @@ namespace BomberMan_SuperAI.BattleSolver
 
     public static class CellExtention
     {
-        private static Dictionary<char, Element> _elements = new Dictionary<char, Element>()
+        private static Dictionary<string, Element> _elements = new Dictionary<string, Element>()
         {
-            {'☺', Element.BOMBERMAN },
-            {'☻', Element.BOMB_BOMBERMAN },
-            {'Ѡ', Element.DEAD_BOMBERMAN },
-            {'♥', Element.OTHER_BOMBERMAN },
-            {'♠', Element.OTHER_BOMB_BOMBERMAN },
-            {'♣', Element.OTHER_DEAD_BOMBERMAN },
-            {'5', Element.BOMB_TIMER_5 },
-            {'4', Element.BOMB_TIMER_4 },
-            {'3', Element.BOMB_TIMER_3 },
-            {'2', Element.BOMB_TIMER_2 },
-            {'1', Element.BOMB_TIMER_1 },
-            {'҉', Element.BOOM },
-            {'☼', Element.WALL },
-            {'#', Element.DESTROYABLE_WALL },
-            {'H', Element.DESTROYED_WALL },
-            {'&', Element.MEAT_CHOPPER },
-            {'x', Element.DEAD_MEAT_CHOPPER },
-            {' ', Element.NONE }
+            {"☺", Element.BOMBERMAN },
+            {"☻", Element.BOMB_BOMBERMAN },
+            {"Ѡ", Element.DEAD_BOMBERMAN },
+            {"♥", Element.OTHER_BOMBERMAN },
+            {"♠", Element.OTHER_BOMB_BOMBERMAN },
+            {"♣", Element.OTHER_DEAD_BOMBERMAN },
+            {"5", Element.BOMB_TIMER_5 },
+            {"4", Element.BOMB_TIMER_4 },
+            {"3", Element.BOMB_TIMER_3 },
+            {"2", Element.BOMB_TIMER_2 },
+            {"1", Element.BOMB_TIMER_1 },
+            {"'", Element.BOOM },
+            {"☼", Element.WALL },
+            {"#", Element.DESTROYABLE_WALL },
+            {"H", Element.DESTROYED_WALL },
+            {"&", Element.MEAT_CHOPPER },
+            {"x", Element.DEAD_MEAT_CHOPPER },
+            {" ", Element.NONE }
         };
 
         public static Element GetElement(this Cell cell)
