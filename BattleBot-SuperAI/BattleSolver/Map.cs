@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using CodenjoyBot.Board;
 
@@ -9,96 +11,97 @@ namespace BattleBot_SuperAI.BattleSolver
         private readonly int[,] _map;
         private readonly int[,] _weights;
 
-        public int Size { get; }
-        public Point Start { get; }
+        public Size Size { get; }
+
+        public CodenjoyBot.Board.Point Start { get; }
 
         public int this[int i, int j]
         {
-            get => _map[i, j];
-            set => _map[i, j] = value;
+            get
+            {
+                return this._map[i, j];
+            }
+            set
+            {
+                this._map[i, j] = value;
+            }
         }
 
-        public int this[Point p]
+        public int this[CodenjoyBot.Board.Point p]
         {
-            get => this[p.X, p.Y];
-            set => this[p.X, p.Y] = value;
+            get
+            {
+                return this[p.X, p.Y];
+            }
+            set
+            {
+                this[p.X, p.Y] = value;
+            }
         }
 
-        public Map(Point start, int[,] weights, int size)
+        public Map(CodenjoyBot.Board.Point start, int[,] weights, Size size)
         {
-            Start = start;
-            Size = size;
-
-            _weights = weights;
-            _map = new int[size, size];
-
-            Dijkstra();
+            this.Start = start;
+            this.Size = size;
+            this._weights = weights;
+            this._map = new int[size.Width, size.Height];
+            this.Dijkstra();
         }
 
         private void Dijkstra()
         {
-            var add = new Queue<Point>();
-            var remove = new Queue<Point>();
-            var list = new List<Point>() { Start };
-
-            var step = 0;
-            while (list.Count > 0)
+            Queue<CodenjoyBot.Board.Point> pointQueue1 = new Queue<CodenjoyBot.Board.Point>();
+            Queue<CodenjoyBot.Board.Point> pointQueue2 = new Queue<CodenjoyBot.Board.Point>();
+            List<CodenjoyBot.Board.Point> pointList = new List<CodenjoyBot.Board.Point>()
+      {
+        this.Start
+      };
+            int num = 0;
+            while (pointList.Count > 0)
             {
-                foreach (var point in list)
+                foreach (CodenjoyBot.Board.Point point1 in pointList)
                 {
-                    if (_weights[point.X, point.Y] < 0) continue;
-
-                    if (_weights[point.X, point.Y] == 0)
+                    if (this._weights[point1.X, point1.Y] >= 0)
                     {
-                        //MainWindow.Log(0, $"map {point} = {step}");
-                        _map[point.X, point.Y] = step;
-                        foreach (var neighbor in point.GetCrossVicinity(Size))
+                        if (this._weights[point1.X, point1.Y] == 0)
                         {
-                            if (_weights[neighbor.X, neighbor.Y] >= 0 && !list.Contains(neighbor) && !add.Contains(neighbor))
-                                add.Enqueue(neighbor);
+                            this._map[point1.X, point1.Y] = num;
+                            foreach (CodenjoyBot.Board.Point point2 in point1.GetCrossVicinity(this.Size))
+                            {
+                                if (this._weights[point2.X, point2.Y] >= 0 && !pointList.Contains(point2) && !pointQueue1.Contains(point2))
+                                    pointQueue1.Enqueue(point2);
+                            }
+                            pointQueue2.Enqueue(point1);
                         }
-
-                        remove.Enqueue(point);
+                        --this._weights[point1.X, point1.Y];
                     }
-
-                    _weights[point.X, point.Y]--;
-                    //MainWindow.Log(0, $"weights {point} = {_weights[point.X, point.Y]}");
                 }
-
-                while (remove.Count > 0)
-                {
-                    //MainWindow.Log(0, $"remove {remove.Peek()}");
-                    list.Remove(remove.Dequeue());
-                }
-
-                while (add.Count > 0)
-                {
-                    //MainWindow.Log(0, $"add {add.Peek()}");
-                    list.Add(add.Dequeue());
-                }
-
-                step++;
-                //Thread.Sleep(2000);
+                while (pointQueue2.Count > 0)
+                    pointList.Remove(pointQueue2.Dequeue());
+                while (pointQueue1.Count > 0)
+                    pointList.Add(pointQueue1.Dequeue());
+                ++num;
             }
         }
 
         public BattleCell[] Path(BattleCell cell)
         {
-            var current = cell;
-            var path = new List<BattleCell> { current };
-
-            while (current != null && current.Pos != Start)
+            BattleCell battleCell = cell;
+            List<BattleCell> battleCellList = new List<BattleCell>()
+      {
+        battleCell
+      };
+            while (battleCell != null && battleCell.Pos != this.Start)
             {
-                var min = current.GetCrossVicinity().Select(t => this[t.Pos]).Min();
-                current = current.GetCrossVicinity().FirstOrDefault(t => this[t.Pos] == min);
-
-                if (current?.Pos == Start) break;
-                path.Add(current);
+                int min = ((IEnumerable<BattleCell>)battleCell.GetCrossVicinity()).Select<BattleCell, int>((Func<BattleCell, int>)(t => this[t.Pos])).Min();
+                battleCell = ((IEnumerable<BattleCell>)battleCell.GetCrossVicinity()).FirstOrDefault<BattleCell>((Func<BattleCell, bool>)(t => this[t.Pos] == min));
+                if (!(battleCell?.Pos == this.Start))
+                    battleCellList.Add(battleCell);
+                else
+                    break;
             }
-
-            path.Reverse();
-
-            return path.ToArray();
+            battleCellList.Reverse();
+            return battleCellList.ToArray();
         }
     }
 }

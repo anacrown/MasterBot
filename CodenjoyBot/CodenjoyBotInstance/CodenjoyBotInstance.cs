@@ -262,11 +262,10 @@ namespace CodenjoyBot.CodenjoyBotInstance
         {
             try
             {
-                var response = Solver.Answer(new Board.Board(Name, StartTime, frame));
-
-                DataProvider.SendResponse(response);
-
-                DataLogger.Log(this, frame, response);
+                this.DataLogger.Log(this, frame);
+                string response = this.Solver.Answer(this.Name, this.StartTime, frame);
+                this.DataProvider.SendResponse(response);
+                this.DataLogger.Log(this, frame.Time, response);
             }
             catch (Exception e)
             {

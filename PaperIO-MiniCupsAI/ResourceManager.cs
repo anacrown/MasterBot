@@ -1,76 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using PaperIO_MiniCupsAI.Properties;
 
 namespace PaperIO_MiniCupsAI
 {
-    static class ResourceManager
+    internal static class ResourceManager
     {
         private static Dictionary<Element, BitmapImage> _bitmapImages = new Dictionary<Element, BitmapImage>();
+        private static Dictionary<string, BitmapImage> _bitmapImagesSome = new Dictionary<string, BitmapImage>();
+
+        public static ImageSource GetSource(string name)
+        {
+            if (!ResourceManager._bitmapImagesSome.ContainsKey(name))
+                ResourceManager._bitmapImagesSome.Add(name, ResourceManager.SourceFromBitmap(Resources.ResourceManager.GetObject(name) as Bitmap));
+            return (ImageSource)ResourceManager._bitmapImagesSome[name];
+        }
 
         public static ImageSource GetSource(Element element)
         {
-            if (!_bitmapImages.ContainsKey(element))
+            if (!ResourceManager._bitmapImages.ContainsKey(element))
             {
                 BitmapImage bitmapImage;
                 switch (element)
                 {
                     case Element.ME:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.me);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.me);
                         break;
                     case Element.ME_LINE:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.me_line);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.me_line);
                         break;
                     case Element.ME_TERRITORY:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.me_territory);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.me_territory);
                         break;
                     case Element.PLAYER:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.player);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.player);
                         break;
                     case Element.PLAYER_LINE:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.player_line);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.player_line);
                         break;
                     case Element.PLAYER_TERRITORY:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.player_territory);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.player_territory);
                         break;
                     case Element.NONE:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.none);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.none);
                         break;
                     case Element.EXPLORER:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.explorer);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.explorer);
                         break;
                     case Element.FLASH:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.flash);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.flash);
                         break;
                     case Element.SAW:
-                        bitmapImage = SourceFromBitmap(Properties.Resources.saw);
+                        bitmapImage = ResourceManager.SourceFromBitmap(Resources.saw);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(element), element, null);
+                        throw new ArgumentOutOfRangeException(nameof(element), (object)element, (string)null);
                 }
-
-                _bitmapImages.Add(element, bitmapImage);
+                ResourceManager._bitmapImages.Add(element, bitmapImage);
             }
-
-            return _bitmapImages[element];
+            return (ImageSource)ResourceManager._bitmapImages[element];
         }
 
         private static BitmapImage SourceFromBitmap(Bitmap src)
         {
-            var ms = new MemoryStream();
-            src.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            var image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
-            return image;
+            MemoryStream memoryStream = new MemoryStream();
+            src.Save((Stream)memoryStream, ImageFormat.Bmp);
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            memoryStream.Seek(0L, SeekOrigin.Begin);
+            bitmapImage.StreamSource = (Stream)memoryStream;
+            bitmapImage.EndInit();
+            return bitmapImage;
         }
     }
 }

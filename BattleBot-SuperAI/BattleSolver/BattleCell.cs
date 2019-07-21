@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using CodenjoyBot.Board;
+using Point = CodenjoyBot.Board.Point;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
@@ -48,7 +50,7 @@ namespace BattleBot_SuperAI.BattleSolver
             Strength = GetStrength(Type);
         }
 
-        public BattleCell[] GetCrossVicinity() => Pos.GetCrossVicinity(Board.Size).Select(t => Board[t]).ToArray();
+        public BattleCell[] GetCrossVicinity() => Pos.GetCrossVicinity(new Size(Board.Size, Board.Size)).Select(t => Board[t]).ToArray();
 
         public override string ToString() => _cell.ToString();
 
@@ -132,7 +134,7 @@ namespace BattleBot_SuperAI.BattleSolver
         {
             var point = Pos[direction];
 
-            while (point.OnBoard(Board.Size))
+            while (point.OnBoard(new Size(Board.Size, Board.Size)))
             {
                 if (deep == 0 || Board[point].MetaType != CellMetaType.GROUND && Board[point].MetaType != CellMetaType.BULLET && !Board[point].IsTank)
                     yield break;

@@ -16,7 +16,7 @@ namespace BomberMan_SuperAI.BattleSolver
     public class BomberSolver : ISolver, INotifyPropertyChanged
     {
         private int _size;
-        private Board _board;
+        private Board<Cell> _board;
         private UIElement _control;
         private UIElement _debugControl;
 
@@ -32,6 +32,11 @@ namespace BomberMan_SuperAI.BattleSolver
             
         }
 
+        public string Answer(string instanceName, DateTime startTime, DataFrame frame)
+        {
+            throw new NotImplementedException();
+        }
+
         public int Size
         {
             get => _size;
@@ -43,7 +48,7 @@ namespace BomberMan_SuperAI.BattleSolver
             }
         }
 
-        public Board Board
+        public Board<Cell> Board
         {
             get => _board;
             private set
@@ -55,7 +60,7 @@ namespace BomberMan_SuperAI.BattleSolver
             }
         }
 
-        public string Answer(Board board)
+        public string Answer(Board<Cell> board)
         {
             Board = board;
 
@@ -89,7 +94,7 @@ namespace BomberMan_SuperAI.BattleSolver
             return rsp;
         }
 
-        public event EventHandler<Board> BoardChanged;
+        public event EventHandler<Board<Cell>> BoardChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using CodenjoyBot.Board;
+using Point = CodenjoyBot.Board.Point;
 
 namespace BattleBot_SimpleAI.BattleSolver
 {
@@ -51,7 +53,7 @@ namespace BattleBot_SimpleAI.BattleSolver
                     if (_weights[point.X, point.Y] == 0)
                     {
                         _map[point.X, point.Y] = step;
-                        foreach (var neighbor in point.GetCrossVicinity(Size))
+                        foreach (var neighbor in point.GetCrossVicinity(new Size(Size, Size)))
                         {
                             if (_weights[neighbor.X, neighbor.Y] >= 0 && !list.Contains(neighbor) && !add.Contains(neighbor))
                                 add.Enqueue(neighbor);

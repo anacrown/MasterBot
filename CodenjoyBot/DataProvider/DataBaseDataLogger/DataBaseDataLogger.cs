@@ -51,6 +51,16 @@ namespace CodenjoyBot.DataProvider.DataBaseDataLogger
             }
         }
 
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, string response)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Log(CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame, string response)
         {
             using (var db = new CodenjoyDbContext())

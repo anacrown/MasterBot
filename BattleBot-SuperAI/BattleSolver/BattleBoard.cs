@@ -1,22 +1,32 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using CodenjoyBot.Board;
+using Point = CodenjoyBot.Board.Point;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
-    public class BattleBoard : IEnumerable<BattleCell>
+    public class BattleBoard : IEnumerable<BattleCell>, IEnumerable
     {
-        private readonly Board _board;
-        public FrameBuffer<BattleBoard> FrameBuffer { get; }
-
+        private readonly CodenjoyBot.Board.Board<Cell> _board;
         private readonly BattleCell[] _cells;
 
-        public int Size => _board.Size;
+        public CodenjoyBot.Board.FrameBuffer<BattleBoard> FrameBuffer { get; }
+
+        public int Size
+        {
+            get
+            {
+                return this._board.Size.Width;
+            }
+        }
 
         public BattleCell Player { get; }
 
         public Enemy.TargetEnemy Target { get; set; }
+
         public BattleCell[] PathToTarget { get; set; }
 
         public Map PlayerMap { get; }
@@ -24,76 +34,109 @@ namespace BattleBot_SuperAI.BattleSolver
         public ABetterMap ABetterMap { get; }
 
         public Enemy[] Enemies { get; }
+
         public Bullet[] Bullets { get; }
-        public uint Time => _board.Frame.Time;
 
-        public BattleBoard(Board board, FrameBuffer<BattleBoard> _frameBuffer)
+        public uint Time
         {
-            _board = board;
-            _cells = _board.Select(t => new BattleCell(t, this)).ToArray();
-
-            FrameBuffer = _frameBuffer;
-            Player = _cells.FirstOrDefault(t => t.MetaType == BattleCell.CellMetaType.TANK);
-            if (Player == null)
+            get
             {
-                //WebSocketDataLogger.Instance.LogDead(instanceName, startTime, time);
-                Player = _frameBuffer[board.Frame.Time - 1]?.Board.Player;
+                return this._board.Frame.Time;
             }
-
-            var weights = GetWeights();
-            // именно в таком порядке, Map поменяет массив
-            ABetterMap = new ABetterMap(weights, Size);
-            PlayerMap = new Map(Player.Pos, weights, Size);
-
-            Enemies = this.Where(t => t.IsEnemy).Select(t => new Enemy(t)).ToArray();
-
-            Bullets = _cells.Where(t => t.MetaType == BattleCell.CellMetaType.BULLET).Select(t => new Bullet(t)).ToArray();
         }
 
-        public BattleCell this[int i, int j] => _cells[i + j * Size];
-        public BattleCell this[Point p] => this[p.X, p.Y];
+        public BattleBoard(CodenjoyBot.Board.Board<Cell> board, CodenjoyBot.Board.FrameBuffer<BattleBoard> _frameBuffer)
+        {
+            this._board = board;
+            this._cells = this._board.Select<Cell, BattleCell>((Func<Cell, BattleCell>)(t => new BattleCell(t, this))).ToArray<BattleCell>();
+            this.FrameBuffer = _frameBuffer;
+            this.Player = ((IEnumerable<BattleCell>)this._cells).FirstOrDefault<BattleCell>((Func<BattleCell, bool>)(t => t.MetaType == BattleCell.CellMetaType.TANK));
+            if (this.Player == null)
+                this.Player = _frameBuffer[board.Frame.Time - 1U]?.Board.Player;
+            int[,] weights = this.GetWeights();
+            this.ABetterMap = new ABetterMap(weights, this.Size);
+            this.PlayerMap = new Map(this.Player.Pos, weights, new System.Drawing.Size(this.Size, this.Size));
+            this.Enemies = this.Where<BattleCell>((Func<BattleCell, bool>)(t => t.IsEnemy)).Select<BattleCell, Enemy>((Func<BattleCell, Enemy>)(t => new Enemy(t))).ToArray<Enemy>();
+            this.Bullets = ((IEnumerable<BattleCell>)this._cells).Where<BattleCell>((Func<BattleCell, bool>)(t => t.MetaType == BattleCell.CellMetaType.BULLET)).Select<BattleCell, Bullet>((Func<BattleCell, Bullet>)(t => new Bullet(t))).ToArray<Bullet>();
+        }
+
+        public BattleCell this[int i, int j]
+        {
+            get
+            {
+                return this._cells[i + j * this.Size];
+            }
+        }
+
+        public BattleCell this[CodenjoyBot.Board.Point p]
+        {
+            get
+            {
+                return this[p.X, p.Y];
+            }
+        }
 
         private int[,] GetWeights()
         {
-            var weights = new int[Size, Size];
-            foreach (var cell in this)
-                weights[cell.X, cell.Y] = cell.Strength;
-
-            return weights;
+            int[,] numArray = new int[this.Size, this.Size];
+            foreach (BattleCell battleCell in this)
+                numArray[battleCell.X, battleCell.Y] = battleCell.Strength;
+            return numArray;
         }
 
-        public class BoardEnumerator : IEnumerator<BattleCell>
+        public IEnumerator<BattleCell> GetEnumerator()
+        {
+            return (IEnumerator<BattleCell>)new BattleBoard.BoardEnumerator((IEnumerable<BattleCell>)this._cells);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return (IEnumerator)this.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return this._board.ToString();
+        }
+
+        public class BoardEnumerator : IEnumerator<BattleCell>, IDisposable, IEnumerator
         {
             private readonly IEnumerator _enumerator;
 
             public BoardEnumerator(IEnumerable<BattleCell> cells)
             {
-                _enumerator = cells.GetEnumerator();
+                this._enumerator = (IEnumerator)cells.GetEnumerator();
             }
 
             public void Dispose()
             {
-
             }
 
             public bool MoveNext()
             {
-                return _enumerator.MoveNext();
+                return this._enumerator.MoveNext();
             }
 
             public void Reset()
             {
-                _enumerator.Reset();
+                this._enumerator.Reset();
             }
 
-            public BattleCell Current => (BattleCell)_enumerator.Current;
+            public BattleCell Current
+            {
+                get
+                {
+                    return (BattleCell)this._enumerator.Current;
+                }
+            }
 
-            object IEnumerator.Current => Current;
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return (object)this.Current;
+                }
+            }
         }
-
-        public IEnumerator<BattleCell> GetEnumerator() => new BoardEnumerator(_cells);
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public override string ToString() => _board.ToString();
     }
 }

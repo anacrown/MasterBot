@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -35,6 +36,11 @@ namespace BattleBot_SuperAI.BattleSolver
             _frameBuffer.Clear();
         }
 
+        public string Answer(string instanceName, DateTime startTime, DataFrame frame)
+        {
+            throw new NotImplementedException();
+        }
+
         protected BattleSolver(SerializationInfo info, StreamingContext context) : this()
         {
             
@@ -44,7 +50,7 @@ namespace BattleBot_SuperAI.BattleSolver
             
         }
 
-        public string Answer(Board board)
+        public string Answer(Board<Cell> board)
         {
             OnBoardChanged(board);
 
@@ -160,7 +166,7 @@ namespace BattleBot_SuperAI.BattleSolver
             //MainWindow.Log(board.Time, "LeaveToBetterPlace");
 
             var betterPoint = board.Player.Pos;
-            var savePoints = board.Player.Pos.GetCrossVicinity(board.Size).Where(t => !IsDieNextTurn(board, t)).ToArray();
+            var savePoints = board.Player.Pos.GetCrossVicinity(new System.Drawing.Size(board.Size, board.Size)).Where(t => !IsDieNextTurn(board, t)).ToArray();
             if (savePoints.Length > 0)
             {
                 var max = savePoints.Select(t => board.ABetterMap[t]).Max();
@@ -209,8 +215,8 @@ namespace BattleBot_SuperAI.BattleSolver
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(DataFrame frame, string message) => LogDataReceived?.Invoke(this, new LogRecord(frame, message));
 
-        public event EventHandler<Board> BoardChanged;
-        protected virtual void OnBoardChanged(Board board) => BoardChanged?.Invoke(this, board);
+        public event EventHandler<Board<Cell>> BoardChanged;
+        protected virtual void OnBoardChanged(Board<Cell> board) => BoardChanged?.Invoke(this, board);
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

@@ -7,6 +7,7 @@ using System.Windows;
 using BattleBot_SimpleAI.Controls;
 using CodenjoyBot.Annotations;
 using CodenjoyBot.Board;
+using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace BattleBot_SimpleAI.BattleSolver
@@ -41,14 +42,19 @@ namespace BattleBot_SimpleAI.BattleSolver
 
         }
 
-        public string Answer(Board board)
+        public string Answer(string instanceName, DateTime startTime, DataFrame frame)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Answer(Board<Cell> board)
         {
             OnBoardChanged(board);
 
             if (board.IsGameOver())
                 return string.Empty;
 
-            var map = new Map(board.GetMe()?.Pos, board.GetWeights(), board.Size);
+            var map = new Map(board.GetMe()?.Pos, board.GetWeights(), board.Size.Width);
             var enemies = board.GetEnemies().ToArray();
             var min = enemies.Select(t => map[t.Pos]).Min();
             var target = enemies.FirstOrDefault(t => map[t.Pos] == min);
@@ -60,11 +66,11 @@ namespace BattleBot_SimpleAI.BattleSolver
             return command.ToString();
         }
 
-        public event EventHandler<Board> BoardChanged;
+        public event EventHandler<Board<Cell>> BoardChanged;
         public event EventHandler<LogRecord> LogDataReceived;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnBoardChanged(Board board) => BoardChanged?.Invoke(this, board);
+        protected virtual void OnBoardChanged(Board<Cell> board) => BoardChanged?.Invoke(this, board);
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

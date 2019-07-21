@@ -1,53 +1,99 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using CodenjoyBot.DataProvider;
 
 namespace CodenjoyBot.Board
 {
-    public class Board : IEnumerable<Cell>
+    public class Board<T> : IEnumerable<T>, IEnumerable
     {
-        private readonly Cell[] _cells;
-        
         private readonly DateTime _startTime;
         private readonly string _instanceName;
 
-        public int Size { get; }
+        public T[] Cells { get; set; }
+
+        public Size Size { get; set; }
+
         public DataFrame Frame { get; }
-
-        public class BoardEnumerator : IEnumerator<Cell>
-        {
-            private readonly IEnumerator _enumerator;
-
-            public BoardEnumerator(IEnumerable<Cell> cells) => _enumerator = cells.GetEnumerator();
-
-            public void Dispose() { }
-
-            public bool MoveNext() => _enumerator.MoveNext();
-
-            public void Reset() => _enumerator.Reset();
-
-            public Cell Current => (Cell)_enumerator.Current;
-
-            object IEnumerator.Current => Current;
-        }
 
         public Board(string instanceName, DateTime startTime, DataFrame frame)
         {
-            _instanceName = instanceName;
-            _startTime = startTime;
-            Frame = frame;
-//            Size = (int)Math.Sqrt(Frame.Board.Length);
-//            _cells = Frame.Board.Select((t, i) => new Cell(t, new Point(i % Size, i / Size), this)).ToArray();
+            this._instanceName = instanceName;
+            this._startTime = startTime;
+            this.Frame = frame;
         }
 
-        public IEnumerator<Cell> GetEnumerator() => new BoardEnumerator(_cells);
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public IEnumerator<T> GetEnumerator()
+        {
+            return (IEnumerator<T>)new CodenjoyBot.Board.Board<T>.BoardEnumerator<T>((IEnumerable<T>)this.Cells);
+        }
 
-        public Cell this[int i, int j] => _cells[i + j * Size];
-        public Cell this[Point p] => this[p.X, p.Y];
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return (IEnumerator)this.GetEnumerator();
+        }
 
-        public override string ToString() => Frame.Board;
+        public T this[int i, int j]
+        {
+            get
+            {
+                return this.Cells[i + j * this.Size.Width];
+            }
+        }
+
+        public T this[Point p]
+        {
+            get
+            {
+                return this[p.X, p.Y];
+            }
+        }
+
+        public override string ToString()
+        {
+            return this.Frame.Board;
+        }
+
+        public class BoardEnumerator<TU> : IEnumerator<TU>, IDisposable, IEnumerator
+        {
+            private readonly IEnumerator _enumerator;
+
+            public BoardEnumerator(IEnumerable<TU> cells)
+            {
+                this._enumerator = (IEnumerator)cells.GetEnumerator();
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                return this._enumerator.MoveNext();
+            }
+
+            public void Reset()
+            {
+                this._enumerator.Reset();
+            }
+
+            public TU Current
+            {
+                get
+                {
+                    return (TU)this._enumerator.Current;
+                }
+            }
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return (object)this.Current;
+                }
+            }
+        }
     }
 }

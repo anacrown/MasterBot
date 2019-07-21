@@ -45,11 +45,11 @@ namespace BomberMan_SuperAI.Controls
             };
         }
 
-        private void UpdateView(Board board)
+        private void UpdateView(Board<Cell> board)
         {
             if (_size == 0)
             {
-                _size = board.Size;
+                _size = board.Size.Width;
                 _images = new Image[_size, _size];
 
                 var offsetX = Properties.Resources.none.Width;

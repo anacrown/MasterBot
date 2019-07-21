@@ -99,8 +99,9 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
                 throw new Exception();
 
             Time = 0;
-            OnIndexChanged(Time);
             _boards = File.ReadAllLines(BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
+            this.OnDataReceived(this._boards[this.Time], this.Time);
+            OnIndexChanged(Time);
 
             OnPropertyChanged(nameof(FrameCount));
             OnPropertyChanged(nameof(FrameMaximumKey));
