@@ -7,6 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            <Canvas Name="Canvas"/>
+            <Canvas Name="Canvas">
+                <Canvas.RenderTransform>
+                    <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                </Canvas.RenderTransform>
+            </Canvas>
     </Grid>
 </UserControl>

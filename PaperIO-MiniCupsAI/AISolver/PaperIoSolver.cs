@@ -90,7 +90,7 @@ namespace PaperIO_MiniCupsAI
                         return i2;
                     return i1;
                 });
-                board.PathToHome = board.MeWeight.Tracert(valueTuple.Item1, board.MeCell.Pos).ToArray<Point>();
+                //board.PathToHome = board.MeWeight.Tracert(valueTuple.Item1, board.MeCell.Pos).ToArray<Point>();
                 Point p1 = board.MeCell.Pos.GetCrossVicinity(board.Size).Where<Point>(p =>
                 {
                     if (p.X != 0 && (p.X != board.Size.Width - 1 && p.Y != 0))
