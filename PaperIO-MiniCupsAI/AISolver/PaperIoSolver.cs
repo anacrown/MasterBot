@@ -33,44 +33,25 @@ namespace PaperIO_MiniCupsAI
         {
             Control = new PaperIoSolverControl(this);
             DebugControl = new PaperIoSolverDebugControl(this);
-            Point.Neighbor = new Dictionary<Direction, Point>()
-      {
-        {
-          Direction.Up,
-          new Point(0, 1)
-        },
-        {
-          Direction.Right,
-          new Point(1, 0)
-        },
-        {
-          Direction.Down,
-          new Point(0, -1)
-        },
-        {
-          Direction.Left,
-          new Point(-1, 0)
-        }
-      };
+            Point.Neighbor = new Dictionary<Direction, Point>
+            {
+                {Direction.Up, new Point(0, 1)},
+                {Direction.Right, new Point(1, 0)},
+                {Direction.Down, new Point(0, -1)},
+                {Direction.Left, new Point(-1, 0)}
+            };
         }
 
-        public PaperIoSolver(SerializationInfo info, StreamingContext context)
-          : this()
-        {
-        }
+        public PaperIoSolver(SerializationInfo info, StreamingContext context) : this() { }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-        }
+        public void GetObjectData(SerializationInfo info, StreamingContext context) { }
 
-        public void Initialize()
-        {
-        }
+        public void Initialize() { }
 
         public string Answer(string instanceName, DateTime startTime, DataFrame frame)
         {
-            Board board = LoadData(instanceName, startTime, frame);
-            SolverCommand solverCommand = SolverCommand.Empty;
+            var board = LoadData(instanceName, startTime, frame);
+            var solverCommand = SolverCommand.Empty;
             if (board.MeCell != null)
             {
                 board.Where<Cell>(c =>
@@ -84,14 +65,14 @@ namespace PaperIO_MiniCupsAI
                         return i2;
                     return i1;
                 });
-                ValueTuple<Point, int> valueTuple = board.Where<Cell>(c => c.Element == Element.ME_TERRITORY).Select<Cell, Point>(c => c.Pos).Select<Point, ValueTuple<Point, int>>(p => new ValueTuple<Point, int>(p, board.MeWeight[p].Weight)).Aggregate<ValueTuple<Point, int>>((i1, i2) =>
+                var valueTuple = board.Where<Cell>(c => c.Element == Element.ME_TERRITORY).Select<Cell, Point>(c => c.Pos).Select<Point, ValueTuple<Point, int>>(p => new ValueTuple<Point, int>(p, board.MeWeight[p].Weight)).Aggregate<ValueTuple<Point, int>>((i1, i2) =>
                 {
                     if (i1.Item2 >= i2.Item2)
                         return i2;
                     return i1;
                 });
                 //board.PathToHome = board.MeWeight.Tracert(valueTuple.Item1, board.MeCell.Pos).ToArray<Point>();
-                Point p1 = board.MeCell.Pos.GetCrossVicinity(board.Size).Where<Point>(p =>
+                var p1 = board.MeCell.Pos.GetCrossVicinity(board.Size).Where<Point>(p =>
                 {
                     if (p.X != 0 && (p.X != board.Size.Width - 1 && p.Y != 0))
                         return p.Y != board.Size.Height - 1;
@@ -110,45 +91,42 @@ namespace PaperIO_MiniCupsAI
             return $"{{\"command\": \"{solverCommand}\"}}";
         }
 
-        private Board LoadData(
-          string instanceName,
-          DateTime startTime,
-          DataFrame frame)
+        private Board LoadData(string instanceName,DateTime startTime,DataFrame frame)
         {
-            JObject jobject = JObject.Parse(frame.Board);
-            JToken jtoken1 = jobject["type"];
+            var jObject = JObject.Parse(frame.Board);
+            var jToken1 = jObject["type"];
             Board source;
-            if ((jtoken1 != null ? jtoken1.Value<string>() : null) == "start_game")
+            if ((jToken1 != null ? jToken1.Value<string>() : null) == "start_game")
             {
-                _speed = jobject["params"]["speed"].Value<int>();
-                _width = jobject["params"]["width"].Value<int>();
-                _boardSizeX = jobject["params"]["x_cells_count"].Value<int>();
-                _boardSizeY = jobject["params"]["y_cells_count"].Value<int>();
+                _speed = jObject["params"]["speed"].Value<int>();
+                _width = jObject["params"]["width"].Value<int>();
+                _boardSizeX = jObject["params"]["x_cells_count"].Value<int>();
+                _boardSizeY = jObject["params"]["y_cells_count"].Value<int>();
                 source = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY));
             }
             else
             {
-                JToken jtoken2 = jobject["type"];
+                var jtoken2 = jObject["type"];
                 if (!((jtoken2 != null ? jtoken2.Value<string>() : null) == "tick"))
                     throw new Exception("Invalide input data");
                 source = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY));
-                foreach (JProperty child in jobject["params"]["players"].Children<JProperty>())
+                foreach (var child in jObject["params"]["players"].Children<JProperty>())
                 {
-                    string name = child.Name;
-                    JToken first = child.First;
-                    Direction direction = first["direction"].Value<string>().ToDirection();
-                    Point point = GetPoint(first["position"].Values<int>().ToArray<int>(), _width, source.Size);
-                    Cell playerCell = source[point];
+                    var name = child.Name;
+                    var first = child.First;
+                    var direction = first["direction"].Value<string>().ToDirection();
+                    var point = GetPoint(first["position"].Values<int>().ToArray<int>(), _width, source.Size);
+                    var playerCell = source[point];
                     playerCell.Direction = direction;
-                    foreach (int[] numArray in first["lines"].Children().Select<JToken, int[]>(t => t.Values<int>().ToArray<int>()))
+                    foreach (var numArray in first["lines"].Children().Select<JToken, int[]>(t => t.Values<int>().ToArray<int>()))
                     {
-                        Cell cell = source[GetPoint(numArray, _width, source.Size)];
+                        var cell = source[GetPoint(numArray, _width, source.Size)];
                         cell.PlayerName = name;
                         cell.Element = name == "i" ? Element.ME_LINE : Element.PLAYER_LINE;
                     }
-                    foreach (int[] numArray in first["territory"].Children().Select<JToken, int[]>(t => t.Values<int>().ToArray<int>()))
+                    foreach (var numArray in first["territory"].Children().Select<JToken, int[]>(t => t.Values<int>().ToArray<int>()))
                     {
-                        Cell cell = source[GetPoint(numArray, _width, source.Size)];
+                        var cell = source[GetPoint(numArray, _width, source.Size)];
                         cell.PlayerName = name;
                         cell.Element = name == "i" ? Element.ME_TERRITORY : Element.PLAYER_TERRITORY;
                     }
@@ -162,7 +140,7 @@ namespace PaperIO_MiniCupsAI
                     }
                     else
                     {
-                        Map map = new Map(source.Size, source.Where<Cell>(c =>
+                        var map = new Map(source.Size, source.Where<Cell>(c =>
                         {
                             if (c.Element == Element.PLAYER_LINE)
                                 return c.PlayerName == playerCell.PlayerName;
@@ -181,12 +159,6 @@ namespace PaperIO_MiniCupsAI
             return new Point(arr[0] / cellWidth, arr[1] / cellWidth);
         }
 
-        protected virtual void OnBoardChanged(Board board)
-        {
-            EventHandler<Board> boardChanged = BoardChanged;
-            if (boardChanged == null)
-                return;
-            boardChanged(this, board);
-        }
+        protected virtual void OnBoardChanged(Board e) => BoardChanged?.Invoke(this, e);
     }
 }
