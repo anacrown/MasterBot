@@ -18,14 +18,14 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
 
         public static IEnumerable<FileSystemLaunchInfo> GetLaunches()
         {
-            string[] strArray1 = Directory.GetDirectories(CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.MainLogDir);
-            for (int index1 = 0; index1 < strArray1.Length; ++index1)
+            var strArray1 = Directory.GetDirectories(MainLogDir);
+            for (var index1 = 0; index1 < strArray1.Length; ++index1)
             {
-                string nameDir = strArray1[index1];
-                string[] strArray2 = Directory.GetDirectories(nameDir);
-                for (int index2 = 0; index2 < strArray2.Length; ++index2)
+                var nameDir = strArray1[index1];
+                var strArray2 = Directory.GetDirectories(nameDir);
+                for (var index2 = 0; index2 < strArray2.Length; ++index2)
                 {
-                    string launchDir = strArray2[index2];
+                    var launchDir = strArray2[index2];
                     yield return new FileSystemLaunchInfo(nameDir, launchDir);
                     launchDir = (string)null;
                 }
@@ -37,9 +37,9 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
 
         public FileSystemDataLogger()
         {
-            if (Directory.Exists(CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.MainLogDir))
+            if (Directory.Exists(MainLogDir))
                 return;
-            Directory.CreateDirectory(CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.MainLogDir);
+            Directory.CreateDirectory(MainLogDir);
         }
 
         public FileSystemDataLogger(SerializationInfo info, StreamingContext context)
@@ -53,10 +53,10 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
 
         private string GetLogDirForBattleBotInstance(DateTime starTime, string battleBotInstanceName)
         {
-            string str = Path.Combine(CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.MainLogDir, battleBotInstanceName);
+            var str = Path.Combine(MainLogDir, battleBotInstanceName);
             if (!Directory.Exists(str))
                 Directory.CreateDirectory(str);
-            string path = Path.Combine(str, starTime.ToString(Resources.DateFormat));
+            var path = Path.Combine(str, starTime.ToString(Resources.DateFormat));
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path;
@@ -64,113 +64,111 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
 
         public void Log(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame)
         {
-            string path = Path.Combine(this.GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name), "Board.txt");
-            if (!CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.ContainsKey(botInstance.Name))
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
-            do
-                ;
-            while (CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].IsWriteLockHeld);
-            this.OnLogDataReceived(frame.Time, botInstance.Name, "write is hold");
-            CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].EnterWriteLock();
+            var path = Path.Combine(GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name), "Board.txt");
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld);
+            OnLogDataReceived(frame.Time, botInstance.Name, "write is hold");
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
             try
             {
-                using (StreamWriter streamWriter = File.AppendText(path))
+                using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write(string.Format("[{0}]: {1}{2}", (object)frame.Time, (object)frame.Board, (object)Environment.NewLine));
+                    streamWriter.Write($"[{(object) frame.Time}]: {(object) frame.Board}{(object) Environment.NewLine}");
                     streamWriter.Close();
                 }
-                this.OnLogDataReceived(frame.Time, botInstance.Name, "damp saved");
+                OnLogDataReceived(frame.Time, botInstance.Name, "damp saved");
             }
             catch (Exception ex)
             {
-                this.OnLogDataReceived(frame.Time, botInstance.Name, ex.ToString());
+                OnLogDataReceived(frame.Time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
         public void Log(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance botInstance, uint time, string response)
         {
-            string battleBotInstance = this.GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name);
+            var battleBotInstance = GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name);
             Path.Combine(battleBotInstance, "Board.txt");
-            string path = Path.Combine(battleBotInstance, "Response.txt");
-            if (!CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.ContainsKey(botInstance.Name))
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
+            var path = Path.Combine(battleBotInstance, "Response.txt");
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
             do
                 ;
-            while (CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].IsWriteLockHeld);
-            CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].EnterWriteLock();
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld);
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
             try
             {
-                using (StreamWriter streamWriter = File.AppendText(path))
+                using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write(string.Format("[{0}]: {1}{2}", (object)time, (object)response, (object)Environment.NewLine));
+                    streamWriter.Write($"[{(object) time}]: {(object) response}{(object) Environment.NewLine}");
                     streamWriter.Close();
                 }
             }
             catch (Exception ex)
             {
-                this.OnLogDataReceived(time, botInstance.Name, ex.ToString());
+                OnLogDataReceived(time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
         public void Log(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame, Exception e)
         {
-            string path = Path.Combine(this.GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name), "Exception.txt");
-            if (!CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.ContainsKey(botInstance.Name))
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
+            var path = Path.Combine(GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name), "Exception.txt");
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
             do
                 ;
-            while (CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].IsWriteLockHeld);
-            this.OnLogDataReceived(frame.Time, botInstance.Name, "write is hold");
-            CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].EnterWriteLock();
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld);
+            OnLogDataReceived(frame.Time, botInstance.Name, "write is hold");
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
             try
             {
-                using (StreamWriter streamWriter = File.AppendText(path))
+                using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write(string.Format("[{0}]: {1}{2}", (object)frame.Time, (object)e, (object)Environment.NewLine));
+                    streamWriter.Write($"[{(object) frame.Time}]: {(object) e}{(object) Environment.NewLine}");
                     streamWriter.Close();
                 }
             }
             catch (Exception ex)
             {
-                this.OnLogDataReceived(frame.Time, botInstance.Name, ex.ToString());
+                OnLogDataReceived(frame.Time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
         public void LogDead(CodenjoyBot.CodenjoyBotInstance.CodenjoyBotInstance botInstance, DataFrame frame)
         {
-            string path = Path.Combine(this.GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name), "Dead.txt");
-            if (!CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.ContainsKey(botInstance.Name))
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
-            while (CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].IsWriteLockHeld)
-                this.OnLogDataReceived(frame.Time, botInstance.Name, "write is hold");
-            CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].EnterWriteLock();
+            var path = Path.Combine(GetLogDirForBattleBotInstance(botInstance.StartTime, botInstance.Name), "Dead.txt");
+            if (!LockerLockSlims.ContainsKey(botInstance.Name))
+                LockerLockSlims.Add(botInstance.Name, new ReaderWriterLockSlim());
+            while (LockerLockSlims[botInstance.Name].IsWriteLockHeld)
+                OnLogDataReceived(frame.Time, botInstance.Name, "write is hold");
+            LockerLockSlims[botInstance.Name].EnterWriteLock();
             try
             {
-                using (StreamWriter streamWriter = File.AppendText(path))
+                using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write(string.Format("[{0}]: DEAD{1}", (object)frame.Time, (object)Environment.NewLine));
+                    streamWriter.Write($"[{(object) frame.Time}]: DEAD{(object) Environment.NewLine}");
                     streamWriter.Close();
                 }
             }
             catch (Exception ex)
             {
-                this.OnLogDataReceived(frame.Time, botInstance.Name, ex.ToString());
+                OnLogDataReceived(frame.Time, botInstance.Name, ex.ToString());
             }
             finally
             {
-                CodenjoyBot.DataProvider.FileSystemDataLogger.FileSystemDataLogger.LockerLockSlims[botInstance.Name].ExitWriteLock();
+                LockerLockSlims[botInstance.Name].ExitWriteLock();
             }
         }
 
@@ -181,7 +179,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
           string battleBotInstanceName,
           string message)
         {
-            EventHandler<LogRecord> logDataReceived = this.LogDataReceived;
+            var logDataReceived = LogDataReceived;
             if (logDataReceived == null)
                 return;
             logDataReceived((object)this, new LogRecord(new DataFrame()

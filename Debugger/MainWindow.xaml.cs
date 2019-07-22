@@ -89,11 +89,16 @@ namespace Debugger
                 {
                     if (botInstance.SettingsId == null)
                     {
+                        var hashCode = botInstance.GetHashCode();
                         var settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
-                        if (settings == null)
+                        if (settings == null || settings.HashCode != hashCode)
                         {
-                            settings = CodenjoyBotInstance.GetSettings(botInstance);
-                            db.LaunchSettingsModels.Add(settings);
+                            settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
+                            if (settings == null)
+                            {
+                                settings = CodenjoyBotInstance.GetSettings(botInstance);
+                                db.LaunchSettingsModels.Add(settings);
+                            }
                         }
 
                         settings.Visibility = true;
@@ -104,17 +109,20 @@ namespace Debugger
                         var settings = db.LaunchSettingsModels.Find(botInstance.SettingsId);
                         if (settings == null || settings.HashCode != botInstance.GetHashCode())
                         {
-                            settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
-                            if (settings != null)
+                            var newSettings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
+                            if (newSettings != null)
                             {
-                                settings.Visibility = true;
+                                settings.Visibility = false;
+                                newSettings.Visibility = true;
                                 db.SaveChanges();
                             }
                             else throw new Exception("Settings not found");
                         }
-
-                        settings.Visibility = true;
-                        db.SaveChanges();
+                        else
+                        {
+                            settings.Visibility = true;
+                            db.SaveChanges();
+                        }
                     }
                 }
             }
