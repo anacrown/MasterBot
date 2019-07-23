@@ -9,6 +9,6 @@ namespace CodenjoyBot.Interfaces
     {
         void Initialize();
 
-        string Answer(string instanceName, DateTime startTime, DataFrame frame);
+        bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response);
     }
 }

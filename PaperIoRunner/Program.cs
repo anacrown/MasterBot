@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using CodenjoyBot;
 using CodenjoyBot.CodenjoyBotInstance;
 using PaperIO_MiniCupsAI;

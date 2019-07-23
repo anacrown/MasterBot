@@ -93,16 +93,21 @@ namespace Debugger
                         var settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
                         if (settings == null || settings.HashCode != hashCode)
                         {
-                            settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
-                            if (settings == null)
+                            var newSettings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
+                            if (newSettings == null)
                             {
-                                settings = CodenjoyBotInstance.GetSettings(botInstance);
-                                db.LaunchSettingsModels.Add(settings);
+                                if (settings != null) settings.Visibility = false;
+                                newSettings = CodenjoyBotInstance.GetSettings(botInstance);
+                                db.LaunchSettingsModels.Add(newSettings);
+                                newSettings.Visibility = true;
+                                db.SaveChanges();
                             }
                         }
-
-                        settings.Visibility = true;
-                        db.SaveChanges();
+                        else
+                        {
+                            settings.Visibility = true;
+                            db.SaveChanges();
+                        }
                     }
                     else
                     {
@@ -112,7 +117,7 @@ namespace Debugger
                             var newSettings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == botInstance.GetHashCode());
                             if (newSettings != null)
                             {
-                                settings.Visibility = false;
+                                if (settings != null) settings.Visibility = false;
                                 newSettings.Visibility = true;
                                 db.SaveChanges();
                             }

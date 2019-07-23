@@ -32,7 +32,7 @@ namespace BomberMan_SuperAI.BattleSolver
             
         }
 
-        public string Answer(string instanceName, DateTime startTime, DataFrame frame)
+        public bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response)
         {
             throw new NotImplementedException();
         }

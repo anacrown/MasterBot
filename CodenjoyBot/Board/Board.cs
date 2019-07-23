@@ -20,70 +20,41 @@ namespace CodenjoyBot.Board
 
         public Board(string instanceName, DateTime startTime, DataFrame frame)
         {
-            this._instanceName = instanceName;
-            this._startTime = startTime;
-            this.Frame = frame;
+            _instanceName = instanceName;
+            _startTime = startTime;
+            Frame = frame;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return (IEnumerator<T>)new CodenjoyBot.Board.Board<T>.BoardEnumerator<T>((IEnumerable<T>)this.Cells);
-        }
+        public IEnumerator<T> GetEnumerator() => new BoardEnumerator<T>(Cells);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return (IEnumerator)this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public T this[int i, int j]
-        {
-            get
-            {
-                return this.Cells[i + j * this.Size.Width];
-            }
-        }
+        public T this[int i, int j] => Cells[i + j * Size.Width];
 
-        public T this[Point p]
-        {
-            get
-            {
-                return this[p.X, p.Y];
-            }
-        }
+        public T this[Point p] => this[p.X, p.Y];
 
-        public override string ToString()
-        {
-            return this.Frame.Board;
-        }
+        public override string ToString() => Frame.Board;
 
-        public class BoardEnumerator<TU> : IEnumerator<TU>, IDisposable, IEnumerator
+        public class BoardEnumerator<TU> : IEnumerator<TU>
         {
             private readonly IEnumerator _enumerator;
 
-            public BoardEnumerator(IEnumerable<TU> cells)
-            {
-                this._enumerator = (IEnumerator)cells.GetEnumerator();
-            }
+            public BoardEnumerator(IEnumerable<TU> cells) => _enumerator = cells.GetEnumerator();
 
-            public void Dispose()
-            {
-            }
-
-            public bool MoveNext()
-            {
-                return this._enumerator.MoveNext();
-            }
+            public void Dispose() { }
+            
+            public bool MoveNext() => _enumerator.MoveNext();
 
             public void Reset()
             {
-                this._enumerator.Reset();
+                _enumerator.Reset();
             }
 
             public TU Current
             {
                 get
                 {
-                    return (TU)this._enumerator.Current;
+                    return (TU)_enumerator.Current;
                 }
             }
 
@@ -91,7 +62,7 @@ namespace CodenjoyBot.Board
             {
                 get
                 {
-                    return (object)this.Current;
+                    return Current;
                 }
             }
         }

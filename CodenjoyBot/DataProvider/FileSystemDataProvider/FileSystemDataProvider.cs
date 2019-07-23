@@ -35,6 +35,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public int FrameMaximumKey => _boards?.Count - 1 ?? 0;
 
         private Dictionary<uint, string> _boards;
+        private Dictionary<uint, string> _responses;
         private static readonly Regex Pattern = new Regex(@"^\[(\d*)\]:\s(.*)$");
         private readonly Timer _timer = new Timer(50);
 
@@ -83,14 +84,12 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            if (Time >= FrameCount)
+            if (Time < FrameCount)
             {
-                _timer.Stop();
-                return;
+                OnDataReceived(_boards[Time], Time);
+                OnTimeChanged(Time++);
             }
-
-            OnDataReceived(_boards[Time], Time);
-            OnIndexChanged(Time++);
+            else _timer.Stop();
         }
 
         public void Start()
@@ -98,10 +97,13 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
             if (!File.Exists(BoardFile))
                 throw new Exception();
 
-            Time = 0;
             _boards = File.ReadAllLines(BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
-            this.OnDataReceived(this._boards[this.Time], this.Time);
-            OnIndexChanged(Time);
+
+            var responseFilePath = Path.Combine(Path.GetDirectoryName(BoardFile), "Response.txt");
+            if (File.Exists(responseFilePath))
+                _responses = File.ReadAllLines(responseFilePath).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
+
+            MoveToFrame(0);
 
             OnPropertyChanged(nameof(FrameCount));
             OnPropertyChanged(nameof(FrameMaximumKey));
@@ -112,25 +114,25 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public void Stop()
         {
             _timer.Stop();
+
+            OnStopped();
         }
 
-        public void RecordPlay()
-        {
-            _timer?.Start();
-        }
+        public void RecordPlay() => _timer?.Start();
 
-        public void RecordStop()
-        {
-            _timer?.Stop();
-        }
+        public void RecordStop() => _timer?.Stop();
 
         public void MoveToFrame(uint time)
         {
             Time = time;
-            OnIndexChanged(Time);
+            OnTimeChanged(Time);
             OnDataReceived(_boards[Time], time);
 
-            Time++;
+            if (_responses != null)
+            {
+                var response = _responses.ContainsKey(Time) ? _responses[Time] : "NOT RESPONSE";
+                OnLogDataReceived(new LogRecord(new DataFrame() {Time = Time, Board = _boards[Time]}, $"Response {response}"));
+            }
         }
 
         public void SendResponse(string response)
@@ -143,13 +145,11 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public event EventHandler<DataFrame> DataReceived;
         protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame { Board = board, Time = time });
 
-        protected virtual void OnIndexChanged(uint time) => TimeChanged?.Invoke(this, time);
-
         public event EventHandler Started;
         public event EventHandler Stopped;
 
         public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+        public virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -182,6 +182,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
                 return ((_boardFile != null ? _boardFile.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
             }
         }
+
+        protected virtual void OnTimeChanged(uint e) => TimeChanged?.Invoke(this, e);
 
         public event PropertyChangedEventHandler PropertyChanged;
 

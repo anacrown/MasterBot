@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
@@ -41,6 +42,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
                 FrameSlider.Value = time;
                 CurrentFrameTextBox.Text = time.ToString();
             });
+
+            DataProvider?.OnLogDataReceived(new LogRecord($"set FrameSlider.Value {time}"));
         }
 
         private void CurrentFrameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)

@@ -262,14 +262,24 @@ namespace CodenjoyBot.CodenjoyBotInstance
         {
             try
             {
-                this.DataLogger.Log(this, frame);
-                string response = this.Solver.Answer(this.Name, this.StartTime, frame);
-                this.DataProvider.SendResponse(response);
-                this.DataLogger.Log(this, frame.Time, response);
+                DataLogger.Log(this, frame);
+
+                if (Solver.Answer(Name, StartTime, frame, DataProvider, out var response))
+                {
+                    OnLogDataReceived(Solver, new LogRecord(frame, $"Response: {response}"));
+
+                    DataProvider.SendResponse(response);
+
+                    DataLogger.Log(this, frame.Time, response);
+                }
+                else OnLogDataReceived(Solver, new LogRecord(frame, $"Response skip"));
             }
             catch (Exception e)
             {
                 DataLogger.Log(this, frame, e);
+#if DEBUG
+                throw new Exception("Exception in DataProviderOnDataReceived", e);
+#endif
             }
         }
 
@@ -278,10 +288,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
 
         public event EventHandler<LogRecord> LogDataReceived;
 
-        protected virtual void OnLogDataReceived(object sender, LogRecord e)
-        {
-            LogDataReceived?.Invoke(sender, e);
-        }
+        protected virtual void OnLogDataReceived(object sender, LogRecord e) => LogDataReceived?.Invoke(sender, e);
         protected virtual void OnStarted(IDataProvider e) => Started?.Invoke(this, e);
         protected virtual void OnStopped(IDataProvider e) => Stopped?.Invoke(this, e);
         protected bool Equals(CodenjoyBotInstance other)
@@ -292,7 +299,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((CodenjoyBotInstance)obj);
         }
         public override int GetHashCode()
