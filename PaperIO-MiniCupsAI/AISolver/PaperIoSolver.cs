@@ -6,8 +6,10 @@ using System.Windows;
 using CodenjoyBot.Board;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PaperIO_MiniCupsAI.Controls;
+using PaperIO_MiniCupsAI.DataContract;
 using Point = CodenjoyBot.Board.Point;
 using Size = System.Drawing.Size;
 
@@ -50,6 +52,8 @@ namespace PaperIO_MiniCupsAI
                 return false;
             }
 
+            var a = JsonConvert.DeserializeObject<JsPacket>(frame.Board);
+
             var board = LoadData(instanceName, startTime, frame);
             if (board.BoardType != BoardType.Tick) return false;
 
@@ -60,7 +64,6 @@ namespace PaperIO_MiniCupsAI
             response = $"{{\"command\": \"{commands[index]}\"}}";
             return true;
         }
-
         private Board LoadData(string instanceName, DateTime startTime, DataFrame frame)
         {
             var jObject = JObject.Parse(frame.Board);
@@ -72,14 +75,14 @@ namespace PaperIO_MiniCupsAI
                 _width = jObject["params"]["width"].Value<int>();
                 _boardSizeX = jObject["params"]["x_cells_count"].Value<int>();
                 _boardSizeY = jObject["params"]["y_cells_count"].Value<int>();
-                board = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY));
-                board.BoardType = BoardType.StartGame;
+                board = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY))
+                {
+                    BoardType = BoardType.StartGame
+                };
             }
             else
             {
-                var jtoken2 = jObject["type"];
-                if (!((jtoken2 != null ? jtoken2.Value<string>() : null) == "tick"))
-                    throw new Exception("Invalide input data");
+                var type = jObject["type"].Value<string>();
                 board = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY));
                 board.BoardType = BoardType.Tick;
                 foreach (var child in jObject["params"]["players"].Children<JProperty>())
@@ -127,7 +130,6 @@ namespace PaperIO_MiniCupsAI
             OnBoardChanged(board);
             return board;
         }
-
         private Point GetPoint(IReadOnlyList<int> arr, int cellWidth, Size size) => new Point(arr[0] / cellWidth, arr[1] / cellWidth);
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
         protected virtual void OnBoardChanged(Board e) => BoardChanged?.Invoke(this, e);

@@ -63,6 +63,7 @@
     <Compile Include="AISolver\MapEntry.cs" />
     <Compile Include="AISolver\Matrix.cs" />
     <Compile Include="AISolver\PaperIoSolver.cs" />
+    <Compile Include="DataContract\JsPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
