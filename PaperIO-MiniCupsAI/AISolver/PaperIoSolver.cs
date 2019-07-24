@@ -10,6 +10,7 @@ using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PaperIO_MiniCupsAI.ActionSolvers;
 using PaperIO_MiniCupsAI.Controls;
 using PaperIO_MiniCupsAI.DataContract;
 using Point = CodenjoyBot.Board.Point;
@@ -28,6 +29,9 @@ namespace PaperIO_MiniCupsAI
 
         public event EventHandler<Board> BoardChanged;
         public event EventHandler<LogRecord> LogDataReceived;
+
+        public PaperIoChecker PaperIoChecker { get; private set; } = new PaperIoChecker();
+        public DefenseChecker DefenseChecker { get; private set; } = new DefenseChecker();
 
         public PaperIoSolver()
         {
@@ -51,14 +55,14 @@ namespace PaperIO_MiniCupsAI
         public bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response)
         {
             response = string.Empty;
+            var jPacket = JsonConvert.DeserializeObject<JPacket>(frame.Board);
 
-            if (string.IsNullOrEmpty(frame.Board))
+            if (jPacket.PacketType == JPacketType.EndGame)
             {
                 dataProvider.Stop();
                 return false;
             }
 
-            var jPacket = JsonConvert.DeserializeObject<JPacket>(frame.Board);
             var board = new Board(instanceName, startTime, frame, jPacket.PacketType == JPacketType.StartGame ? _startInfo = jPacket : jPacket.Merge(_startInfo));
             OnBoardChanged(board);
 
@@ -67,7 +71,6 @@ namespace PaperIO_MiniCupsAI
             response = GetResponse(board);
 
             return true;
-
         }
 
         private string GetResponse(Board board)
@@ -75,7 +78,7 @@ namespace PaperIO_MiniCupsAI
 
             // из возможных для хода клеток выбираем ту, откуда можно безопасно вернуться домой
 
-            var directionBack = board.IPlayer.Direction.Invert();
+//            var directionBack = board.IPlayer.Direction.Invert();
 //            var pointEntries = Point.Neighbor
 //                .Where(pair => pair.Key != directionBack)
 //                .Select(pair => board.IPlayer.Position[pair.Key])
@@ -83,24 +86,31 @@ namespace PaperIO_MiniCupsAI
 //                .Select(point => (Point: point, EnemyW: board.Enemies.Select(enemy => enemy.Map[point]).Min()))
 //                .OrderByDescending(entry => entry.EnemyW).ToArray();
 
-            var pointEntries = from pair in Point.Neighbor
-                where pair.Key != directionBack
-                let point = board.IPlayer.Position[pair.Key]
-                where point.OnBoard(board.Size)
-                let entry = (Point: point, EnemyW: board.Enemies.Select(enemy => enemy.Map[point]).Min())
-                orderby entry.EnemyW descending
-                select entry;
-                                   
+//            var pointEntries = from pair in Point.Neighbor
+//                where pair.Key != directionBack
+//                let point = board.IPlayer.Position[pair.Key]
+//                where point.OnBoard(board.Size)
+//                let entry = (Point: point, EnemyW: board.Enemies.Select(enemy => enemy.Map[point]).Min())
+//                orderby entry.EnemyW descending
+//                select entry;
 
 
 
+//            if (board.PathToHome != null && board.PathToHome.Any())
+//            {
+//                return $"{{\"command\": \"{board.IPlayer.Position.GetDirectionTo(board.PathToHome.First()).GetCommand()}\"}}";
+//            }
+//            else return string.Empty;
 
+            var directions = Point.Neighbor.Keys.Where(d => PaperIoChecker.CanIGoTo(board, d) &&
+                                                            DefenseChecker.CanIGoTo(board, d))
+                .ToList();
 
-            if (board.PathToHome != null && board.PathToHome.Any())
-            {
-                return $"{{\"command\": \"{board.IPlayer.Position.GetDirectionTo(board.PathToHome.First()).GetCommand()}\"}}";
-            }
-            else return string.Empty;
+            OnLogDataReceived(new LogRecord(board.Frame, $"Directions: {string.Join(" ", directions)}"));
+
+            if (!directions.Any()) directions.Add(board.IPlayer.Direction);
+
+            return $"{{\"command\": \"{directions.First().GetCommand()}\"}}";
         }
 
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);

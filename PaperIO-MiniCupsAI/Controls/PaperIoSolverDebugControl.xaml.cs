@@ -102,7 +102,7 @@ namespace PaperIO_MiniCupsAI.Controls
                         _labelsMe[i, j].Content = board.IPlayer.Map[i, j].Weight;
 
                         if (board.Enemies.Any())
-                            _labelsOpp[i, j].Content = board.Enemies.Select(enemy => enemy.Map[i, j].Weight).Min();
+                            _labelsOpp[i, j].Content = board.EnemiesMap(i, j);
                     }
                 }
             }

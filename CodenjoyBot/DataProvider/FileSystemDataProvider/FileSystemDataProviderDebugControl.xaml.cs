@@ -12,8 +12,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 
         public FileSystemDataProvider DataProvider
         {
-            get => (FileSystemDataProvider) GetValue(DataProviderProperty);
-            set => SetValue(DataProviderProperty, value);
+            get { return (FileSystemDataProvider) GetValue(DataProviderProperty); }
+            set { SetValue(DataProviderProperty, value); }
         }
 
         public FileSystemDataProviderDebugControl()
@@ -42,8 +42,6 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
                 FrameSlider.Value = time;
                 CurrentFrameTextBox.Text = time.ToString();
             });
-
-            DataProvider?.OnLogDataReceived(new LogRecord($"set FrameSlider.Value {time}"));
         }
 
         private void CurrentFrameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)

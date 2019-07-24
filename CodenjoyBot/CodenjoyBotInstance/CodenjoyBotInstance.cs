@@ -278,7 +278,8 @@ namespace CodenjoyBot.CodenjoyBotInstance
 //            {
 //                DataLogger.Log(this, frame, e);
 //#if DEBUG
-//                throw new Exception("Exception in DataProviderOnDataReceived", e);
+//                //throw new Exception("Exception in DataProviderOnDataReceived", e);
+//                OnLogDataReceived(this, new LogRecord(frame, $"EXCEPTION: {e}"));
 //#endif
 //            }
         }

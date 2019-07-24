@@ -26,6 +26,21 @@ namespace PaperIO_MiniCupsAI
 
         public IEnumerable<Point> PathToHome { get; }
 
+        public int EnemiesMap(Point p) => EnemiesMap(p.X, p.Y);
+        public int EnemiesMap(int i, int j)
+        {
+            var min = int.MaxValue;
+            var enemyMapEntries = Enemies.Select(enemy => enemy.Map[i, j]).ToArray();
+            foreach (var enemyMapEntry in enemyMapEntries)
+            {
+                if (enemyMapEntry == null) continue;
+                if (min > enemyMapEntry.Weight)
+                    min = enemyMapEntry.Weight;
+            }
+
+            return min;
+        }
+
         //---------------------
 
         public Board(string instanceName, DateTime startTime, DataFrame frame, JPacket jPacket) : base(instanceName, startTime, frame)

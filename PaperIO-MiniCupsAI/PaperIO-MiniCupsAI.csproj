@@ -49,6 +49,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AISolver\ActionSolvers\DefenceChecker.cs" />
+    <Compile Include="AISolver\ActionSolvers\Interfaces\IActionComponentBase.cs" />
+    <Compile Include="AISolver\ActionSolvers\PaperIoChecker.cs" />
     <Compile Include="AISolver\Board.cs" />
     <Compile Include="AISolver\Bonus.cs" />
     <Compile Include="AISolver\Cell.cs" />
@@ -143,5 +146,6 @@
   <ItemGroup>
     <None Include="Resources\path.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

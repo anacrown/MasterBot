@@ -34,6 +34,8 @@ namespace PaperIoRunner
             {
                 var board = Console.ReadLine();
 
+                if (string.IsNullOrEmpty(board)) break;
+
                 DataReceived?.Invoke(this, new DataFrame() { Board = board, Time = time });
 
                 if (Cancel) break;

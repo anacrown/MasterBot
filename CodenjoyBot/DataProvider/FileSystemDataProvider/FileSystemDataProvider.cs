@@ -37,7 +37,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         private Dictionary<uint, string> _boards;
         private Dictionary<uint, string> _responses;
         private static readonly Regex Pattern = new Regex(@"^\[(\d*)\]:\s(.*)$");
-        private readonly Timer _timer = new Timer(50);
+        private readonly Timer _timer = new Timer(800);
 
         private UIElement _control;
         private UIElement _debugControl;
@@ -87,7 +87,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
             if (Time < FrameCount)
             {
                 OnDataReceived(_boards[Time], Time);
-                OnTimeChanged(Time++);
+                OnTimeChanged(Time);
+                Time++;
             }
             else _timer.Stop();
         }
