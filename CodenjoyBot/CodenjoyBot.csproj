@@ -199,6 +199,7 @@
     <Compile Include="AppData.cs" />
     <Compile Include="Board\Board.cs" />
     <Compile Include="Board\Cell.cs" />
+    <Compile Include="Board\Matrix.cs" />
     <Compile Include="CodenjoyBotInstance\CodenjoyBotCollection.cs" />
     <Compile Include="CodenjoyBotInstance\CodenjoyBotInstance.cs" />
     <Compile Include="CodenjoyBotInstance\Controls\BotInstanceList.xaml.cs">

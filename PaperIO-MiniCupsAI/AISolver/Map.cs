@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using CodenjoyBot.Board;
 using Point = CodenjoyBot.Board.Point;
 
 namespace PaperIO_MiniCupsAI

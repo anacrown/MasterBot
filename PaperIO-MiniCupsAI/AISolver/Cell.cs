@@ -9,10 +9,6 @@ namespace PaperIO_MiniCupsAI
 
         public Board Board { get; set; }
 
-        public string PlayerName { get; set; }
-
-        public Direction Direction { get; set; } = Direction.Unknown;
-
         public Cell(Point position, Board board, Element element = Element.NONE)
             : base(position)
         {
@@ -20,17 +16,8 @@ namespace PaperIO_MiniCupsAI
             Board = board;
         }
 
-        public Cell this[Direction direction]
-        {
-            get
-            {
-                return Board[Pos[direction]];
-            }
-        }
+        public Cell this[Direction direction] => Board[Pos[direction]];
 
-        public Cell[] GetCrossVicinity()
-        {
-            return Pos.GetCrossVicinity(Board.Size).Select<Point, Cell>(t => Board[t]).ToArray<Cell>();
-        }
+        public Cell[] GetCrossVicinity() => Pos.GetCrossVicinity(Board.Size).Select<Point, Cell>(t => Board[t]).ToArray<Cell>();
     }
 }

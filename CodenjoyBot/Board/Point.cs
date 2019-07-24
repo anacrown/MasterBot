@@ -43,13 +43,7 @@ namespace CodenjoyBot.Board
             return Direction.Unknown;
         }
 
-        public Point this[Direction direction]
-        {
-            get
-            {
-                return this + Point.Neighbor[direction];
-            }
-        }
+        public Point this[Direction direction] => this + Point.Neighbor[direction];
 
         public IEnumerable<Point> GetLine(Direction direction, Size size, int deep = -1)
         {
@@ -69,48 +63,25 @@ namespace CodenjoyBot.Board
 
         public bool OnBoard(int Size) => OnBoard(new Size(Size, Size));
 
-        public bool IsDiagonal(Point p)
-        {
-            return ((IEnumerable<Point>)Point.DiagonalNeighbors).Select<Point, Point>((Func<Point, Point>)(t => this + t)).Contains<Point>(p);
-        }
+        public bool IsDiagonal(Point p) => DiagonalNeighbors.Select(t => this + t).Contains(p);
 
-        public static Point Empty
-        {
-            get
-            {
-                return new Point(0, 0);
-            }
-        }
+        public static Point Empty => new Point(0, 0);
 
         public static Dictionary<Direction, Point> Neighbor { get; set; } = new Dictionary<Direction, Point>()
-    {
-      {
-        Direction.Up,
-        new Point(0, -1)
-      },
-      {
-        Direction.Right,
-        new Point(1, 0)
-      },
-      {
-        Direction.Down,
-        new Point(0, 1)
-      },
-      {
-        Direction.Left,
-        new Point(-1, 0)
-      }
-    };
-
-        public static Point operator +(Point p1, Point p2)
         {
-            return new Point(p1.X + p2.X, p1.Y + p2.Y);
-        }
+            {Direction.Up, new Point(0, -1)},
+            {Direction.Right, new Point(1, 0)},
+            {Direction.Down, new Point(0, 1)},
+            {Direction.Left, new Point(-1, 0)}
+        };
 
-        public static Point operator -(Point p1, Point p2)
-        {
-            return new Point(p1.X - p2.X, p1.Y - p2.Y);
-        }
+        public static Point operator +(Point p1, Point p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
+
+        public static Point operator -(Point p1, Point p2) => new Point(p1.X - p2.X, p1.Y - p2.Y);
+
+        public static Point operator *(Point p1, int i) => new Point(p1.X * i, p1.Y * i);
+
+        public static Point operator /(Point p1, int i) => new Point(p1.X / i, p1.Y / i);
 
         public static bool operator ==(Point p1, Point p2)
         {
@@ -192,7 +163,7 @@ namespace CodenjoyBot.Board
 
         public override string ToString()
         {
-            return string.Format("({0}:{1})", (object)this.X, (object)this.Y);
+            return string.Format("({0}:{1})", this.X, this.Y);
         }
 
         protected bool Equals(Point other)
@@ -204,7 +175,7 @@ namespace CodenjoyBot.Board
         {
             if (obj == null)
                 return false;
-            if ((object)this == obj)
+            if (this == obj)
                 return true;
             if (obj.GetType() != this.GetType())
                 return false;
