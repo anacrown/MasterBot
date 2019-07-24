@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using CodenjoyBot.Board;
 using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
@@ -64,86 +65,44 @@ namespace PaperIO_MiniCupsAI
             if (board.JPacket.PacketType != JPacketType.Tick) return false;
 
             response = GetResponse(board);
+
             return true;
 
         }
 
         private string GetResponse(Board board)
         {
-            var commands = new string[4] { "left", "right", "up", "down" };
-            var random = new Random();
-            var index = random.Next(0, commands.Length);
 
-            return $"{{\"command\": \"{commands[index]}\"}}";
+            // из возможных для хода клеток выбираем ту, откуда можно безопасно вернуться домой
+
+            var directionBack = board.IPlayer.Direction.Invert();
+//            var pointEntries = Point.Neighbor
+//                .Where(pair => pair.Key != directionBack)
+//                .Select(pair => board.IPlayer.Position[pair.Key])
+//                .Where(point => point.OnBoard(board.Size))
+//                .Select(point => (Point: point, EnemyW: board.Enemies.Select(enemy => enemy.Map[point]).Min()))
+//                .OrderByDescending(entry => entry.EnemyW).ToArray();
+
+            var pointEntries = from pair in Point.Neighbor
+                where pair.Key != directionBack
+                let point = board.IPlayer.Position[pair.Key]
+                where point.OnBoard(board.Size)
+                let entry = (Point: point, EnemyW: board.Enemies.Select(enemy => enemy.Map[point]).Min())
+                orderby entry.EnemyW descending
+                select entry;
+                                   
+
+
+
+
+
+            if (board.PathToHome != null && board.PathToHome.Any())
+            {
+                return $"{{\"command\": \"{board.IPlayer.Position.GetDirectionTo(board.PathToHome.First()).GetCommand()}\"}}";
+            }
+            else return string.Empty;
         }
 
-//        private Board LoadData(string instanceName, DateTime startTime, DataFrame frame)
-//        {
-//            var jObject = JObject.Parse(frame.Board);
-//            var jToken1 = jObject["type"];
-//            Board board;
-//            if ((jToken1 != null ? jToken1.Value<string>() : null) == "start_game")
-//            {
-//                _speed = jObject["params"]["speed"].Value<int>();
-//                _width = jObject["params"]["width"].Value<int>();
-//                _boardSizeX = jObject["params"]["x_cells_count"].Value<int>();
-//                _boardSizeY = jObject["params"]["y_cells_count"].Value<int>();
-//                board = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY))
-//                {
-//                    BoardType = BoardType.StartGame
-//                };
-//            }
-//            else
-//            {
-//                var type = jObject["type"].Value<string>();
-//                board = new Board(instanceName, startTime, frame, new Size(_boardSizeX, _boardSizeY));
-//                board.BoardType = BoardType.Tick;
-//                foreach (var child in jObject["params"]["players"].Children<JProperty>())
-//                {
-//                    var name = child.Name;
-//                    var first = child.First;
-//                    var direction = first["direction"].Value<string>().ToDirection();
-//                    var point = GetPoint(first["position"].Values<int>().ToArray(), _width, board.Size);
-//                    var playerCell = board[point];
-//                    playerCell.Direction = direction;
-//                    foreach (var numArray in first["lines"].Children().Select(t => t.Values<int>().ToArray()))
-//                    {
-//                        var cell = board[GetPoint(numArray, _width, board.Size)];
-//                        cell.PlayerName = name;
-//                        cell.Element = name == "i" ? Element.ME_LINE : Element.PLAYER_LINE;
-//                    }
-//                    foreach (var numArray in first["territory"].Children().Select(t => t.Values<int>().ToArray()))
-//                    {
-//                        var cell = board[GetPoint(numArray, _width, board.Size)];
-//                        cell.PlayerName = name;
-//                        cell.Element = name == "i" ? Element.ME_TERRITORY : Element.PLAYER_TERRITORY;
-//                    }
-//                    playerCell.PlayerName = name;
-//                    playerCell.Element = name == "i" ? Element.ME : Element.PLAYER;
-//                    if (playerCell.Element == Element.ME)
-//                    {
-//                        board.MeCell = playerCell;
-//                        board.MeWeight = new Map(board.Size, board.Where(c => c.Element == Element.ME_LINE).Select(c => c.Pos).ToArray());
-//                        board.MeWeight.Check(board.MeCell.Pos);
-//                    }
-//                    else
-//                    {
-//                        var map = new Map(board.Size, board.Where(c =>
-//                        {
-//                            if (c.Element == Element.PLAYER_LINE)
-//                                return c.PlayerName == playerCell.PlayerName;
-//                            return false;
-//                        }).Select(c => c.Pos).ToArray());
-//                        map.Check(playerCell.Pos);
-//                        board.OppWeights.Add(playerCell.PlayerName, map);
-//                    }
-//                }
-//            }
-//
-//            OnBoardChanged(board);
-//            return board;
-//        }
-        
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
         protected virtual void OnBoardChanged(Board e) => BoardChanged?.Invoke(this, e);
     }

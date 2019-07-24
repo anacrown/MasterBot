@@ -18,7 +18,7 @@ namespace PaperIO_MiniCupsAI.Controls
         }
 
         public static readonly DependencyProperty SolverProperty = DependencyProperty.Register(nameof(Solver),
-            typeof(PaperIoSolver), typeof(PaperIoSolverDebugControl), new PropertyMetadata((object) null));
+            typeof(PaperIoSolver), typeof(PaperIoSolverDebugControl), new PropertyMetadata((object)null));
 
         private Image[,] _images;
         private Label[,] _labelsMe;
@@ -28,15 +28,15 @@ namespace PaperIO_MiniCupsAI.Controls
 
         public PaperIoSolver Solver
         {
-            get => (PaperIoSolver) GetValue(SolverProperty);
+            get => (PaperIoSolver)GetValue(SolverProperty);
             set => SetValue(SolverProperty, value);
         }
 
         public PaperIoSolverDebugControl(PaperIoSolver solver) : this()
         {
             Solver = solver;
-            Solver.BoardChanged += (EventHandler<Board>) ((sender, board) =>
-                Dispatcher.InvokeAsync(() => UpdateView(board)));
+            Solver.BoardChanged += (EventHandler<Board>)((sender, board) =>
+               Dispatcher.InvokeAsync(() => UpdateView(board)));
         }
 
         private void UpdateView(Board board)
@@ -60,7 +60,7 @@ namespace PaperIO_MiniCupsAI.Controls
                 {
                     for (var j = 0; j < _size.Height; ++j)
                     {
-                        _images[i, j] = new Image {Width = width, Height = height, SnapsToDevicePixels = true};
+                        _images[i, j] = new Image { Width = width, Height = height, SnapsToDevicePixels = true };
 
 
                         Canvas.Children.Add(_images[i, j]);
@@ -69,7 +69,9 @@ namespace PaperIO_MiniCupsAI.Controls
 
                         _labelsMe[i, j] = new Label
                         {
-                            FontSize = 10.0, Foreground = Brushes.Green, SnapsToDevicePixels = true
+                            FontSize = 10.0,
+                            Foreground = Brushes.Green,
+                            SnapsToDevicePixels = true
                         };
 
                         Canvas.Children.Add(_labelsMe[i, j]);
@@ -78,7 +80,9 @@ namespace PaperIO_MiniCupsAI.Controls
 
                         _labelsOpp[i, j] = new Label
                         {
-                            FontSize = 10.0, Foreground = Brushes.Black, SnapsToDevicePixels = true
+                            FontSize = 10.0,
+                            Foreground = Brushes.Black,
+                            SnapsToDevicePixels = true
                         };
 
                         Canvas.Children.Add(_labelsOpp[i, j]);
@@ -92,12 +96,22 @@ namespace PaperIO_MiniCupsAI.Controls
             {
                 for (var j = 0; j < _size.Height; j++)
                 {
-                    _images[i, j].Source = ResourceManager.GetSource(board[i,j].Element);
+                    _images[i, j].Source = ResourceManager.GetSource(board[i, j].Element);
                     if (board.JPacket.PacketType == JPacketType.Tick)
                     {
                         _labelsMe[i, j].Content = board.IPlayer.Map[i, j].Weight;
-                        _labelsOpp[i, j].Content = board.Enemies.Select(enemy => enemy.Map[i, j].Weight).Min();
+
+                        if (board.Enemies.Any())
+                            _labelsOpp[i, j].Content = board.Enemies.Select(enemy => enemy.Map[i, j].Weight).Min();
                     }
+                }
+            }
+
+            if (board.PathToHome != null)
+            {
+                foreach (var point in board.PathToHome)
+                {
+                    _images[point.X, point.Y].Source = ResourceManager.GetSource("path");
                 }
             }
         }

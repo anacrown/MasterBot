@@ -41,7 +41,7 @@ namespace PaperIO_MiniCupsAI
 
             Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb));
 
-            Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount));
+            Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount), Line.ToArray());
         }
     }
 }

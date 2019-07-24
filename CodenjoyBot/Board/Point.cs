@@ -21,13 +21,13 @@ namespace CodenjoyBot.Board
 
         public Point(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public IEnumerable<Point> GetCrossVicinity(Size size)
         {
-            return Point.Neighbor.Values.Select(dp => new
+            return Neighbor.Values.Select(dp => new
             {
                 dp = dp,
                 v = this + dp
@@ -36,14 +36,13 @@ namespace CodenjoyBot.Board
 
         public Direction GetDirectionTo(Point p)
         {
-            if (this.X == p.X)
-                return this.Y < p.Y ? Direction.Down : Direction.Up;
-            if (this.Y == p.Y)
-                return this.X < p.X ? Direction.Right : Direction.Left;
-            return Direction.Unknown;
+            var dP = p - this;
+            var neighborPair = Neighbor.SingleOrDefault(pair => pair.Value == dP);
+
+            return neighborPair.Key;
         }
 
-        public Point this[Direction direction] => this + Point.Neighbor[direction];
+        public Point this[Direction direction] => this + Neighbor[direction];
 
         public IEnumerable<Point> GetLine(Direction direction, Size size, int deep = -1)
         {
@@ -163,12 +162,12 @@ namespace CodenjoyBot.Board
 
         public override string ToString()
         {
-            return string.Format("({0}:{1})", this.X, this.Y);
+            return string.Format("({0}:{1})", X, Y);
         }
 
         protected bool Equals(Point other)
         {
-            return this.X == other.X && this.Y == other.Y;
+            return X == other.X && Y == other.Y;
         }
 
         public override bool Equals(object obj)
@@ -177,14 +176,14 @@ namespace CodenjoyBot.Board
                 return false;
             if (this == obj)
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
-            return this.Equals((Point)obj);
+            return Equals((Point)obj);
         }
 
         public override int GetHashCode()
         {
-            return this.X * 397 ^ this.Y;
+            return X * 397 ^ Y;
         }
     }
 }

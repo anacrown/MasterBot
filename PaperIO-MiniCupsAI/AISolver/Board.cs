@@ -22,6 +22,12 @@ namespace PaperIO_MiniCupsAI
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
 
+        //---------------------
+
+        public IEnumerable<Point> PathToHome { get; }
+
+        //---------------------
+
         public Board(string instanceName, DateTime startTime, DataFrame frame, JPacket jPacket) : base(instanceName, startTime, frame)
         {
             JPacket = jPacket;
@@ -54,6 +60,8 @@ namespace PaperIO_MiniCupsAI
                 this[IPlayer.Position].Element = Element.ME;
 
                 Parallel.ForEach(Players.Values, player => { player.Map.Check(player.Position); });
+
+                PathToHome = IPlayer.Map.Tracert(new Point(0, 0)).Reverse();
             }
         }
     }

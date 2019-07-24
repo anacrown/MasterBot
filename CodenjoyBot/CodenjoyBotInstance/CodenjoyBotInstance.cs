@@ -260,7 +260,7 @@ namespace CodenjoyBot.CodenjoyBotInstance
         private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
-            try
+//            try
             {
                 DataLogger.Log(this, frame);
 
@@ -274,13 +274,13 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 }
                 else OnLogDataReceived(Solver, new LogRecord(frame, $"Response skip"));
             }
-            catch (Exception e)
-            {
-                DataLogger.Log(this, frame, e);
-#if DEBUG
-                throw new Exception("Exception in DataProviderOnDataReceived", e);
-#endif
-            }
+//            catch (Exception e)
+//            {
+//                DataLogger.Log(this, frame, e);
+//#if DEBUG
+//                throw new Exception("Exception in DataProviderOnDataReceived", e);
+//#endif
+//            }
         }
 
         public event EventHandler<IDataProvider> Started;

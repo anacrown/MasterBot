@@ -9,55 +9,77 @@ namespace PaperIO_MiniCupsAI
 {
     public class Map : Matrix<MapEntry>
     {
-        public Map(Size size, params Point[] checkedPoints)
-            : base(size)
+        public Point CheckPoint { get; private set; }
+
+        public Map(Size size, params Point[] checkedPoints) : base(size)
         {
-            foreach (Point checkedPoint in checkedPoints)
+            foreach (var checkedPoint in checkedPoints)
+            {
+                this[checkedPoint].Weight = -1;
                 this[checkedPoint].BChecked = true;
+            }
+
+            for (var i = 0; i < Size.Width; i++)
+            for (var j = 0; j < Size.Height; j++)
+                this[i, j].Position = new Point(i, j);
         }
 
-        public void Check(Point point)
+        public void Check(Point checkPoint)
         {
-            List<Point> pointList = new List<Point>();
-            pointList.AddRange(check(point));
+            this[CheckPoint = checkPoint].Weight = 0;
+
+            var pointList = new List<Point>();
+            pointList.AddRange(check(CheckPoint));
             do
             {
-                Point[] array = pointList.ToArray();
+                var array = pointList.ToArray();
                 pointList.Clear();
-                foreach (Point point1 in array)
-                    pointList.AddRange(check(point1));
+
+                foreach (var point in array)
+                    pointList.AddRange(check(point));
             }
             while (pointList.Count > 0);
         }
 
-        public IEnumerable<Point> Tracert(
-            Point startPoint,
-            Point endPoint)
+        public IEnumerable<Point> Tracert(Point point)
         {
-            for (Point prev = startPoint.GetCrossVicinity(Size).Select<Point, ValueTuple<Point, int>>(p => new ValueTuple<Point, int>(p, this[p].Weight)).Aggregate<ValueTuple<Point, int>>((i1, i2) =>
-                {
-                    if (i1.Item2 >= i2.Item2)
-                        return i2;
-                    return i1;
-                }).Item1; prev != endPoint; prev = startPoint.GetCrossVicinity(Size).Select<Point, ValueTuple<Point, int>>(p => new ValueTuple<Point, int>(p, this[p].Weight)).Aggregate<ValueTuple<Point, int>>((i1, i2) =>
-                {
-                    if (i1.Item2 >= i2.Item2)
-                        return i2;
-                    return i1;
-                }).Item1)
-                yield return prev;
+//            if (fPoint == null || fPoint == CheckPoint) return null;
+//
+//            var point = fPoint;
+//            var points = new List<Point>() { point };
+//        
+//            while (point != null)
+//            {
+//                var cross = point.GetCrossVicinity(Size).ToArray();
+//
+//                var min = cross.Select(t => this[t].Weight).Where(t => t >= 0).Min();
+//                if (min == 0)
+//                {
+//                    if (cross.Contains(CheckPoint)) break;
+//                    return null;
+//                }
+//
+//                points.Add(point = cross.FirstOrDefault(t => this[t].Weight == min));
+//            }
+//
+//            points.Reverse();
+//            return points.ToArray();
+
+            var entry = this[point];
+
+            while (entry != null && entry.Weight > 0)
+            {
+                yield return entry.Position;
+                entry = entry.Position.GetCrossVicinity(Size).Select(p => this[p]).FirstOrDefault(e => e.Weight == entry.Weight - 1);
+            }
         }
 
         private IEnumerable<Point> check(Point point)
         {
             this[point].BChecked = true;
-            Point[] array = point.GetCrossVicinity(Size).Where<Point>(n =>
-            {
-                if (!this[n].BChecked)
-                    return !this[n].BWatched;
-                return false;
-            }).ToArray<Point>();
-            foreach (Point index in array)
+            var array = point.GetCrossVicinity(Size).Where(n => !this[n].BChecked && !this[n].BWatched).ToArray();
+
+            foreach (var index in array)
             {
                 this[index].BWatched = true;
                 this[index].Weight = this[point].Weight + 1;
