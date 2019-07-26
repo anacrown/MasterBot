@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using BotBase;
+using BotBase.BotInstance;
 using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 

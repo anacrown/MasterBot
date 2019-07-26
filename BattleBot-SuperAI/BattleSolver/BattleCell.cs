@@ -9,7 +9,7 @@ namespace BattleBot_SuperAI.BattleSolver
 {
     public class BattleCell
     {
-        private readonly Cell _cell;
+        private readonly CellBase _cell;
 
         public enum CellMetaType
         {
@@ -39,7 +39,7 @@ namespace BattleBot_SuperAI.BattleSolver
         public Direction Direction { get; }
 
         public int Strength { get; }
-        public BattleCell(Cell cell, BattleBoard board)
+        public BattleCell(CellBase cell, BattleBoard board)
         {
             _cell = cell;
             Board = board;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using BotBase;
+using BotBase.BotInstance;
 
 namespace CodenjoyBot.Interfaces
 {

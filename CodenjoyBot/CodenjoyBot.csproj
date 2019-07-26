@@ -224,9 +224,6 @@
     <Compile Include="Entity\DataFrameModel.cs" />
     <Compile Include="Entity\ExceptionModel.cs" />
     <Compile Include="Entity\LaunchModel.cs" />
-    <Compile Include="DataProvider\FileSystemDataLogger\FIleSystemLaunchObserver.xaml.cs">
-      <DependentUpon>FIleSystemLaunchObserver.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DataProvider\FileSystemDataProvider\FileSystemDataProviderControl.xaml.cs">
       <DependentUpon>FileSystemDataProviderControl.xaml</DependentUpon>
     </Compile>
@@ -236,7 +233,6 @@
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProviderControl.xaml.cs">
       <DependentUpon>WebSocketDataProviderControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataProvider\FileSystemDataLogger\FileSystemDataLogger.cs" />
     <Compile Include="DataProvider\WebSocketDataProvider\WebSocketDataProvider.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -300,10 +296,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DataProvider\DataBaseDataProvider\SelectInstanceWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DataProvider\FileSystemDataLogger\FIleSystemLaunchObserver.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

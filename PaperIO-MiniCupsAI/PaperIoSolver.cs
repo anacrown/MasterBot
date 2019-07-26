@@ -2,13 +2,13 @@
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using CodenjoyBot.Interfaces;
+using BotBase.Interfaces;
 using Newtonsoft.Json;
 using PaperIO_MiniCupsAI.Controls;
 using PaperIoStrategy;
 using PaperIoStrategy.AISolver;
-using DataFrame = BotBase.DataFrame;
-using LogRecord = CodenjoyBot.Interfaces.LogRecord;
+using DataFrame = BotBase.BotInstance.DataFrame;
+using LogRecord = BotBase.BotInstance.LogRecord;
 using Point = System.Windows.Point;
 
 namespace PaperIO_MiniCupsAI

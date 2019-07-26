@@ -7,10 +7,10 @@ namespace BotBase.Board
     {
         private static readonly Point[] DiagonalNeighbors = new Point[4]
         {
-      new Point(-1, -1),
-      new Point(-1, 1),
-      new Point(1, 1),
-      new Point(1, -1)
+            new Point(-1, -1),
+            new Point(-1, 1),
+            new Point(1, 1),
+            new Point(1, -1)
         };
 
         public int X { get; set; }
@@ -29,7 +29,7 @@ namespace BotBase.Board
             {
                 dp = dp,
                 v = this + dp
-            }).Where(_param1 => _param1.v.OnBoard(size)).Select(_param1 => _param1.v);
+            }).Where(p => p.v.OnBoard(size)).Select(p => p.v);
         }
 
         public Direction GetDirectionTo(Point p)
@@ -44,7 +44,7 @@ namespace BotBase.Board
 
         public IEnumerable<Point> GetLine(Direction direction, Size size, int deep = -1)
         {
-            for (Point point = this[direction]; point.OnBoard(size) && deep != 0; --deep)
+            for (var point = this[direction]; point.OnBoard(size) && deep != 0; --deep)
             {
                 yield return point;
                 point = point[direction];
@@ -82,23 +82,23 @@ namespace BotBase.Board
 
         public static bool operator ==(Point p1, Point p2)
         {
-            int? nullable1 = (object)p1 != null ? new int?(p1.X) : new int?();
-            int? nullable2 = (object)p2 != null ? new int?(p2.X) : new int?();
+            var nullable1 = (object)p1 != null ? p1.X : new int?();
+            var nullable2 = (object)p2 != null ? p2.X : new int?();
             if (!(nullable1.GetValueOrDefault() == nullable2.GetValueOrDefault() & nullable1.HasValue == nullable2.HasValue))
                 return false;
-            nullable2 = (object)p1 != null ? new int?(p1.Y) : new int?();
-            nullable1 = (object)p2 != null ? new int?(p2.Y) : new int?();
+            nullable2 = (object)p1 != null ? p1.Y : new int?();
+            nullable1 = (object)p2 != null ? p2.Y : new int?();
             return nullable2.GetValueOrDefault() == nullable1.GetValueOrDefault() & nullable2.HasValue == nullable1.HasValue;
         }
 
         public static bool operator !=(Point p1, Point p2)
         {
-            int? nullable1 = (object)p1 != null ? new int?(p1.X) : new int?();
-            int? nullable2 = (object)p2 != null ? new int?(p2.X) : new int?();
+            var nullable1 = (object)p1 != null ? p1.X : new int?();
+            var nullable2 = (object)p2 != null ? p2.X : new int?();
             if (!(nullable1.GetValueOrDefault() == nullable2.GetValueOrDefault() & nullable1.HasValue == nullable2.HasValue))
                 return true;
-            nullable2 = (object)p1 != null ? new int?(p1.Y) : new int?();
-            nullable1 = (object)p2 != null ? new int?(p2.Y) : new int?();
+            nullable2 = (object)p1 != null ? p1.Y : new int?();
+            nullable1 = (object)p2 != null ? p2.Y : new int?();
             return !(nullable2.GetValueOrDefault() == nullable1.GetValueOrDefault() & nullable2.HasValue == nullable1.HasValue);
         }
 

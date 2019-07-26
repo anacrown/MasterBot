@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Runtime.Serialization;
 using BotBase;
-using CodenjoyBot.Entity;
+using BotBase.BotInstance;
 using CodenjoyBot.Interfaces;
+using DataFrameModel = CodenjoyBot.Entity.DataFrameModel;
+using ExceptionModel = CodenjoyBot.Entity.ExceptionModel;
 
 namespace CodenjoyBot.DataProvider.DataBaseDataLogger
 {

@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Windows;
 using BattleBot_SuperAI.Controls;
-using BotBase;
-using CodenjoyBot.Annotations;
+using BotBase.Annotations;
 using BotBase.Board;
-using CodenjoyBot.Interfaces;
+using BotBase.BotInstance;
+using BotBase.Interfaces;
 using Point = BotBase.Board.Point;
 using Size = BotBase.Board.Size;
 
@@ -55,7 +55,7 @@ namespace BattleBot_SuperAI.BattleSolver
             
         }
 
-        public string Answer(Board<Cell> board)
+        public string Answer(Board<CellBase> board)
         {
             OnBoardChanged(board);
 
@@ -220,8 +220,8 @@ namespace BattleBot_SuperAI.BattleSolver
         public event EventHandler<LogRecord> LogDataReceived;
         protected virtual void OnLogDataReceived(DataFrame frame, string message) => LogDataReceived?.Invoke(this, new LogRecord(frame, message));
 
-        public event EventHandler<Board<Cell>> BoardChanged;
-        protected virtual void OnBoardChanged(Board<Cell> board) => BoardChanged?.Invoke(this, board);
+        public event EventHandler<Board<CellBase>> BoardChanged;
+        protected virtual void OnBoardChanged(Board<CellBase> board) => BoardChanged?.Invoke(this, board);
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -301,7 +301,7 @@ namespace BattleBot_SuperAI.BattleSolver
             { "˂",Element.PLAYER_TANK_LEFT                                   }
         };
 
-        public static Element GetElement(this Cell cell)
+        public static Element GetElement(this CellBase cell)
         {
             return _elements[cell.C];
         }

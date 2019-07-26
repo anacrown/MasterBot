@@ -9,7 +9,7 @@ namespace BattleBot_SuperAI.BattleSolver
 {
     public class BattleBoard : IEnumerable<BattleCell>, IEnumerable
     {
-        private readonly Board<Cell> _board;
+        private readonly Board<CellBase> _board;
         private readonly BattleCell[] _cells;
 
         public FrameBuffer<BattleBoard> FrameBuffer { get; }
@@ -44,10 +44,10 @@ namespace BattleBot_SuperAI.BattleSolver
             }
         }
 
-        public BattleBoard(Board<Cell> board, FrameBuffer<BattleBoard> _frameBuffer)
+        public BattleBoard(Board<CellBase> board, FrameBuffer<BattleBoard> _frameBuffer)
         {
             this._board = board;
-            this._cells = this._board.Select<Cell, BattleCell>((Func<Cell, BattleCell>)(t => new BattleCell(t, this))).ToArray<BattleCell>();
+            this._cells = this._board.Select<CellBase, BattleCell>((Func<CellBase, BattleCell>)(t => new BattleCell(t, this))).ToArray<BattleCell>();
             this.FrameBuffer = _frameBuffer;
             this.Player = ((IEnumerable<BattleCell>)this._cells).FirstOrDefault<BattleCell>((Func<BattleCell, bool>)(t => t.MetaType == BattleCell.CellMetaType.TANK));
             if (this.Player == null)

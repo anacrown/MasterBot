@@ -43,9 +43,9 @@ namespace BattleBot_SimpleAI.BattleSolver
             { "˂",Element.PLAYER_TANK_LEFT                                   }
         };
 
-        public static Element GetElement(this Cell cell) => _elements[cell.C];
+        public static Element GetElement(this CellBase cell) => _elements[cell.C];
 
-        public static int GetStrength(this Cell cell)
+        public static int GetStrength(this CellBase cell)
         {
             switch (cell.GetElement())
             {

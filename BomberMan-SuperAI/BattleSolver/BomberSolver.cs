@@ -6,9 +6,9 @@ using System.Runtime.Serialization;
 using System.Windows;
 using BomberMan_SuperAI.Annotations;
 using BomberMan_SuperAI.Controls;
-using BotBase;
 using BotBase.Board;
-using CodenjoyBot.Interfaces;
+using BotBase.BotInstance;
+using BotBase.Interfaces;
 
 namespace BomberMan_SuperAI.BattleSolver
 {
@@ -16,7 +16,7 @@ namespace BomberMan_SuperAI.BattleSolver
     public class BomberSolver : ISolver, INotifyPropertyChanged
     {
         private int _size;
-        private Board<Cell> _board;
+        private Board<CellBase> _board;
         private UIElement _control;
         private UIElement _debugControl;
 
@@ -53,7 +53,7 @@ namespace BomberMan_SuperAI.BattleSolver
             }
         }
 
-        public Board<Cell> Board
+        public Board<CellBase> Board
         {
             get => _board;
             private set
@@ -65,7 +65,7 @@ namespace BomberMan_SuperAI.BattleSolver
             }
         }
 
-        public string Answer(Board<Cell> board)
+        public string Answer(Board<CellBase> board)
         {
             Board = board;
 
@@ -99,7 +99,7 @@ namespace BomberMan_SuperAI.BattleSolver
             return rsp;
         }
 
-        public event EventHandler<Board<Cell>> BoardChanged;
+        public event EventHandler<Board<CellBase>> BoardChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -183,7 +183,7 @@ namespace BomberMan_SuperAI.BattleSolver
             {" ", Element.NONE }
         };
 
-        public static Element GetElement(this Cell cell)
+        public static Element GetElement(this CellBase cell)
         {
             return _elements[cell.C];
         }

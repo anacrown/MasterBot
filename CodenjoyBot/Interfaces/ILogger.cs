@@ -1,5 +1,6 @@
 ﻿using BotBase;
 using System;
+using BotBase.BotInstance;
 
 namespace CodenjoyBot.Interfaces
 {

@@ -80,10 +80,6 @@
       <Project>{52c7baf6-e076-4cee-9c51-7843e0d87695}</Project>
       <Name>BotBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
-      <Project>{3D3DBB7E-341A-4A52-9F9E-EB364B372C42}</Project>
-      <Name>CodenjoyBot</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

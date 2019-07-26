@@ -73,10 +73,6 @@
       <Project>{52C7BAF6-E076-4CEE-9C51-7843E0D87695}</Project>
       <Name>BotBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
-      <Project>{3d3dbb7e-341a-4a52-9f9e-eb364b372c42}</Project>
-      <Name>CodenjoyBot</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\PaperIoSolverControl.xaml">

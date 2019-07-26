@@ -6,9 +6,10 @@ using System.Runtime.Serialization;
 using System.Windows;
 using BattleBot_SimpleAI.Controls;
 using BotBase;
+using BotBase.Annotations;
 using BotBase.Board;
-using CodenjoyBot.Annotations;
-using CodenjoyBot.Interfaces;
+using BotBase.BotInstance;
+using BotBase.Interfaces;
 
 namespace BattleBot_SimpleAI.BattleSolver
 {
@@ -52,7 +53,7 @@ namespace BattleBot_SimpleAI.BattleSolver
             throw new NotImplementedException();
         }
 
-        public string Answer(Board<Cell> board)
+        public string Answer(Board<CellBase> board)
         {
             OnBoardChanged(board);
 
@@ -71,11 +72,11 @@ namespace BattleBot_SimpleAI.BattleSolver
             return command.ToString();
         }
 
-        public event EventHandler<Board<Cell>> BoardChanged;
+        public event EventHandler<Board<CellBase>> BoardChanged;
         public event EventHandler<LogRecord> LogDataReceived;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnBoardChanged(Board<Cell> board) => BoardChanged?.Invoke(this, board);
+        protected virtual void OnBoardChanged(Board<CellBase> board) => BoardChanged?.Invoke(this, board);
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

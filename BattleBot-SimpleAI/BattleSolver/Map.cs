@@ -72,10 +72,10 @@ namespace BattleBot_SimpleAI.BattleSolver
             }
         }
 
-        public Cell[] Path(Cell to)
+        public CellBase[] Path(CellBase to)
         {
             var current = to;
-            var path = new List<Cell> { current };
+            var path = new List<CellBase> { current };
 
             while (current != null && current.Pos != Start)
             {

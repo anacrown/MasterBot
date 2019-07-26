@@ -45,7 +45,7 @@ namespace BomberMan_SuperAI.Controls
             };
         }
 
-        private void UpdateView(Board<Cell> board)
+        private void UpdateView(Board<CellBase> board)
         {
             if (_size == 0)
             {

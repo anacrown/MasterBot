@@ -1,0 +1,8 @@
+﻿<UserControl x:Class="WebSocketDataProviderView.WebSocketDataProviderDebugControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:botBaseControls="clr-namespace:WebSocketDataProviderView">
+    <Grid>
+        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type botBaseControls:WebSocketDataProviderDebugControl}}, Path=DataProvider.IdentityUser}"/>
+    </Grid>
+</UserControl>

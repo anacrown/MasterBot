@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using BotBase;
+using BotBase.BotInstance;
 using WebSocket4Net;
 
 namespace CodenjoyBot.DataProvider.WebSocketDataProvider

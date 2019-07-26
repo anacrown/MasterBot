@@ -1,0 +1,51 @@
+﻿<Window x:Class="DataBaseDataProviderView.SelectInstanceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:botBaseControls="clr-namespace:DataBaseDataProviderView"
+        mc:Ignorable="d"
+        WindowStyle="ThreeDBorderWindow" MinHeight="600" MinWidth="1200"
+        WindowStartupLocation="CenterOwner"
+        Loaded="SelectInstanceWindow_OnLoaded"
+        Closing="SelectInstanceWindow_OnClosing">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TreeView ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type botBaseControls:SelectInstanceWindow}}, Path=Settings}"
+                  SelectedItemChanged="TreeView_OnSelectedItemChanged">
+            <TreeView.Resources>
+                <!-- <HierarchicalDataTemplate DataType="{x:Type botBaseControls:SettingsViewModel}" ItemsSource="{Binding Launches}"> -->
+                <!--     <TextBlock> -->
+                <!--         <Run Text="{Binding Title}"/> ( -->
+                <!--         <Run Text="{Binding LaunchCount}"/>) -->
+                <!--     </TextBlock> -->
+                <!-- </HierarchicalDataTemplate> -->
+                <!-- <DataTemplate DataType="{x:Type botBaseControls:LaunchViewModel}"> -->
+                <!--     <TextBlock> -->
+                <!--         <Run Text="{Binding LaunchTime, StringFormat=yyyy.MM.dd hh.mm.ss}"/>:  -->
+                <!--         <Run Text="{Binding Name}"/> -->
+                <!--     </TextBlock> -->
+                <!-- </DataTemplate> -->
+            </TreeView.Resources>
+        </TreeView>
+
+        <Grid Grid.Row="1" Margin="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type botBaseControls:SelectInstanceWindow}}, Path=SelectedLaunch.Header}" Margin="5"/>
+
+            <Button x:Name="OKButton" Grid.Column="1" Content="OK" Margin="5" Width="90" Click="OKButton_OnClick" />
+            <Button x:Name="CANCELButton" Grid.Column="2" Content="Cancel" Margin="5" Width="90" Click="CANCELButton_OnClick" />
+
+        </Grid>
+    </Grid>
+</Window>

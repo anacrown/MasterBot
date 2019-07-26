@@ -12,8 +12,10 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using BotBase;
+using BotBase.BotInstance;
 using CodenjoyBot.Annotations;
-using CodenjoyBot.Entity;
+using LaunchModel = CodenjoyBot.Entity.LaunchModel;
+using LaunchSettingsModel = CodenjoyBot.Entity.LaunchSettingsModel;
 
 namespace CodenjoyBot.CodenjoyBotInstance
 {
