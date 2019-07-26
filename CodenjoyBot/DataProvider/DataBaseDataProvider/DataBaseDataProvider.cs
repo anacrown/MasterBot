@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Timers;
 using System.Windows;
+using BotBase;
 using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 
@@ -179,7 +180,7 @@ namespace CodenjoyBot.DataProvider.DataBaseDataProvider
 
         protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
 
-        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame() { Board = board, Time = time });
+        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame(time, board));
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

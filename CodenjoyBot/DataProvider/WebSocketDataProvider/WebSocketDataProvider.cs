@@ -3,6 +3,7 @@ using System;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows;
+using BotBase;
 using WebSocket4Net;
 
 namespace CodenjoyBot.DataProvider.WebSocketDataProvider
@@ -118,11 +119,11 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
 
         public event EventHandler<DataFrame> DataReceived;
         public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame() { Time = time }, message));
+        protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame(time, ""), message));
 
         private void WebSocketOnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            DataReceived?.Invoke(this, new DataFrame { Board = ProcessMessage(e.Message), Time = Time });
+            DataReceived?.Invoke(this, new DataFrame(Time, ProcessMessage(e.Message)));
 
             Time++;
         }
@@ -141,7 +142,7 @@ namespace CodenjoyBot.DataProvider.WebSocketDataProvider
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((WebSocketDataProvider) obj);
+            return Equals((WebSocketDataProvider)obj);
         }
 
         public override int GetHashCode()

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FDBC9C2F-8CF1-46A9-8C0D-32473686EA17}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PaperIoStrategy</RootNamespace>
+    <AssemblyName>PaperIoStrategy</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AISolver\ActionSolvers\DefenceChecker.cs" />
+    <Compile Include="AISolver\ActionSolvers\Interfaces\IActionComponentBase.cs" />
+    <Compile Include="AISolver\ActionSolvers\PaperIoChecker.cs" />
+    <Compile Include="AISolver\Board.cs" />
+    <Compile Include="AISolver\Bonus.cs" />
+    <Compile Include="AISolver\Cell.cs" />
+    <Compile Include="AISolver\DirectionExtention.cs" />
+    <Compile Include="AISolver\Element.cs" />
+    <Compile Include="AISolver\Map.cs" />
+    <Compile Include="AISolver\MapEntry.cs" />
+    <Compile Include="AISolver\Player.cs" />
+    <Compile Include="AISolver\SolverCommand.cs" />
+    <Compile Include="DataContract\JBonus.cs" />
+    <Compile Include="DataContract\JBonusType.cs" />
+    <Compile Include="DataContract\JBonusTypeConverter.cs" />
+    <Compile Include="DataContract\JDirectionConverter.cs" />
+    <Compile Include="DataContract\JPacket.cs" />
+    <Compile Include="DataContract\JPacketExtention.cs" />
+    <Compile Include="DataContract\JPacketParams.cs" />
+    <Compile Include="DataContract\JPacketType.cs" />
+    <Compile Include="DataContract\JPacketTypeConverter.cs" />
+    <Compile Include="DataContract\JPlayer.cs" />
+    <Compile Include="DataContract\JPointArrayConverter.cs" />
+    <Compile Include="DataContract\JPointConverter.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BotBase\BotBase.csproj">
+      <Project>{52C7BAF6-E076-4CEE-9C51-7843E0D87695}</Project>
+      <Name>BotBase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

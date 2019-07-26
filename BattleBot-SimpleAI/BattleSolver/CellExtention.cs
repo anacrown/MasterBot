@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CodenjoyBot.Board;
+using BotBase.Board;
 
 namespace BattleBot_SimpleAI.BattleSolver
 {

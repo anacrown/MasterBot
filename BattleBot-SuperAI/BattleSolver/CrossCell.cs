@@ -1,4 +1,4 @@
-﻿using CodenjoyBot.Board;
+﻿using BotBase.Board;
 
 namespace BattleBot_SuperAI.BattleSolver
 {

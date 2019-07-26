@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using CodenjoyBot.Board;
+using Point = BotBase.Board.Point;
+using Size = BotBase.Board.Size;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
@@ -13,7 +13,7 @@ namespace BattleBot_SuperAI.BattleSolver
 
         public Size Size { get; }
 
-        public CodenjoyBot.Board.Point Start { get; }
+        public Point Start { get; }
 
         public int this[int i, int j]
         {
@@ -27,7 +27,7 @@ namespace BattleBot_SuperAI.BattleSolver
             }
         }
 
-        public int this[CodenjoyBot.Board.Point p]
+        public int this[Point p]
         {
             get
             {
@@ -39,7 +39,7 @@ namespace BattleBot_SuperAI.BattleSolver
             }
         }
 
-        public Map(CodenjoyBot.Board.Point start, int[,] weights, Size size)
+        public Map(Point start, int[,] weights, Size size)
         {
             this.Start = start;
             this.Size = size;
@@ -50,23 +50,23 @@ namespace BattleBot_SuperAI.BattleSolver
 
         private void Dijkstra()
         {
-            Queue<CodenjoyBot.Board.Point> pointQueue1 = new Queue<CodenjoyBot.Board.Point>();
-            Queue<CodenjoyBot.Board.Point> pointQueue2 = new Queue<CodenjoyBot.Board.Point>();
-            List<CodenjoyBot.Board.Point> pointList = new List<CodenjoyBot.Board.Point>()
+            Queue<Point> pointQueue1 = new Queue<Point>();
+            Queue<Point> pointQueue2 = new Queue<Point>();
+            List<Point> pointList = new List<Point>()
       {
         this.Start
       };
             int num = 0;
             while (pointList.Count > 0)
             {
-                foreach (CodenjoyBot.Board.Point point1 in pointList)
+                foreach (Point point1 in pointList)
                 {
                     if (this._weights[point1.X, point1.Y] >= 0)
                     {
                         if (this._weights[point1.X, point1.Y] == 0)
                         {
                             this._map[point1.X, point1.Y] = num;
-                            foreach (CodenjoyBot.Board.Point point2 in point1.GetCrossVicinity(this.Size))
+                            foreach (Point point2 in point1.GetCrossVicinity(this.Size))
                             {
                                 if (this._weights[point2.X, point2.Y] >= 0 && !pointList.Contains(point2) && !pointQueue1.Contains(point2))
                                     pointQueue1.Enqueue(point2);

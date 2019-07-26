@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Windows;
 using BattleBot_SimpleAI.Controls;
+using BotBase;
+using BotBase.Board;
 using CodenjoyBot.Annotations;
-using CodenjoyBot.Board;
-using CodenjoyBot.DataProvider;
 using CodenjoyBot.Interfaces;
 
 namespace BattleBot_SimpleAI.BattleSolver
@@ -40,6 +40,11 @@ namespace BattleBot_SimpleAI.BattleSolver
         public void Initialize()
         {
 
+        }
+
+        public bool Answer(string instanceName, DateTime startTime, DataFrame frame, out string response)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response)

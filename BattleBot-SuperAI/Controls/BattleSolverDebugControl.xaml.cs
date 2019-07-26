@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using BattleBot_SuperAI.BattleSolver;
-using CodenjoyBot.Board;
+using BotBase.Board;
 
 namespace BattleBot_SuperAI.Controls
 {

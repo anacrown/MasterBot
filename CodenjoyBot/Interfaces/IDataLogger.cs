@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using CodenjoyBot.DataProvider;
+using BotBase;
 
 namespace CodenjoyBot.Interfaces
 {

@@ -6,6 +6,8 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PaperIO_MiniCupsAI.Properties;
+using PaperIoStrategy;
+using PaperIoStrategy.AISolver;
 
 namespace PaperIO_MiniCupsAI
 {

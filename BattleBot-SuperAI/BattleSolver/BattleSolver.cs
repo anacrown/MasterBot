@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Windows;
 using BattleBot_SuperAI.Controls;
+using BotBase;
 using CodenjoyBot.Annotations;
-using CodenjoyBot.Board;
-using CodenjoyBot.DataProvider;
+using BotBase.Board;
 using CodenjoyBot.Interfaces;
-using Point = CodenjoyBot.Board.Point;
+using Point = BotBase.Board.Point;
+using Size = BotBase.Board.Size;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
@@ -34,6 +34,11 @@ namespace BattleBot_SuperAI.BattleSolver
         public void Initialize()
         {
             _frameBuffer.Clear();
+        }
+
+        public bool Answer(string instanceName, DateTime startTime, DataFrame frame, out string response)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response)
@@ -166,7 +171,7 @@ namespace BattleBot_SuperAI.BattleSolver
             //MainWindow.Log(board.Time, "LeaveToBetterPlace");
 
             var betterPoint = board.Player.Pos;
-            var savePoints = board.Player.Pos.GetCrossVicinity(new System.Drawing.Size(board.Size, board.Size)).Where(t => !IsDieNextTurn(board, t)).ToArray();
+            var savePoints = board.Player.Pos.GetCrossVicinity(new Size(board.Size, board.Size)).Where(t => !IsDieNextTurn(board, t)).ToArray();
             if (savePoints.Length > 0)
             {
                 var max = savePoints.Select(t => board.ABetterMap[t]).Max();

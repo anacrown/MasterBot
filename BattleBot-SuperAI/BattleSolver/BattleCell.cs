@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using CodenjoyBot.Board;
-using Point = CodenjoyBot.Board.Point;
+using BotBase.Board;
+using Point = BotBase.Board.Point;
+using Size = BotBase.Board.Size;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
@@ -50,7 +50,7 @@ namespace BattleBot_SuperAI.BattleSolver
             Strength = GetStrength(Type);
         }
 
-        public BattleCell[] GetCrossVicinity() => Pos.GetCrossVicinity(new Size(Board.Size, Board.Size)).Select(t => Board[t]).ToArray();
+        public BattleCell[] GetCrossVicinity() => Pos.GetCrossVicinity(new BotBase.Board.Size(Board.Size, Board.Size)).Select(t => Board[t]).ToArray();
 
         public override string ToString() => _cell.ToString();
 

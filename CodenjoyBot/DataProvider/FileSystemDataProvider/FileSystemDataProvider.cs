@@ -8,13 +8,14 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
+using BotBase;
 using CodenjoyBot.Annotations;
 using CodenjoyBot.Interfaces;
 
 namespace CodenjoyBot.DataProvider.FileSystemDataProvider
 {
     [Serializable]
-    public class FileSystemDataProvider : IDataProvider, INotifyPropertyChanged
+    public class FileSystemDataProvider : IDataProvider, INotifyPropertyChanged, ISerializable
     {
         public string Title => BoardFile;
         public string Name { get; private set; }
@@ -79,7 +80,8 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
                 throw new ApplicationException($"Cannot match message: '{message}'");
             }
 
-            return new DataFrame { Board = match.Groups[2].Value, Time = uint.TryParse(match.Groups[1].Value, out uint time) ? time : 0 };
+            uint time;
+            return new DataFrame (uint.TryParse(match.Groups[1].Value, out time) ? time : 0, match.Groups[2].Value);
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
@@ -132,7 +134,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
             if (_responses != null)
             {
                 var response = _responses.ContainsKey(Time) ? _responses[Time] : "NOT RESPONSE";
-                OnLogDataReceived(new LogRecord(new DataFrame() {Time = Time, Board = _boards[Time]}, $"Response {response}"));
+                OnLogDataReceived(new LogRecord(new DataFrame(Time, _boards[Time]), $"Response {response}"));
             }
         }
 
@@ -144,7 +146,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataProvider
         public event EventHandler<uint> TimeChanged;
 
         public event EventHandler<DataFrame> DataReceived;
-        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame { Board = board, Time = time });
+        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame (time, board));
 
         public event EventHandler Started;
         public event EventHandler Stopped;

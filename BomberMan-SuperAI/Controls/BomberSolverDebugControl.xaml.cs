@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using BomberMan_SuperAI.BattleSolver;
-using CodenjoyBot.Board;
+using BotBase.Board;
 
 namespace BomberMan_SuperAI.Controls
 {

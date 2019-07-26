@@ -33,15 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataProvider.cs" />
@@ -50,15 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
-      <Project>{3d3dbb7e-341a-4a52-9f9e-eb364b372c42}</Project>
-      <Name>CodenjoyBot</Name>
+    <ProjectReference Include="..\BotBase\BotBase.csproj">
+      <Project>{52C7BAF6-E076-4CEE-9C51-7843E0D87695}</Project>
+      <Name>BotBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PaperIO-MiniCupsAI\PaperIO-MiniCupsAI.csproj">
-      <Project>{d46b894e-599b-4d8f-a55d-b5384f01e2d9}</Project>
-      <Name>PaperIO-MiniCupsAI</Name>
+    <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
+      <Project>{3D3DBB7E-341A-4A52-9F9E-EB364B372C42}</Project>
+      <Name>CodenjoyBot</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

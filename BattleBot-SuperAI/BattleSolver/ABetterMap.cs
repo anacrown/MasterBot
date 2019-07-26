@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using CodenjoyBot.Board;
+﻿using System.Linq;
+using BotBase.Board;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
@@ -13,44 +12,33 @@ namespace BattleBot_SuperAI.BattleSolver
 
         public int this[int i, int j]
         {
-            get
-            {
-                return this._map[i, j];
-            }
-            set
-            {
-                this._map[i, j] = value;
-            }
+            get => _map[i, j];
+            set => _map[i, j] = value;
         }
 
-        public int this[CodenjoyBot.Board.Point p]
+        public int this[Point p]
         {
-            get
-            {
-                return this[p.X, p.Y];
-            }
-            set
-            {
-                this[p.X, p.Y] = value;
-            }
+            get => this[p.X, p.Y];
+            set => this[p.X, p.Y] = value;
         }
 
         public ABetterMap(int[,] weights, int size)
         {
-            this.Size = size;
-            this._weights = weights;
-            this._map = new int[size, size];
-            this.Calc();
+            Size = size;
+            _weights = weights;
+            _map = new int[size, size];
+
+            Calc();
         }
 
         private void Calc()
         {
-            for (int x = 0; x < this.Size; ++x)
+            for (var x = 0; x < Size; ++x)
             {
-                for (int y = 0; y < this.Size; ++y)
+                for (var y = 0; y < Size; ++y)
                 {
-                    CodenjoyBot.Board.Point index = new CodenjoyBot.Board.Point(x, y);
-                    this[index] = this._weights[x, y] == 0 ? index.GetCrossVicinity(new System.Drawing.Size(this.Size, this.Size)).Count<CodenjoyBot.Board.Point>((Func<CodenjoyBot.Board.Point, bool>)(t => this._weights[t.X, t.Y] == 0)) * 10 : 0;
+                    var index = new Point(x, y);
+                    this[index] = _weights[x, y] == 0 ? index.GetCrossVicinity(new Size(Size, Size)).Count(t => _weights[t.X, t.Y] == 0) * 10 : 0;
                 }
             }
         }

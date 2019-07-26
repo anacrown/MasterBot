@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using CodenjoyBot.Board;
-using CodenjoyBot.DataProvider;
+using BotBase;
 
 namespace CodenjoyBot.Interfaces
 {
@@ -9,6 +8,6 @@ namespace CodenjoyBot.Interfaces
     {
         void Initialize();
 
-        bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response);
+        bool Answer(string instanceName, DateTime startTime, DataFrame frame, out string response);
     }
 }

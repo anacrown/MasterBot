@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CodenjoyBot.Board;
+using BotBase.Board;
 
 namespace BattleBot_SuperAI.BattleSolver
 {

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Windows;
-using CodenjoyBot.DataProvider;
+using BotBase;
 using CodenjoyBot.Interfaces;
 
 namespace PaperIoRunner
@@ -13,14 +11,6 @@ namespace PaperIoRunner
         public event EventHandler Stopped;
         public event EventHandler<DataFrame> DataReceived;
         public event EventHandler<LogRecord> LogDataReceived;
-        public UIElement Control { get; } = null;
-        public UIElement DebugControl { get; } = null;
-
-        public DataProvider() { }
-
-        protected DataProvider(SerializationInfo info, StreamingContext context) : this() { }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context) { }
 
         public string Title => Name;
         public string Name { get; } = "PaperIoSolver";
@@ -36,7 +26,7 @@ namespace PaperIoRunner
 
                 if (string.IsNullOrEmpty(board)) break;
 
-                DataReceived?.Invoke(this, new DataFrame() { Board = board, Time = time });
+                DataReceived?.Invoke(this, new DataFrame(time, board));
 
                 if (Cancel) break;
 

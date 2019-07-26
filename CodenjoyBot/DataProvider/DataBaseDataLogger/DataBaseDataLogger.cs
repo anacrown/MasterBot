@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using BotBase;
 using CodenjoyBot.Entity;
 using CodenjoyBot.Interfaces;
 

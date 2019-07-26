@@ -1,5 +1,4 @@
 ﻿using CodenjoyBot.CodenjoyBotInstance.Controls;
-using CodenjoyBot.DataProvider;
 using CodenjoyBot.DataProvider.FileSystemDataLogger;
 using CodenjoyBot.Interfaces;
 using System;
@@ -12,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
+using BotBase;
 using CodenjoyBot.Annotations;
 using CodenjoyBot.Entity;
 
@@ -219,6 +219,9 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 var settings = db.LaunchSettingsModels.Find(SettingsId);
                 if (settings == null || settings.HashCode != hashCode)
                 {
+                    if (settings != null)
+                        settings.Visibility = false;
+
                     settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
                     if (settings == null)
                     {
@@ -260,11 +263,11 @@ namespace CodenjoyBot.CodenjoyBotInstance
         private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
-//            try
+            try
             {
                 DataLogger.Log(this, frame);
 
-                if (Solver.Answer(Name, StartTime, frame, DataProvider, out var response))
+                if (Solver.Answer(Name, StartTime, frame, out var response))
                 {
                     OnLogDataReceived(Solver, new LogRecord(frame, $"Response: {response}"));
 
@@ -274,14 +277,14 @@ namespace CodenjoyBot.CodenjoyBotInstance
                 }
                 else OnLogDataReceived(Solver, new LogRecord(frame, $"Response skip"));
             }
-//            catch (Exception e)
-//            {
-//                DataLogger.Log(this, frame, e);
-//#if DEBUG
-//                //throw new Exception("Exception in DataProviderOnDataReceived", e);
-//                OnLogDataReceived(this, new LogRecord(frame, $"EXCEPTION: {e}"));
-//#endif
-//            }
+            catch (Exception e)
+            {
+                DataLogger.Log(this, frame, e);
+#if DEBUG
+                //throw new Exception("Exception in DataProviderOnDataReceived", e);
+                OnLogDataReceived(this, new LogRecord(frame, $"EXCEPTION: {e}"));
+#endif
+            }
         }
 
         public event EventHandler<IDataProvider> Started;

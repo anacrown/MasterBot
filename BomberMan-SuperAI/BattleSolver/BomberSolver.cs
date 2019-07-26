@@ -6,8 +6,8 @@ using System.Runtime.Serialization;
 using System.Windows;
 using BomberMan_SuperAI.Annotations;
 using BomberMan_SuperAI.Controls;
-using CodenjoyBot.Board;
-using CodenjoyBot.DataProvider;
+using BotBase;
+using BotBase.Board;
 using CodenjoyBot.Interfaces;
 
 namespace BomberMan_SuperAI.BattleSolver
@@ -30,6 +30,11 @@ namespace BomberMan_SuperAI.BattleSolver
         public void Initialize()
         {
             
+        }
+
+        public bool Answer(string instanceName, DateTime startTime, DataFrame frame, out string response)
+        {
+            throw new NotImplementedException();
         }
 
         public bool Answer(string instanceName, DateTime startTime, DataFrame frame, IDataProvider dataProvider, out string response)

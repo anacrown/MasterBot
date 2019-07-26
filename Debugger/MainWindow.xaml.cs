@@ -4,8 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using BomberMan_SuperAI.Annotations;
 using CodenjoyBot;
+using CodenjoyBot.Annotations;
 using CodenjoyBot.CodenjoyBotInstance;
 
 namespace Debugger
@@ -210,6 +210,8 @@ namespace Debugger
             var settings = UnVisibleSettings.FirstOrDefault(t => t.Id == botInstance.SettingsId);
             if (settings != null)
                 Dispatcher.Invoke(() => UnVisibleSettings.Remove(settings));
+
+            Dispatcher.Invoke(() => TabControl.SelectedIndex = 1);
         }
 
 

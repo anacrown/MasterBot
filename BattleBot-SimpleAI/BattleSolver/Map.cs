@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using CodenjoyBot.Board;
-using Point = CodenjoyBot.Board.Point;
+using BotBase.Board;
+using Point = BotBase.Board.Point;
+using Size = BotBase.Board.Size;
 
 namespace BattleBot_SimpleAI.BattleSolver
 {

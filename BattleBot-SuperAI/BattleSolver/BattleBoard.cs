@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using CodenjoyBot.Board;
-using Point = CodenjoyBot.Board.Point;
+using BotBase.Board;
+using Point = BotBase.Board.Point;
 
 namespace BattleBot_SuperAI.BattleSolver
 {
     public class BattleBoard : IEnumerable<BattleCell>, IEnumerable
     {
-        private readonly CodenjoyBot.Board.Board<Cell> _board;
+        private readonly Board<Cell> _board;
         private readonly BattleCell[] _cells;
 
-        public CodenjoyBot.Board.FrameBuffer<BattleBoard> FrameBuffer { get; }
+        public FrameBuffer<BattleBoard> FrameBuffer { get; }
 
         public int Size
         {
@@ -45,7 +44,7 @@ namespace BattleBot_SuperAI.BattleSolver
             }
         }
 
-        public BattleBoard(CodenjoyBot.Board.Board<Cell> board, CodenjoyBot.Board.FrameBuffer<BattleBoard> _frameBuffer)
+        public BattleBoard(Board<Cell> board, FrameBuffer<BattleBoard> _frameBuffer)
         {
             this._board = board;
             this._cells = this._board.Select<Cell, BattleCell>((Func<Cell, BattleCell>)(t => new BattleCell(t, this))).ToArray<BattleCell>();
@@ -55,7 +54,7 @@ namespace BattleBot_SuperAI.BattleSolver
                 this.Player = _frameBuffer[board.Frame.Time - 1U]?.Board.Player;
             int[,] weights = this.GetWeights();
             this.ABetterMap = new ABetterMap(weights, this.Size);
-            this.PlayerMap = new Map(this.Player.Pos, weights, new System.Drawing.Size(this.Size, this.Size));
+            this.PlayerMap = new Map(this.Player.Pos, weights, new Size(this.Size, this.Size));
             this.Enemies = this.Where<BattleCell>((Func<BattleCell, bool>)(t => t.IsEnemy)).Select<BattleCell, Enemy>((Func<BattleCell, Enemy>)(t => new Enemy(t))).ToArray<Enemy>();
             this.Bullets = ((IEnumerable<BattleCell>)this._cells).Where<BattleCell>((Func<BattleCell, bool>)(t => t.MetaType == BattleCell.CellMetaType.BULLET)).Select<BattleCell, Bullet>((Func<BattleCell, Bullet>)(t => new Bullet(t))).ToArray<Bullet>();
         }
@@ -68,7 +67,7 @@ namespace BattleBot_SuperAI.BattleSolver
             }
         }
 
-        public BattleCell this[CodenjoyBot.Board.Point p]
+        public BattleCell this[Point p]
         {
             get
             {

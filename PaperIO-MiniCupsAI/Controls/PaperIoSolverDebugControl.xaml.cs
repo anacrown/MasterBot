@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using PaperIO_MiniCupsAI.DataContract;
+using PaperIoStrategy;
+using PaperIoStrategy.AISolver;
+using Size = BotBase.Board.Size;
 
 namespace PaperIO_MiniCupsAI.Controls
 {
@@ -24,7 +25,7 @@ namespace PaperIO_MiniCupsAI.Controls
         private Label[,] _labelsMe;
         private Label[,] _labelsOpp;
         private Label[,] _labelsRev;
-        private System.Drawing.Size _size;
+        private Size _size;
 
         public PaperIoSolver Solver
         {
@@ -35,15 +36,14 @@ namespace PaperIO_MiniCupsAI.Controls
         public PaperIoSolverDebugControl(PaperIoSolver solver) : this()
         {
             Solver = solver;
-            Solver.BoardChanged += (EventHandler<Board>)((sender, board) =>
-               Dispatcher.InvokeAsync(() => UpdateView(board)));
+            Solver.BoardChanged += (sender, board) => Dispatcher.InvokeAsync(() => UpdateView(board));
         }
 
         private void UpdateView(Board board)
         {
-            if (_size.IsEmpty)
+            if (board.Frame.Time == 0)
             {
-                _size = board.Size;
+                _size = new Size(board.Size.Width, board.Size.Height);
 
                 _images = new Image[_size.Width, _size.Height];
                 _labelsMe = new Label[_size.Width, _size.Height];
@@ -107,9 +107,10 @@ namespace PaperIO_MiniCupsAI.Controls
                 }
             }
 
-            if (board.PathToHome != null)
+
+            foreach (var points in board.PathsToHome.Values)
             {
-                foreach (var point in board.PathToHome)
+                foreach (var point in points)
                 {
                     _images[point.X, point.Y].Source = ResourceManager.GetSource("path");
                 }

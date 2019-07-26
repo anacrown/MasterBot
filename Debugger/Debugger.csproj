@@ -98,8 +98,8 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
@@ -205,17 +205,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BattleBot-SimpleAI\BattleBot-SimpleAI.csproj">
-      <Project>{e112663a-b566-491f-8e71-3a96f5e7087c}</Project>
-      <Name>BattleBot-SimpleAI</Name>
+    <ProjectReference Include="..\..\..\..\source\repos\PaperIo\PaperIoStrategy\PaperIoStrategy.csproj">
+      <Project>{fdbc9c2f-8cf1-46a9-8c0d-32473686ea17}</Project>
+      <Name>PaperIoStrategy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BattleBot-SuperAI\BattleBot-SuperAI.csproj">
-      <Project>{e42ba438-e1b2-4f7f-b2db-26c4d718b82e}</Project>
-      <Name>BattleBot-SuperAI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BomberMan-SuperAI\BomberMan-SuperAI.csproj">
-      <Project>{112643C0-0B46-45A7-B9DB-D086C968A193}</Project>
-      <Name>BomberMan-SuperAI</Name>
+    <ProjectReference Include="..\BotBase\BotBase.csproj">
+      <Project>{52c7baf6-e076-4cee-9c51-7843e0d87695}</Project>
+      <Name>BotBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\CodenjoyBot\CodenjoyBot.csproj">
       <Project>{3d3dbb7e-341a-4a52-9f9e-eb364b372c42}</Project>

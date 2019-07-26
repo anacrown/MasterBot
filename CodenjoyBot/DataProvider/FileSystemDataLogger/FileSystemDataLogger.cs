@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Threading;
+using BotBase;
 using CodenjoyBot.Interfaces;
 using CodenjoyBot.Properties;
 
@@ -182,10 +183,7 @@ namespace CodenjoyBot.DataProvider.FileSystemDataLogger
             var logDataReceived = LogDataReceived;
             if (logDataReceived == null)
                 return;
-            logDataReceived((object)this, new LogRecord(new DataFrame()
-            {
-                Time = time
-            }, battleBotInstanceName + ": " + message));
+            logDataReceived(this, new LogRecord(new DataFrame(time, ""), battleBotInstanceName + ": " + message));
         }
     }
 
