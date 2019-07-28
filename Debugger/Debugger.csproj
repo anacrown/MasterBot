@@ -98,9 +98,21 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BotBaseControls\BotBaseControls.csproj">
+      <Project>{C2742165-3129-4C89-82C4-00D712713EAB}</Project>
+      <Name>BotBaseControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BotBase\BotBase.csproj">
       <Project>{52c7baf6-e076-4cee-9c51-7843e0d87695}</Project>
       <Name>BotBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileSystemDataProviderView\FileSystemDataProviderView.csproj">
+      <Project>{3760a0e7-73ad-4e0d-bfb8-d5a13f1c96e2}</Project>
+      <Name>FileSystemDataProviderView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileSystemDataProvider\FileSystemDataProvider.csproj">
+      <Project>{a06d9f81-7e4f-42b4-b152-1a7bb44d1e8a}</Project>
+      <Name>FileSystemDataProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

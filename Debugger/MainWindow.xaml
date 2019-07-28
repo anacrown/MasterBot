@@ -2,9 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Debugger"
-        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
-        xmlns:botInstance="clr-namespace:BotBase.BotInstance;assembly=BotBase"
+        xmlns:botBaseControls="clr-namespace:BotBaseControls;assembly=BotBaseControls"
+        xmlns:fileSystemDataProvider="clr-namespace:FileSystemDataProvider;assembly=FileSystemDataProvider"
+        xmlns:fileSystemDataProviderView="clr-namespace:FileSystemDataProviderView;assembly=FileSystemDataProviderView"
         Title="CodenjoyBot Debugger" Width="1300" MinHeight="1000"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
@@ -46,9 +47,10 @@
                         </MenuItem>
                     </Menu>
 
-                    <!-- <botBaseControls:BotInstanceList x:Name="BotInstanceList" Grid.Row="1" Margin="10"  -->
-                    <!--                       InstanceModels="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=BotInstances}" -->
-                    <!--                       RemoveInstance="BotInstanceList_OnRemoveInstance"/> -->
+                    <botBaseControls:BotInstanceList x:Name="BotInstanceList" Grid.Row="1" Margin="10"
+                                          InstanceModels="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Path=BotInstances}"
+                                          RemoveInstance="BotInstanceList_OnRemoveInstance"/>
+
                 </Grid>
             </TabItem>
             <TabItem x:Name="MonitorTab" Header="Monitor">

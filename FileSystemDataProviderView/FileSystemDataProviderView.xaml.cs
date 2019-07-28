@@ -1,28 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace FileSystemDataProviderView
 {
-    public partial class FileSystemDataProviderDebugControl : UserControl
+    /// <summary>
+    /// Interaction logic for FileSystemDataProviderView.xaml
+    /// </summary>
+    public partial class FileSystemDataProviderView : UserControl
     {
         public static readonly DependencyProperty DataProviderProperty = DependencyProperty.Register(
-            "DataProvider", typeof(FileSystemDataProvider.FileSystemDataProvider), typeof(FileSystemDataProviderDebugControl), new PropertyMetadata(default(FileSystemDataProvider.FileSystemDataProvider)));
+            "DataProvider", typeof(FileSystemDataProvider.FileSystemDataProvider), typeof(FileSystemDataProviderView), new PropertyMetadata(default(FileSystemDataProvider.FileSystemDataProvider)));
 
         public FileSystemDataProvider.FileSystemDataProvider DataProvider
         {
-            get { return (FileSystemDataProvider.FileSystemDataProvider) GetValue(DataProviderProperty); }
-            set { SetValue(DataProviderProperty, value); }
+            get => (FileSystemDataProvider.FileSystemDataProvider)GetValue(DataProviderProperty);
+            set => SetValue(DataProviderProperty, value);
         }
 
-        public FileSystemDataProviderDebugControl()
+        public FileSystemDataProviderView()
         {
             InitializeComponent();
-        }
-
-        public FileSystemDataProviderDebugControl(FileSystemDataProvider.FileSystemDataProvider dataProvider) : this()
-        {
-            DataProvider = dataProvider;
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

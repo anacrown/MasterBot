@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 
 namespace BotBase
 {
@@ -36,7 +37,7 @@ namespace BotBase
                             }
                             else
                             {
-                                if (type.GetInterface(pluginType.FullName) != null)
+                                if (type.BaseType == pluginType)
                                 {
                                     pluginTypes.Add(type);
                                 }

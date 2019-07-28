@@ -14,22 +14,35 @@ using BotBase.Interfaces;
 namespace FileSystemDataProvider
 {
     [Serializable]
-    public class FileSystemDataProvider : IDataProvider, INotifyPropertyChanged, ISerializable
+    public class FileSystemDataProviderSettings: DataProviderSettingsBase
     {
-        public string Title => BoardFile;
-        public string Name { get; private set; }
-        
-        private string _boardFile;
-        public string BoardFile
+        public string BoardFile { get; set; }
+
+        public FileSystemDataProviderSettings() : base()
         {
-            get => _boardFile;
-            set
-            {
-                _boardFile = value;
-                Name = GetNameFromDir(_boardFile);
-            }
         }
 
+        protected FileSystemDataProviderSettings(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+            BoardFile = info.GetString("BoardFile");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue("BoardFile", BoardFile);
+        }
+    }
+    
+    [Serializable]
+    public class FileSystemDataProvider : IDataProvider, INotifyPropertyChanged, ISerializable
+    {
+        public FileSystemDataProviderSettings Settings { get; }
+
+        public string Title => Settings.BoardFile;
+        public string Name { get; }
+        
         public uint Time { get; private set; }
         public int FrameCount => _boards?.Count ?? 0;
         public int FrameMaximumKey => _boards?.Count - 1 ?? 0;
@@ -45,14 +58,14 @@ namespace FileSystemDataProvider
             _timer.Elapsed += TimerOnElapsed;
         }
 
-        public FileSystemDataProvider(string boardFile) : this()
+        public FileSystemDataProvider(SerializationInfo info, StreamingContext context) : this()
         {
-            BoardFile = boardFile;
+            Settings = (FileSystemDataProviderSettings)info.GetValue("Settings", typeof(FileSystemDataProviderSettings));
         }
 
-        protected FileSystemDataProvider(SerializationInfo info, StreamingContext context) : this()
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            BoardFile = info.GetString("BoardFile");
+            info.AddValue("Settings", Settings);
         }
 
         private string GetNameFromDir(string file)
@@ -91,12 +104,12 @@ namespace FileSystemDataProvider
 
         public void Start()
         {
-            if (!File.Exists(BoardFile))
+            if (!File.Exists(Settings.BoardFile))
                 throw new Exception();
 
-            _boards = File.ReadAllLines(BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
+            _boards = File.ReadAllLines(Settings.BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
 
-            var responseFilePath = Path.Combine(Path.GetDirectoryName(BoardFile), "Response.txt");
+            var responseFilePath = Path.Combine(Path.GetDirectoryName(Settings.BoardFile), "Response.txt");
             if (File.Exists(responseFilePath))
                 _responses = File.ReadAllLines(responseFilePath).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
 
@@ -148,11 +161,6 @@ namespace FileSystemDataProvider
         public event EventHandler<LogRecord> LogDataReceived;
         public virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("BoardFile", BoardFile);
-        }
-
         protected virtual void OnStarted() => Started?.Invoke(this, EventArgs.Empty);
 
 
@@ -161,7 +169,7 @@ namespace FileSystemDataProvider
 
         protected bool Equals(FileSystemDataProvider other)
         {
-            return string.Equals(_boardFile, other._boardFile) && string.Equals(Name, other.Name);
+            return string.Equals(Settings.BoardFile, other.Settings.BoardFile) && string.Equals(Name, other.Name);
         }
 
         public override bool Equals(object obj)
@@ -176,7 +184,7 @@ namespace FileSystemDataProvider
         {
             unchecked
             {
-                return ((_boardFile != null ? _boardFile.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                return ((Settings.BoardFile != null ? Settings.BoardFile.GetHashCode() : 0) * 397) ^ (Name != null ? Name.GetHashCode() : 0);
             }
         }
 

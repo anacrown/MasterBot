@@ -8,6 +8,144 @@ using BotBase.Interfaces;
 namespace BotBase.BotInstance
 {
     [Serializable]
+    public abstract class SettingsBase : ISerializable
+    {
+        protected SettingsBase()
+        {
+        }
+
+        protected SettingsBase(SerializationInfo info, StreamingContext context)
+        {
+
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+
+        }
+    }
+
+    [Serializable]
+    public abstract class DataProviderSettingsBase : SettingsBase, INotifyPropertyChanged
+    {
+        protected DataProviderSettingsBase() : base()
+        {
+        }
+
+        protected DataProviderSettingsBase(SerializationInfo info, StreamingContext context)
+        {
+
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    [Serializable]
+    public class BotInstanceSettings : SettingsBase, INotifyPropertyChanged
+    {
+        private SettingsBase _solverSettings;
+        private SettingsBase _dataLoggerSettings;
+        private DataProviderSettingsBase _dataProviderSettings;
+
+        public SettingsBase SolverSettings
+        {
+            get => _solverSettings;
+            set
+            {
+                if (Equals(value, _solverSettings)) return;
+                _solverSettings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SettingsBase DataLoggerSettings
+        {
+            get => _dataLoggerSettings;
+            set
+            {
+                if (Equals(value, _dataLoggerSettings)) return;
+                _dataLoggerSettings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DataProviderSettingsBase DataProviderSettings
+        {
+            get => _dataProviderSettings;
+            set
+            {
+                if (Equals(value, _dataProviderSettings)) return;
+                _dataProviderSettings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime StartTime { get; set; }
+        public bool Visibility { get; set; }
+        public string Title { get; set; }
+
+        public BotInstanceSettings() : base()
+        {
+            
+        }
+
+        public BotInstanceSettings(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+            var solverTypeName = info.GetString("SolverSettingsType");
+            if (!string.IsNullOrEmpty(solverTypeName))
+            {
+                var solverType = PluginLoader.LoadType(solverTypeName);
+                SolverSettings = (SettingsBase)info.GetValue("SolverSettings", solverType);
+            }
+
+            var dataLoggerTypeName = info.GetString("DataLoggerSettingsType");
+            if (!string.IsNullOrEmpty(dataLoggerTypeName))
+            {
+                var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
+                DataLoggerSettings = (SettingsBase)info.GetValue("DataLoggerSettings", dataLoggerType);
+            }
+
+            var dataProviderTypeName = info.GetString("DataProviderSettingsType");
+            if (!string.IsNullOrEmpty(dataProviderTypeName))
+            {
+                var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
+                DataProviderSettings = (DataProviderSettingsBase)info.GetValue("DataProviderSettings", dataProviderType);
+            }
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue("SolverSettings", SolverSettings);
+            info.AddValue("SolverSettingsType", SolverSettings?.GetType().FullName);
+
+            info.AddValue("DataLoggerSettings", DataLoggerSettings);
+            info.AddValue("DataLoggerSettingsType", DataLoggerSettings?.GetType().FullName);
+
+            info.AddValue("DataProviderSettings", DataProviderSettings);
+            info.AddValue("DataProviderSettingsType", DataProviderSettings?.GetType().FullName);
+
+            info.AddValue("StartTime", StartTime);
+            info.AddValue("Visibility", Visibility);
+            info.AddValue("Title", Title);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    [Serializable]
     public class BotInstance : ILogger, ISerializable, INotifyPropertyChanged
     {
         private ISolver _solver;
@@ -31,7 +169,7 @@ namespace BotBase.BotInstance
         public string Title => $"[{Solver?.GetType().Name ?? "EMPTY SOLVER"}] {DataProvider?.Title ?? "EMPTY PROVIDER"}";
         public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
 
-        public int? SettingsId { get; set; }
+        public BotInstanceSettings Settings { get; } = new BotInstanceSettings();
 
         public ISolver Solver
         {
@@ -105,56 +243,20 @@ namespace BotBase.BotInstance
                 OnPropertyChanged();
             }
         }
+
         public BotInstance()
         {
             //DataLogger = new FileSystemDataLogger();
         }
 
-        public BotInstance(IDataProvider dataProvider, ISolver solver) : this()
-        {
-            Solver = solver;
-            DataProvider = dataProvider;
-        }
-
         protected BotInstance(SerializationInfo info, StreamingContext context) : this()
         {
-            var solverTypeName = info.GetString("SolverType");
-            if (!string.IsNullOrEmpty(solverTypeName))
-            {
-                var solverType = PluginLoader.LoadType(solverTypeName);
-
-                Solver = (ISolver)info.GetValue("Solver", solverType);
-            }
-
-            var dataLoggerTypeName = info.GetString("DataLoggerType");
-            if (!string.IsNullOrEmpty(dataLoggerTypeName))
-            {
-                var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
-
-                DataLogger = (IDataLogger)info.GetValue("DataLogger", dataLoggerType);
-
-            }
-
-            var dataProviderTypeName = info.GetString("DataProviderType");
-            if (!string.IsNullOrEmpty(dataProviderTypeName))
-            {
-                var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
-
-                DataProvider = (IDataProvider)info.GetValue("DataProvider", dataProviderType);
-
-            }
+            Settings = (BotInstanceSettings)info.GetValue("Settings", typeof(BotInstanceSettings));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Solver", Solver);
-            info.AddValue("SolverType", Solver?.GetType().FullName);
-
-            info.AddValue("DataLogger", DataLogger);
-            info.AddValue("DataLoggerType", DataLogger?.GetType().FullName);
-
-            info.AddValue("DataProvider", DataProvider);
-            info.AddValue("DataProviderType", DataProvider?.GetType().FullName);
+            info.AddValue("Settings", Settings);
 
             //info.AddValue("LogFilters", LogFilterEntries.ToArray());
         }
@@ -177,40 +279,40 @@ namespace BotBase.BotInstance
 
         private void DataProviderOnStarted(object sender, EventArgs e)
         {
-//            using (var db = new BotDbContext())
-//            {
-//                var hashCode = GetHashCode();
-//                var settings = db.LaunchSettingsModels.Find(SettingsId);
-//                if (settings == null || settings.HashCode != hashCode)
-//                {
-//                    if (settings != null)
-//                        settings.Visibility = false;
-//
-//                    settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
-//                    if (settings == null)
-//                    {
-//                        settings = GetSettings(this);
-//                        db.LaunchSettingsModels.Add(settings);
-//                    }
-//                }
-//
-//                settings.Visibility = true;
-//
-//                var launch = new LaunchModel()
-//                {
-//                    LaunchTime = StartTime,
-//                    BotInstanceName = Name,
-//                    BotInstanceTitle = Title,
-//                    LaunchSettingsModel = settings
-//                };
-//
-//                db.LaunchModels.Add(launch);
-//
-//                db.SaveChanges();
-//
-//                SettingsId = settings.Id;
-//                LaunchId = launch.Id;
-//            }
+            //            using (var db = new BotDbContext())
+            //            {
+            //                var hashCode = GetHashCode();
+            //                var settings = db.LaunchSettingsModels.Find(SettingsId);
+            //                if (settings == null || settings.HashCode != hashCode)
+            //                {
+            //                    if (settings != null)
+            //                        settings.Visibility = false;
+            //
+            //                    settings = db.LaunchSettingsModels.FirstOrDefault(t => t.HashCode == hashCode);
+            //                    if (settings == null)
+            //                    {
+            //                        settings = GetSettings(this);
+            //                        db.LaunchSettingsModels.Add(settings);
+            //                    }
+            //                }
+            //
+            //                settings.Visibility = true;
+            //
+            //                var launch = new LaunchModel()
+            //                {
+            //                    LaunchTime = StartTime,
+            //                    BotInstanceName = Name,
+            //                    BotInstanceTitle = Title,
+            //                    LaunchSettingsModel = settings
+            //                };
+            //
+            //                db.LaunchModels.Add(launch);
+            //
+            //                db.SaveChanges();
+            //
+            //                SettingsId = settings.Id;
+            //                LaunchId = launch.Id;
+            //            }
 
             OnStarted(DataProvider);
 

@@ -45,7 +45,7 @@ namespace CodenjoyBot
         public static BotInstance FromSettings(LaunchSettingsModel settingsModel)
         {
             var botInstance = FromData(settingsModel.Data);
-            botInstance.SettingsId = settingsModel.Id;
+            //botInstance.SettingsId = settingsModel.Id;
             return botInstance;
         }
 

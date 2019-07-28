@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:BotBaseControls"
-             xmlns:botBase="clr-namespace:BotBase;assembly=BotBase"
              xmlns:botInstance="clr-namespace:BotBase.BotInstance;assembly=BotBase"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="600">
@@ -24,13 +23,13 @@
             <ListView x:Name="ListView" HorizontalContentAlignment="Stretch" Grid.ColumnSpan="4"
                       ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceList}}, Path=InstanceModels}">
                 <ListView.Resources>
-                    <!-- <DataTemplate DataType="{x:Type botInstance:BotInstance}"> -->
-                    <!--      -->
-                    <!-- </DataTemplate> -->
+                    <DataTemplate DataType="{x:Type botInstance:BotInstance}">
+                        <local:BotInstanceSettingsView Settings="{Binding Settings}"/>
+                    </DataTemplate>
                 </ListView.Resources>
             </ListView>
 
-            <Button x:Name="AddBotInstance" Content="Add Instance" Grid.Row="1" HorizontalAlignment="Left" Margin="10" Width="90" Click="AddBotInstance_OnClick"/>
+            <Button x:Name="AddBotInstance" Content="Add Instance" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Margin="10" Width="90" Click="AddBotInstance_OnClick"/>
             <Button x:Name="RemoveBotInstance" Content="Remove Instance" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="10" Width="120" Click="RemoveBotInstance_OnClick"/>
 
         </Grid>

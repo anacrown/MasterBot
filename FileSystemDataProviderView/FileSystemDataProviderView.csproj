@@ -48,11 +48,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystemDataProviderControl.xaml.cs">
-      <DependentUpon>FileSystemDataProviderControl.xaml</DependentUpon>
+    <Compile Include="FileSystemDataProviderSettingsView.xaml.cs">
+      <DependentUpon>FileSystemDataProviderSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileSystemDataProviderDebugControl.xaml.cs">
-      <DependentUpon>FileSystemDataProviderDebugControl.xaml</DependentUpon>
+    <Compile Include="FileSystemDataProviderView.xaml.cs">
+      <DependentUpon>FileSystemDataProviderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -78,16 +78,25 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="FileSystemDataProviderControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="FileSystemDataProviderSettingsView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FileSystemDataProviderDebugControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="FileSystemDataProviderView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BotBase\BotBase.csproj">
+      <Project>{52C7BAF6-E076-4CEE-9C51-7843E0D87695}</Project>
+      <Name>BotBase</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FileSystemDataProvider\FileSystemDataProvider.csproj">
       <Project>{A06D9F81-7E4F-42B4-B152-1A7BB44D1E8A}</Project>
       <Name>FileSystemDataProvider</Name>
