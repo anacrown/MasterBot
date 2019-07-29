@@ -1,5 +1,4 @@
 using System;
-using BotBase.BotInstance;
 
 namespace BotBase.Interfaces
 {

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using FileSystemDataProvider;
 using Microsoft.Win32;
@@ -10,13 +11,13 @@ namespace FileSystemDataProviderView
     /// </summary>
     public partial class FileSystemDataProviderSettingsView : UserControl
     {
-        public static readonly DependencyProperty DataProviderSettingsProperty = DependencyProperty.Register(
-            "DataProviderSettings", typeof(FileSystemDataProviderSettings), typeof(FileSystemDataProviderSettingsView), new PropertyMetadata(default(FileSystemDataProviderSettings)));
+        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
+            "Settings", typeof(FileSystemDataProviderSettings), typeof(FileSystemDataProviderSettingsView), new PropertyMetadata(default(FileSystemDataProviderSettings)));
 
-        public FileSystemDataProviderSettings DataProviderSettings
+        public FileSystemDataProviderSettings Settings
         {
-            get => (FileSystemDataProviderSettings) GetValue(DataProviderSettingsProperty);
-            set => SetValue(DataProviderSettingsProperty, value);
+            get => (FileSystemDataProviderSettings) GetValue(SettingsProperty);
+            set => SetValue(SettingsProperty, value);
         }
 
         public FileSystemDataProviderSettingsView()
@@ -26,9 +27,11 @@ namespace FileSystemDataProviderView
 
         private void OpenFileButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog { InitialDirectory = System.IO.Path.GetFullPath(FileSystemDataLogger.MainLogDir) };
+            var dialog = new OpenFileDialog();
+            if (!string.IsNullOrEmpty(Settings.BoardFile))
+                dialog.InitialDirectory = Path.GetDirectoryName(Settings.BoardFile) ?? string.Empty;
             if (dialog.ShowDialog(Application.Current.MainWindow) == true)
-                DataProviderSettings.BoardFile = dialog.FileName;
+                Settings.BoardFile = dialog.FileName;
 
         }
     }

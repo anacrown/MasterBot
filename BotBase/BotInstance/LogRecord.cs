@@ -1,4 +1,4 @@
-﻿namespace BotBase.BotInstance
+﻿namespace BotBase
 {
     public class LogRecord
     {
@@ -17,8 +17,7 @@
 
         public override string ToString()
         {
-
-            return DataFrame.HasValue ? $"[{DataFrame.Value.Time}]: {Message}" : Message;
+            return DataFrame.HasValue ? $"[{DataFrame.Value.FrameNumber}]: {Message}" : Message;
         }
     }
 }

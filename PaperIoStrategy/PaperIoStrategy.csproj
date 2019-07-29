@@ -64,6 +64,9 @@
     <Compile Include="DataContract\JPlayer.cs" />
     <Compile Include="DataContract\JPointArrayConverter.cs" />
     <Compile Include="DataContract\JPointConverter.cs" />
+    <Compile Include="DataProvider.cs" />
+    <Compile Include="PaperIoSolver.cs" />
+    <Compile Include="PaperIoSolverSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -75,6 +78,10 @@
     <ProjectReference Include="..\BotBase\BotBase.csproj">
       <Project>{52C7BAF6-E076-4CEE-9C51-7843E0D87695}</Project>
       <Name>BotBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileSystemDataProvider\FileSystemDataProvider.csproj">
+      <Project>{A06D9F81-7E4F-42B4-B152-1A7BB44D1E8A}</Project>
+      <Name>FileSystemDataProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,15 +1,21 @@
-namespace BotBase.BotInstance
+using System;
+
+namespace BotBase
 {
     public struct DataFrame
     {
+        public DateTime Time { get; }
 
-        public DataFrame(uint time, string board)
+        public string Board { get; }
+
+        public uint FrameNumber { get; }
+
+        public DataFrame(DateTime time, string board, uint frameNumber)
         {
             Time = time;
             Board = board;
+            FrameNumber = frameNumber;
         }
 
-        public uint Time { get; }
-        public string Board { get; }
     }
 }

@@ -48,6 +48,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileSystemDataLoggerSettingsView.xaml.cs">
+      <DependentUpon>FileSystemDataLoggerSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileSystemDataProviderSettingsView.xaml.cs">
       <DependentUpon>FileSystemDataProviderSettingsView.xaml</DependentUpon>
     </Compile>
@@ -78,6 +81,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FileSystemDataLoggerSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FileSystemDataProviderSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

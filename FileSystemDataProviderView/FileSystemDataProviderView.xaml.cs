@@ -54,7 +54,7 @@ namespace FileSystemDataProviderView
 
         private void CurrentFrameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (uint.TryParse(CurrentFrameTextBox.Text, out uint time) && DataProvider?.Time != time)
+            if (uint.TryParse(CurrentFrameTextBox.Text, out uint time) && DataProvider?.FrameNumber != time)
             {
                 DataProvider?.MoveToFrame((uint)Math.Min(time, DataProvider.FrameMaximumKey));
             }

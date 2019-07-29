@@ -8,43 +8,43 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="BotInstanceSettingsView_OnLoaded">
     <Grid>
-    <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition />
-    </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-    <Label VerticalContentAlignment="Center" Content="Data Provider"/>
-    <ComboBox x:Name="DataProviderSettingsComboBox" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="10"
+        <Label VerticalContentAlignment="Center" Content="Data Provider"/>
+        <ComboBox x:Name="DataProviderSettingsComboBox" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="10"
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=DataProviderSettingsTypes}"/>
 
-    <ContentPresenter Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" Margin="0 10" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=Settings.DataProviderSettings}"/>
+        <ContentPresenter Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" Margin="0 10" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=Settings.DataProviderSettings}"/>
 
-    <Label VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" Content="Logger"/>
-    <ComboBox x:Name="DataLoggerSettingsComboBox" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2" Margin="10"
+        <Label VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" Content="Logger"/>
+        <ComboBox x:Name="DataLoggerSettingsComboBox" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2" Margin="10"
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=DataLoggerSettingsTypes}"/>
-    
-    <ContentPresenter Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="0 10" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=BotInstance.DataLogger}"/>
-    
-    <!-- <Label VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" Content="Solver"/> -->
-    <!-- <ComboBox x:Name="SolverComboBox" Grid.Row="4" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" -->
-    <!--               ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:BotInstanceControl}}, Path=SolverTypes}"/> -->
-    <!-- -->
-    <!-- <ContentPresenter Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0 10" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:BotInstanceControl}}, Path=BotInstance.Solver}"/> -->
-    <!-- -->
-    <!-- <Button x:Name="StartButton" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Width="90" Content="Start" Click="StartButton_Click" -->
-    <!--             IsEnabled="{c:Binding RelativeSource={RelativeSource AncestorType=controls:BotInstanceControl}, Path='!BotInstance.IsStarted'}"/> -->
-    <!-- <Button x:Name="StopButton" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Width="90" Content="Stop" Click="StopButton_Click"  -->
-    <!--             IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=controls:BotInstanceControl}, Path=BotInstance.IsStarted}"/> -->
+
+        <ContentPresenter Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="1" Margin="0 10" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=Settings.DataLoggerSettings}"/>
+
+        <Label VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" Content="Solver"/>
+        <ComboBox x:Name="SolverSettingsComboBox" Grid.Row="4" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2" Margin="10"
+                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=SolverSettingsTypes}"/>
+
+        <ContentPresenter Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="1" Margin="0 10" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceSettingsView}}, Path=Settings.SolverSettings}"/>
+
+        <!-- <Button x:Name="StartButton" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Width="90" Content="Start" Click="StartButton_Click" -->
+        <!--             IsEnabled="{c:Binding RelativeSource={RelativeSource AncestorType=controls:BotInstanceControl}, Path='!BotInstance.IsStarted'}"/> -->
+        <!-- <Button x:Name="StopButton" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Width="90" Content="Stop" Click="StopButton_Click"  -->
+        <!--             IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=controls:BotInstanceControl}, Path=BotInstance.IsStarted}"/> -->
 
     </Grid>
 </UserControl>

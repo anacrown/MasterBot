@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using BotBase;
-using BotBase.BotInstance;
-using BotBase.Interfaces;
 
 namespace BotBaseControls
 {
@@ -21,7 +19,7 @@ namespace BotBaseControls
 
         public BotInstanceSettings Settings
         {
-            get => (BotInstanceSettings) GetValue(SettingsProperty);
+            get => (BotInstanceSettings)GetValue(SettingsProperty);
             set => SetValue(SettingsProperty, value);
         }
 
@@ -43,13 +41,13 @@ namespace BotBaseControls
             set => SetValue(DataLoggerSettingsTypesProperty, value);
         }
 
-        public static readonly DependencyProperty SolverTypesProperty = DependencyProperty.Register(
-            "SolverTypes", typeof(ObservableCollection<Type>), typeof(BotInstanceSettingsView), new PropertyMetadata(default(ObservableCollection<Type>)));
+        public static readonly DependencyProperty SolverSettingsTypesProperty = DependencyProperty.Register(
+            "SolverSettingsTypes", typeof(ObservableCollection<Type>), typeof(BotInstanceSettingsView), new PropertyMetadata(default(ObservableCollection<Type>)));
 
-        public ObservableCollection<Type> SolverTypes
+        public ObservableCollection<Type> SolverSettingsTypes
         {
-            get => (ObservableCollection<Type>)GetValue(SolverTypesProperty);
-            set => SetValue(SolverTypesProperty, value);
+            get => (ObservableCollection<Type>)GetValue(SolverSettingsTypesProperty);
+            set => SetValue(SolverSettingsTypesProperty, value);
         }
 
         public BotInstanceSettingsView()
@@ -66,39 +64,39 @@ namespace BotBaseControls
 
             DataProviderSettingsTypes = new ObservableCollection<Type>(dataProviderSettingsTypes);
 
-            if (DataProviderSettingsTypes.Count == 1)
+            if (Settings.DataProviderSettings == null && DataProviderSettingsTypes.Count == 1)
                 Settings.DataProviderSettings = (DataProviderSettingsBase)Activator.CreateInstance(DataProviderSettingsTypes.First());
 
             if (Settings.DataProviderSettings != null)
                 DataProviderSettingsComboBox.SelectedIndex = DataProviderSettingsTypes.IndexOf(Settings.DataProviderSettings.GetType());
 
-            DataProviderSettingsComboBox.SelectionChanged += DataProviderComboBox_OnSelectionChanged;
+            DataProviderSettingsComboBox.SelectionChanged += DataProviderSettingsComboBox_OnSelectionChanged;
 
             //------------------------------------------------------------------------------------------------------------------
             var dataLoggerSettingsTypes = PluginLoader.LoadPlugins(path, typeof(DataLoggerSettingsBase)).ToArray();
 
-            DataLoggerSettingsTypes = new ObservableCollection<Type>(dataLoggerTypes);
+            DataLoggerSettingsTypes = new ObservableCollection<Type>(dataLoggerSettingsTypes);
 
-            if (DataLoggerTypes.Count == 1)
-                BotInstance.DataLogger = (IDataLogger)Activator.CreateInstance(dataLoggerTypes.First());
+            if (Settings.DataLoggerSettings == null && DataLoggerSettingsTypes.Count == 1)
+                Settings.DataLoggerSettings = (DataLoggerSettingsBase)Activator.CreateInstance(dataLoggerSettingsTypes.First());
 
-            if (BotInstance.DataLogger != null)
-                DataLoggerComboBox.SelectedIndex = DataLoggerTypes.IndexOf(BotInstance.DataLogger.GetType());
+            if (Settings.DataLoggerSettings != null)
+                DataLoggerSettingsComboBox.SelectedIndex = DataLoggerSettingsTypes.IndexOf(Settings.DataLoggerSettings.GetType());
 
-            DataLoggerComboBox.SelectionChanged += DataLoggerComboBoxOnSelectionChanged;
+            DataLoggerSettingsComboBox.SelectionChanged += DataLoggerSettingsComboBoxOnSelectionChanged;
 
             //------------------------------------------------------------------------------------------------------------------
-//            var solverTypes = PluginLoader.LoadPlugins(path, typeof(ISolver)).ToArray();
-//
-//            SolverTypes = new ObservableCollection<Type>(solverTypes);
-//
-//            if (SolverTypes.Count == 1)
-//                BotInstance.Solver = (ISolver)Activator.CreateInstance(SolverTypes.First());
-//
-//            if (BotInstance.Solver != null)
-//                SolverComboBox.SelectedIndex = SolverTypes.IndexOf(BotInstance.Solver.GetType());
-//
-//            SolverComboBox.SelectionChanged += SolverComboBoxOnSelectionChanged;
+            var solverSettingsTypes = PluginLoader.LoadPlugins(path, typeof(SolverSettingsBase)).ToArray();
+
+            SolverSettingsTypes = new ObservableCollection<Type>(solverSettingsTypes);
+
+            if (Settings.SolverSettings == null && SolverSettingsTypes.Count == 1)
+                Settings.SolverSettings = (SolverSettingsBase)Activator.CreateInstance(SolverSettingsTypes.First());
+
+            if (Settings.SolverSettings != null)
+                SolverSettingsComboBox.SelectedIndex = SolverSettingsTypes.IndexOf(Settings.SolverSettings.GetType());
+
+            SolverSettingsComboBox.SelectionChanged += SolverComboBoxOnSelectionChanged;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -111,7 +109,7 @@ namespace BotBaseControls
             //BotInstance.Stop();
         }
 
-        private void DataProviderComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DataProviderSettingsComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
 
@@ -119,20 +117,20 @@ namespace BotBaseControls
                 Settings.DataProviderSettings = (DataProviderSettingsBase)Activator.CreateInstance(newValue);
         }
 
-        private void DataLoggerComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DataLoggerSettingsComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-//            var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
-//
-//            if (newValue != null && BotInstance != null)
-//                BotInstance.DataLogger = (IDataLogger)Activator.CreateInstance(newValue);
+            var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
+
+            if (newValue != null && Settings != null)
+                Settings.DataLoggerSettings = (DataLoggerSettingsBase)Activator.CreateInstance(newValue);
         }
 
         private void SolverComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-//            var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
-//
-//            if (newValue != null && BotInstance != null)
-//                BotInstance.Solver = (ISolver)Activator.CreateInstance(newValue);
+            var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
+
+            if (newValue != null && Settings != null)
+                Settings.SolverSettings = (SolverSettingsBase)Activator.CreateInstance(newValue);
         }
     }
 }

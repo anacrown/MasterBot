@@ -10,65 +10,6 @@ using Point = BotBase.Board.Point;
 
 namespace PaperIoStrategy.AISolver
 {
-    public class Board<T> : IEnumerable<T>, IEnumerable
-    {
-        private readonly DateTime _startTime;
-        private readonly string _instanceName;
-
-        public Board(DataFrame frame)
-        {
-            Frame = frame;
-        }
-
-        public T[] Cells { get; set; }
-
-        public Size Size { get; set; }
-
-        public DataFrame Frame { get; }
-
-        public IEnumerator<T> GetEnumerator() => new BoardEnumerator<T>(Cells);
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public T this[int i, int j] => Cells[i + j * Size.Width];
-
-        public T this[Point p] => this[p.X, p.Y];
-
-        public override string ToString() => Frame.Board;
-
-        public class BoardEnumerator<TU> : IEnumerator<TU>
-        {
-            private readonly IEnumerator _enumerator;
-
-            public BoardEnumerator(IEnumerable<TU> cells) => _enumerator = cells.GetEnumerator();
-
-            public void Dispose() { }
-
-            public bool MoveNext() => _enumerator.MoveNext();
-
-            public void Reset()
-            {
-                _enumerator.Reset();
-            }
-
-            public TU Current
-            {
-                get
-                {
-                    return (TU)_enumerator.Current;
-                }
-            }
-
-            object IEnumerator.Current
-            {
-                get
-                {
-                    return Current;
-                }
-            }
-        }
-    }
-
     public class Board : Board<Cell>
     {
         public JPacket JPacket { get; }
@@ -103,7 +44,7 @@ namespace PaperIoStrategy.AISolver
 
         //---------------------
 
-        public Board(DataFrame frame, JPacket jPacket) : base(frame)
+        public Board(string instanceName, DateTime startTime, DataFrame frame, JPacket jPacket) : base(instanceName, startTime, frame)
         {
             JPacket = jPacket;
 

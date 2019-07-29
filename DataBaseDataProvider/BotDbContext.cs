@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using BotBase.BotInstance;
+using BotBase;
 using Microsoft.EntityFrameworkCore;
 using DataFrameModel = DataBaseDataProvider.Model.DataFrameModel;
 using ExceptionModel = DataBaseDataProvider.Model.ExceptionModel;

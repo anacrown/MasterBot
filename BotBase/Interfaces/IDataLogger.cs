@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using BotBase.BotInstance;
 
 namespace BotBase.Interfaces
 {
@@ -10,7 +9,7 @@ namespace BotBase.Interfaces
 
         void Log(string name, DateTime startTime, DataFrame frame);
 
-        void Log(string name, DateTime startTime, uint time, string response);
+        void Log(string name, DateTime startTime, DateTime time, uint frameNumber, string response);
 
         void LogDead(string name, DateTime startTime, DataFrame frame);
     }

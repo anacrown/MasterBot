@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using BotBase.BotInstance;
+using BotBase;
 using BotBase.Interfaces;
 
 namespace DataBaseDataProvider

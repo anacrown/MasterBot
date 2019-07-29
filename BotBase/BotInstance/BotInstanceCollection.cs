@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using BotBase.Interfaces;
 
-namespace BotBase.BotInstance
+namespace BotBase
 {
     public class BotInstanceCollection : ObservableCollection<BotInstance>
     {

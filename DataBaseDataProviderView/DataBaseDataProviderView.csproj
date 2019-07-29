@@ -96,13 +96,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BotBaseControls\BotBaseControls.csproj">
+    <ProjectReference Include="..\BotBaseControls\BotBaseView.csproj">
       <Project>{c2742165-3129-4c89-82c4-00d712713eab}</Project>
-      <Name>BotBaseControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataBaseDataProvider\DataBaseDataProvider.csproj">
-      <Project>{2594CA33-D739-4B87-9A96-1C0098017494}</Project>
-      <Name>DataBaseDataProvider</Name>
+      <Name>BotBaseView</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

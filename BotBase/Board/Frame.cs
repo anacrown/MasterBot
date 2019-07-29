@@ -1,14 +1,19 @@
+using System;
+
 namespace BotBase.Board
 {
     public class Frame<T> where T: class
     {
         public T Board { get; }
-        public uint Time { get; }
+        public uint FrameNumber { get; }
 
-        public Frame(T board, uint time)
+        public DateTime Time { get; set; }
+
+        public Frame(DateTime time, T board, uint frameNumber)
         {
-            Board = board;
             Time = time;
+            Board = board;
+            FrameNumber = frameNumber;
         }
     }
 }

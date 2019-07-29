@@ -14,11 +14,11 @@ namespace FileSystemDataProvider
 
         public FileSystemLaunchInfo() { }
 
-        public FileSystemLaunchInfo(string nameDir, string launchDir) : this()
+        public FileSystemLaunchInfo(string nameDir, string launchDir, string dateFormat) : this()
         {
             LaunchDir = launchDir;
             BotInstanceName = Path.GetFileName(nameDir);
-            StartTime = DateTime.ParseExact(Path.GetFileName(launchDir), FileSystemDataLogger.DataFormat, CultureInfo.CurrentCulture);
+            StartTime = DateTime.ParseExact(Path.GetFileName(launchDir), dateFormat, CultureInfo.CurrentCulture);
 
             BotInstanceTitle = "";
         }

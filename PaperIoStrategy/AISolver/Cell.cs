@@ -3,7 +3,7 @@ using BotBase.Board;
 
 namespace PaperIoStrategy.AISolver
 {
-    public class Cell : BotBase.Board.Cell
+    public class Cell : CellBase
     {
         public Element Element { get; set; }
 

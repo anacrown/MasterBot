@@ -18,8 +18,8 @@ namespace BotBase.Board
 
         public void AddFrame(Frame<T> frame)
         {
-            if (!_frames.ContainsKey(frame.Time))
-                _frames.Add(frame.Time, frame);
+            if (!_frames.ContainsKey(frame.FrameNumber))
+                _frames.Add(frame.FrameNumber, frame);
 
             if (MaxSize > 0 && _frames.Count > MaxSize)
                 _frames.Remove(_frames.Select(t => t.Key).Min());

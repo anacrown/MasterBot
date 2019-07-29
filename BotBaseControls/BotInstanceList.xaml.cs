@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using BotBase.BotInstance;
+using BotBase;
 
 namespace BotBaseControls
 {
@@ -29,7 +29,7 @@ namespace BotBaseControls
             if (InstanceModels == null)
                 InstanceModels = new ObservableCollection<BotInstance>();
 
-            InstanceModels.Add(new BotInstance());
+            InstanceModels.Add(new BotInstance(new BotInstanceSettings()));
         }
 
         private void RemoveBotInstance_OnClick(object sender, RoutedEventArgs e)

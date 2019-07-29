@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -12,10 +13,10 @@ namespace BotBase
         {
             if (Directory.Exists(path))
             {
-                var dllFileNames = Directory.GetFiles(path, "*.dll");
+                var assemblyFiles = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".exe" || Path.GetExtension(f) == ".dll").ToArray();
 
-                ICollection<Assembly> assemblies = new List<Assembly>(dllFileNames.Length);
-                foreach (var dllFile in dllFileNames)
+                ICollection<Assembly> assemblies = new List<Assembly>(assemblyFiles.Length);
+                foreach (var dllFile in assemblyFiles)
                 {
                     var an = AssemblyName.GetAssemblyName(dllFile);
                     var assembly = Assembly.Load(an);
@@ -56,10 +57,10 @@ namespace BotBase
         {
             if (Directory.Exists(path))
             {
-                var dllFileNames = Directory.GetFiles(path, "*.dll");
+                var assemblyFiles = Directory.GetFiles(path).Where(f => Path.GetExtension(f) == ".exe" || Path.GetExtension(f) == ".dll").ToArray();
 
-                ICollection<Assembly> assemblies = new List<Assembly>(dllFileNames.Length);
-                foreach (var dllFile in dllFileNames)
+                ICollection<Assembly> assemblies = new List<Assembly>(assemblyFiles.Length);
+                foreach (var dllFile in assemblyFiles)
                 {
                     var an = AssemblyName.GetAssemblyName(dllFile);
                     var assembly = Assembly.Load(an);

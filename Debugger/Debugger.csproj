@@ -98,9 +98,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BotBaseControls\BotBaseControls.csproj">
+    <ProjectReference Include="..\BotBaseControls\BotBaseView.csproj">
       <Project>{C2742165-3129-4C89-82C4-00D712713EAB}</Project>
-      <Name>BotBaseControls</Name>
+      <Name>BotBaseView</Name>
     </ProjectReference>
     <ProjectReference Include="..\BotBase\BotBase.csproj">
       <Project>{52c7baf6-e076-4cee-9c51-7843e0d87695}</Project>
@@ -113,6 +113,14 @@
     <ProjectReference Include="..\FileSystemDataProvider\FileSystemDataProvider.csproj">
       <Project>{a06d9f81-7e4f-42b4-b152-1a7bb44d1e8a}</Project>
       <Name>FileSystemDataProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PaperIoStrategyView\PaperIoStrategyView.csproj">
+      <Project>{967ce9e1-4fa9-4135-b93f-a3dd6ac2aff0}</Project>
+      <Name>PaperIoStrategyView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PaperIoStrategy\PaperIoStrategy.csproj">
+      <Project>{fdbc9c2f-8cf1-46a9-8c0d-32473686ea17}</Project>
+      <Name>PaperIoStrategy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

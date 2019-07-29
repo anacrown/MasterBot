@@ -1,40 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Timers;
-using BotBase.Annotations;
-using BotBase.BotInstance;
+using BotBase;
 using BotBase.Interfaces;
+using BotBase.Properties;
 
 namespace FileSystemDataProvider
 {
-    [Serializable]
-    public class FileSystemDataProviderSettings: DataProviderSettingsBase
-    {
-        public string BoardFile { get; set; }
-
-        public FileSystemDataProviderSettings() : base()
-        {
-        }
-
-        protected FileSystemDataProviderSettings(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            BoardFile = info.GetString("BoardFile");
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-
-            info.AddValue("BoardFile", BoardFile);
-        }
-    }
-    
     [Serializable]
     public class FileSystemDataProvider : IDataProvider, INotifyPropertyChanged, ISerializable
     {
@@ -43,24 +22,26 @@ namespace FileSystemDataProvider
         public string Title => Settings.BoardFile;
         public string Name { get; }
         
-        public uint Time { get; private set; }
+        public uint FrameNumber { get; private set; }
         public int FrameCount => _boards?.Count ?? 0;
         public int FrameMaximumKey => _boards?.Count - 1 ?? 0;
 
-        private Dictionary<uint, string> _boards;
+        private Dictionary<uint, DataFrame> _boards;
         private Dictionary<uint, string> _responses;
-        private static readonly Regex Pattern = new Regex(@"^\[(\d*)\]:\s(.*)$");
+        private static readonly Regex Pattern = new Regex(@"^\[([\.\d\s]*)\]\s\((\d*)\):\s(.*)$");
         private readonly Timer _timer = new Timer(800);
 
-        public FileSystemDataProvider()
+        public FileSystemDataProvider(FileSystemDataProviderSettings settings)
         {
+            Settings = settings;
+
             _timer.AutoReset = true;
             _timer.Elapsed += TimerOnElapsed;
         }
 
-        public FileSystemDataProvider(SerializationInfo info, StreamingContext context) : this()
+        public FileSystemDataProvider(SerializationInfo info, StreamingContext context) : this(info.GetValue("Settings", typeof(FileSystemDataProviderSettings)) as FileSystemDataProviderSettings)
         {
-            Settings = (FileSystemDataProviderSettings)info.GetValue("Settings", typeof(FileSystemDataProviderSettings));
+
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -79,7 +60,7 @@ namespace FileSystemDataProvider
             return $"{instanceDir} {startDir}";
         }
 
-        private static DataFrame ProcessMessage(string message)
+        private DataFrame ProcessMessage(string message)
         {
             var match = Pattern.Match(message);
             if (!match.Success)
@@ -87,17 +68,18 @@ namespace FileSystemDataProvider
                 throw new ApplicationException($"Cannot match message: '{message}'");
             }
 
-            uint time;
-            return new DataFrame (uint.TryParse(match.Groups[1].Value, out time) ? time : 0, match.Groups[2].Value);
+            var time = DateTime.ParseExact(match.Groups[1].Value, Settings.DataFormat, CultureInfo.CurrentCulture);
+
+            return new DataFrame (time, match.Groups[3].Value, uint.TryParse(match.Groups[2].Value, out uint frameNumber) ? frameNumber : 0);
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            if (Time < FrameCount)
+            if (FrameNumber < FrameCount)
             {
-                OnDataReceived(_boards[Time], Time);
-                OnTimeChanged(Time);
-                Time++;
+                OnDataReceived(_boards[FrameNumber]);
+                OnTimeChanged(FrameNumber);
+                FrameNumber++;
             }
             else _timer.Stop();
         }
@@ -107,11 +89,11 @@ namespace FileSystemDataProvider
             if (!File.Exists(Settings.BoardFile))
                 throw new Exception();
 
-            _boards = File.ReadAllLines(Settings.BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
+            _boards = File.ReadAllLines(Settings.BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.FrameNumber, frame => frame);
 
             var responseFilePath = Path.Combine(Path.GetDirectoryName(Settings.BoardFile), "Response.txt");
             if (File.Exists(responseFilePath))
-                _responses = File.ReadAllLines(responseFilePath).Select(ProcessMessage).ToDictionary(frame => frame.Time, frame => frame.Board);
+                _responses = File.ReadAllLines(responseFilePath).Select(ProcessMessage).ToDictionary(frame => frame.FrameNumber, frame => frame.Board);
 
             MoveToFrame(0);
 
@@ -132,16 +114,16 @@ namespace FileSystemDataProvider
 
         public void RecordStop() => _timer?.Stop();
 
-        public void MoveToFrame(uint time)
+        public void MoveToFrame(uint frameNumber)
         {
-            Time = time;
-            OnTimeChanged(Time);
-            OnDataReceived(_boards[Time], time);
+            FrameNumber = frameNumber;
+            OnTimeChanged(FrameNumber);
+            OnDataReceived(_boards[FrameNumber]);
 
             if (_responses != null)
             {
-                var response = _responses.ContainsKey(Time) ? _responses[Time] : "NOT RESPONSE";
-                OnLogDataReceived(new LogRecord(new DataFrame(Time, _boards[Time]), $"Response {response}"));
+                var response = _responses.ContainsKey(FrameNumber) ? _responses[FrameNumber] : "NOT RESPONSE";
+                OnLogDataReceived(new LogRecord(_boards[FrameNumber], $"Response {response}"));
             }
         }
 
@@ -153,7 +135,7 @@ namespace FileSystemDataProvider
         public event EventHandler<uint> TimeChanged;
 
         public event EventHandler<DataFrame> DataReceived;
-        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame (time, board));
+        protected virtual void OnDataReceived(DataFrame frame) => DataReceived?.Invoke(this, frame);
 
         public event EventHandler Started;
         public event EventHandler Stopped;

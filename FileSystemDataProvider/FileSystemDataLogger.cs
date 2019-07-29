@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using BotBase.BotInstance;
+using BotBase;
 using BotBase.Interfaces;
 
 namespace FileSystemDataProvider
@@ -14,26 +15,32 @@ namespace FileSystemDataProvider
     {
         private static readonly Dictionary<string, ReaderWriterLockSlim> LockerLockSlims = new Dictionary<string, ReaderWriterLockSlim>();
 
-        public static string MainLogDir { get; set; } = Path.Combine(AppDomain.CurrentDomain.GetData("DataDirectory").ToString(), "Logs");
-        public static string DataFormat { get; set; } = "yyyy.MM.dd hh.mm.ss";
+        public FileSystemDataLoggerSettings Settings { get; set; }
 
-        public static IEnumerable<FileSystemLaunchInfo> GetLaunches() =>
-            from nameDir in Directory.GetDirectories(MainLogDir)
+        public IEnumerable<FileSystemLaunchInfo> GetLaunches() =>
+            from nameDir in Directory.GetDirectories(Settings.MainLogDir)
             from subDir in Directory.GetDirectories(nameDir)
             let launchDir = subDir
-            select new FileSystemLaunchInfo(nameDir, launchDir);
+            select new FileSystemLaunchInfo(nameDir, launchDir, Settings.DataFormat);
 
-        public FileSystemDataLogger()
+        public FileSystemDataLogger(FileSystemDataLoggerSettings settings)
         {
-            if (!Directory.Exists(MainLogDir))
-                Directory.CreateDirectory(MainLogDir);
+            Settings = settings;
+
+            if (!Directory.Exists(Settings.MainLogDir))
+                Directory.CreateDirectory(Settings.MainLogDir);
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context) { }
+        public FileSystemDataLogger(SerializationInfo info, StreamingContext context) : this(info.GetValue("Settings", typeof(FileSystemDataLoggerSettings)) as FileSystemDataLoggerSettings) { }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Settings", Settings);
+        }
 
         private string GetLogDirForBattleBotInstance(DateTime starTime, string battleBotInstanceName)
         {
-            var str = Path.Combine(MainLogDir, battleBotInstanceName);
+            var str = Path.Combine(Settings.MainLogDir, battleBotInstanceName);
             if (!Directory.Exists(str))
                 Directory.CreateDirectory(str);
             var path = Path.Combine(str, starTime.ToString("yyyy.MM.dd hh.mm.ss"));
@@ -48,20 +55,20 @@ namespace FileSystemDataProvider
             if (!LockerLockSlims.ContainsKey(name))
                 LockerLockSlims.Add(name, new ReaderWriterLockSlim());
             while (LockerLockSlims[name].IsWriteLockHeld) ;
-            OnLogDataReceived(frame.Time, name, "write is hold");
+            OnLogDataReceived(frame.FrameNumber, name, "write is hold");
             LockerLockSlims[name].EnterWriteLock();
             try
             {
                 using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write($"[{(object)frame.Time}]: {(object)frame.Board}{(object)Environment.NewLine}");
+                    streamWriter.Write($"[{frame.Time.ToString(Settings.DataFormat)}] ({frame.FrameNumber}): {frame.Board}{Environment.NewLine}");
                     streamWriter.Close();
                 }
-                OnLogDataReceived(frame.Time, name, "damp saved");
+                OnLogDataReceived(frame.FrameNumber, name, "damp saved");
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(frame.Time, name, ex.ToString());
+                OnLogDataReceived(frame.FrameNumber, name, ex.ToString());
             }
             finally
             {
@@ -69,7 +76,7 @@ namespace FileSystemDataProvider
             }
         }
 
-        public void Log(string name, DateTime startTime, uint time, string response)
+        public void Log(string name, DateTime startTime, DateTime time, uint frameNumber, string response)
         {
             var battleBotInstance = GetLogDirForBattleBotInstance(startTime, name);
             Path.Combine(battleBotInstance, "Board.txt");
@@ -84,13 +91,13 @@ namespace FileSystemDataProvider
             {
                 using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write($"[{(object)time}]: {(object)response}{(object)Environment.NewLine}");
+                    streamWriter.Write($"[{time.ToString(Settings.DataFormat)}] ({frameNumber}): {response}{Environment.NewLine}");
                     streamWriter.Close();
                 }
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(time, name, ex.ToString());
+                OnLogDataReceived(frameNumber, name, ex.ToString());
             }
             finally
             {
@@ -106,19 +113,19 @@ namespace FileSystemDataProvider
             do
                 ;
             while (LockerLockSlims[name].IsWriteLockHeld);
-            OnLogDataReceived(frame.Time, name, "write is hold");
+            OnLogDataReceived(frame.FrameNumber, name, "write is hold");
             LockerLockSlims[name].EnterWriteLock();
             try
             {
                 using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write($"[{(object)frame.Time}]: {(object)e}{(object)Environment.NewLine}");
+                    streamWriter.Write($"[{frame.Time.ToString(Settings.DataFormat)}] ({frame.FrameNumber}): {e}{Environment.NewLine}");
                     streamWriter.Close();
                 }
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(frame.Time, name, ex.ToString());
+                OnLogDataReceived(frame.FrameNumber, name, ex.ToString());
             }
             finally
             {
@@ -132,19 +139,19 @@ namespace FileSystemDataProvider
             if (!LockerLockSlims.ContainsKey(name))
                 LockerLockSlims.Add(name, new ReaderWriterLockSlim());
             while (LockerLockSlims[name].IsWriteLockHeld)
-                OnLogDataReceived(frame.Time, name, "write is hold");
+                OnLogDataReceived(frame.FrameNumber, name, "write is hold");
             LockerLockSlims[name].EnterWriteLock();
             try
             {
                 using (var streamWriter = File.AppendText(path))
                 {
-                    streamWriter.Write($"[{(object)frame.Time}]: DEAD{(object)Environment.NewLine}");
+                    streamWriter.Write($"[{(object)frame.FrameNumber}]: DEAD{(object)Environment.NewLine}");
                     streamWriter.Close();
                 }
             }
             catch (Exception ex)
             {
-                OnLogDataReceived(frame.Time, name, ex.ToString());
+                OnLogDataReceived(frame.FrameNumber, name, ex.ToString());
             }
             finally
             {
@@ -154,12 +161,6 @@ namespace FileSystemDataProvider
 
         public event EventHandler<LogRecord> LogDataReceived;
 
-        protected virtual void OnLogDataReceived(uint time,string battleBotInstanceName,string message)
-        {
-            var logDataReceived = LogDataReceived;
-            if (logDataReceived == null)
-                return;
-            logDataReceived(this, new LogRecord(new DataFrame(time, ""), battleBotInstanceName + ": " + message));
-        }
+        protected virtual void OnLogDataReceived(uint frameNumber, string battleBotInstanceName, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame(DateTime.Now, "", frameNumber), battleBotInstanceName + ": " + message));
     }
 }

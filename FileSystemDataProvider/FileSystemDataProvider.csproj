@@ -41,9 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileSystemConfigurator.cs" />
     <Compile Include="FileSystemDataLogger.cs" />
+    <Compile Include="FileSystemDataLoggerSettings.cs" />
     <Compile Include="FileSystemDataProvider.cs" />
+    <Compile Include="FileSystemDataProviderSettings.cs" />
     <Compile Include="FileSystemLaunchInfo.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

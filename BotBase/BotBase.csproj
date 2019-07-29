@@ -47,7 +47,12 @@
     <Compile Include="Board\Point.cs" />
     <Compile Include="BotInstance\BotInstance.cs" />
     <Compile Include="BotInstance\BotInstanceCollection.cs" />
+    <Compile Include="BotInstance\Settings\BotInstanceSettings.cs" />
     <Compile Include="BotInstance\DataFrame.cs" />
+    <Compile Include="BotInstance\Settings\DataLoggerSettingsBase.cs" />
+    <Compile Include="BotInstance\Settings\DataProviderSettingsBase.cs" />
+    <Compile Include="BotInstance\Settings\SettingsBase.cs" />
+    <Compile Include="BotInstance\Settings\SolverSettingsBase.cs" />
     <Compile Include="Interfaces\IDataLogger.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="Interfaces\ILogger.cs" />

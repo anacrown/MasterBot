@@ -2,149 +2,11 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using BotBase.Annotations;
 using BotBase.Interfaces;
+using BotBase.Properties;
 
-namespace BotBase.BotInstance
+namespace BotBase
 {
-    [Serializable]
-    public abstract class SettingsBase : ISerializable
-    {
-        protected SettingsBase()
-        {
-        }
-
-        protected SettingsBase(SerializationInfo info, StreamingContext context)
-        {
-
-        }
-
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-
-        }
-    }
-
-    [Serializable]
-    public abstract class DataProviderSettingsBase : SettingsBase, INotifyPropertyChanged
-    {
-        protected DataProviderSettingsBase() : base()
-        {
-        }
-
-        protected DataProviderSettingsBase(SerializationInfo info, StreamingContext context)
-        {
-
-        }
-
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    [Serializable]
-    public class BotInstanceSettings : SettingsBase, INotifyPropertyChanged
-    {
-        private SettingsBase _solverSettings;
-        private SettingsBase _dataLoggerSettings;
-        private DataProviderSettingsBase _dataProviderSettings;
-
-        public SettingsBase SolverSettings
-        {
-            get => _solverSettings;
-            set
-            {
-                if (Equals(value, _solverSettings)) return;
-                _solverSettings = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public SettingsBase DataLoggerSettings
-        {
-            get => _dataLoggerSettings;
-            set
-            {
-                if (Equals(value, _dataLoggerSettings)) return;
-                _dataLoggerSettings = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DataProviderSettingsBase DataProviderSettings
-        {
-            get => _dataProviderSettings;
-            set
-            {
-                if (Equals(value, _dataProviderSettings)) return;
-                _dataProviderSettings = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DateTime StartTime { get; set; }
-        public bool Visibility { get; set; }
-        public string Title { get; set; }
-
-        public BotInstanceSettings() : base()
-        {
-            
-        }
-
-        public BotInstanceSettings(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            var solverTypeName = info.GetString("SolverSettingsType");
-            if (!string.IsNullOrEmpty(solverTypeName))
-            {
-                var solverType = PluginLoader.LoadType(solverTypeName);
-                SolverSettings = (SettingsBase)info.GetValue("SolverSettings", solverType);
-            }
-
-            var dataLoggerTypeName = info.GetString("DataLoggerSettingsType");
-            if (!string.IsNullOrEmpty(dataLoggerTypeName))
-            {
-                var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
-                DataLoggerSettings = (SettingsBase)info.GetValue("DataLoggerSettings", dataLoggerType);
-            }
-
-            var dataProviderTypeName = info.GetString("DataProviderSettingsType");
-            if (!string.IsNullOrEmpty(dataProviderTypeName))
-            {
-                var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
-                DataProviderSettings = (DataProviderSettingsBase)info.GetValue("DataProviderSettings", dataProviderType);
-            }
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-
-            info.AddValue("SolverSettings", SolverSettings);
-            info.AddValue("SolverSettingsType", SolverSettings?.GetType().FullName);
-
-            info.AddValue("DataLoggerSettings", DataLoggerSettings);
-            info.AddValue("DataLoggerSettingsType", DataLoggerSettings?.GetType().FullName);
-
-            info.AddValue("DataProviderSettings", DataProviderSettings);
-            info.AddValue("DataProviderSettingsType", DataProviderSettings?.GetType().FullName);
-
-            info.AddValue("StartTime", StartTime);
-            info.AddValue("Visibility", Visibility);
-            info.AddValue("Title", Title);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
     [Serializable]
     public class BotInstance : ILogger, ISerializable, INotifyPropertyChanged
     {
@@ -153,6 +15,7 @@ namespace BotBase.BotInstance
         private IDataProvider _dataProvider;
 
         private bool _isStarted;
+        private BotInstanceSettings _settings;
 
         public bool IsStarted
         {
@@ -169,12 +32,27 @@ namespace BotBase.BotInstance
         public string Title => $"[{Solver?.GetType().Name ?? "EMPTY SOLVER"}] {DataProvider?.Title ?? "EMPTY PROVIDER"}";
         public string Name => DataProvider?.Name ?? "NOT INITIALIZED";
 
-        public BotInstanceSettings Settings { get; } = new BotInstanceSettings();
+        public BotInstanceSettings Settings
+        {
+            get => _settings;
+            private set
+            {
+                _settings = value;
+                SettingsUpdated();
+            }
+        }
+
+        private void SettingsUpdated()
+        {
+            DataProvider = Settings.DataProviderSettings?.CreateDataProvider();
+            DataLogger = Settings.DataLoggerSettings?.CreateDataLogger();
+            Solver = Settings.SolverSettings?.CreateSolver();
+        }
 
         public ISolver Solver
         {
             get => _solver;
-            set
+            private set
             {
 
                 if (_solver != null)
@@ -196,7 +74,7 @@ namespace BotBase.BotInstance
         public IDataProvider DataProvider
         {
             get => _dataProvider;
-            set
+            private set
             {
                 if (_dataProvider != null)
                 {
@@ -226,7 +104,7 @@ namespace BotBase.BotInstance
         public IDataLogger DataLogger
         {
             get => _dataLogger;
-            set
+            private set
             {
                 if (_dataLogger != null)
                 {
@@ -244,12 +122,14 @@ namespace BotBase.BotInstance
             }
         }
 
-        public BotInstance()
+        public BotInstance(BotInstanceSettings settings)
         {
+            Settings = settings;
+
             //DataLogger = new FileSystemDataLogger();
         }
 
-        protected BotInstance(SerializationInfo info, StreamingContext context) : this()
+        protected BotInstance(SerializationInfo info, StreamingContext context) : this(info.GetValue("Settings", typeof(BotInstanceSettings)) as BotInstanceSettings)
         {
             Settings = (BotInstanceSettings)info.GetValue("Settings", typeof(BotInstanceSettings));
         }
@@ -339,7 +219,7 @@ namespace BotBase.BotInstance
 
                     DataProvider.SendResponse(response);
 
-                    DataLogger.Log(Name, StartTime, frame.Time, response);
+                    DataLogger.Log(Name, StartTime, frame.Time, frame.FrameNumber, response);
                 }
                 else OnLogDataReceived(Solver, new LogRecord(frame, $"Response skip"));
             }

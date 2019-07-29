@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Timers;
-using BotBase.Annotations;
-using BotBase.BotInstance;
+using BotBase;
 using BotBase.Interfaces;
+using BotBase.Properties;
 using CodenjoyBot;
 
 namespace DataBaseDataProvider

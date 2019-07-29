@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using BotBase.BotInstance;
+using BotBase;
 using BotBase.Interfaces;
 using WebSocket4Net;
 

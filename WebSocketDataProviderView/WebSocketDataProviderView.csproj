@@ -87,11 +87,5 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WebSocketDataProvider\WebSocketDataProvider.csproj">
-      <Project>{57B8AF65-E328-41B7-AEB7-42C26F0DAE9E}</Project>
-      <Name>WebSocketDataProvider</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
