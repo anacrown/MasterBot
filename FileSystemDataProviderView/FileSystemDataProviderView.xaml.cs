@@ -32,6 +32,8 @@ namespace FileSystemDataProviderView
         public FileSystemDataProviderView()
         {
             InitializeComponent();
+
+            GotFocus += (sender, args) => FrameSlider.Focus();
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

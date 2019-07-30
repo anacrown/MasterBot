@@ -28,7 +28,7 @@ namespace PaperIoStrategyView
 
         public PaperIoSolver Solver
         {
-            get => (PaperIoSolver) GetValue(SolverProperty);
+            get => (PaperIoSolver)GetValue(SolverProperty);
             set => SetValue(SolverProperty, value);
         }
 
@@ -108,28 +108,26 @@ namespace PaperIoStrategyView
                     }
                 }
             }
-
+            
             for (var i = 0; i < board.Size.Width; i++)
             {
                 for (var j = 0; j < board.Size.Height; j++)
                 {
-                    _images[i, j].Source = ResourceManager.GetSource(board[i, j].Element);
-//                    if (board.JPacket.PacketType == JPacketType.Tick)
-//                    {
-//                        _labelsMe[i, j].Content = board.IPlayer.Map[i, j].Weight;
-//
-//                        if (board.Enemies.Any())
-//                            _labelsOpp[i, j].Content = board.EnemiesMap(i, j);
-//                    }
-                }
-            }
-
-
-            foreach (var points in board.PathsToHome.Values)
-            {
-                foreach (var point in points)
-                {
-                    _images[point.X, point.Y].Source = ResourceManager.GetSource("path");
+                    if (board[i, j].Element == Element.NONE && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
+                    {
+                        _images[i, j].Source = ResourceManager.GetSource("path");
+                    }
+                    else
+                    {
+                        _images[i, j].Source = ResourceManager.GetSource(board[i, j].Element);
+                    }
+                    //                    if (board.JPacket.PacketType == JPacketType.Tick)
+                    //                    {
+                    //                        _labelsMe[i, j].Content = board.IPlayer.Map[i, j].Weight;
+                    //
+                    //                        if (board.Enemies.Any())
+                    //                            _labelsOpp[i, j].Content = board.EnemiesMap(i, j);
+                    //                    }
                 }
             }
         }

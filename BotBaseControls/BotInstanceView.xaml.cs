@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BotBase;
+using BotBase.Interfaces;
 
 namespace BotBaseControls
 {
@@ -41,10 +42,24 @@ namespace BotBaseControls
             if (e.Property == BotInstanceProperty)
             {
                 if (e.OldValue is BotInstance oldValue)
+                {
+                    oldValue.Started -= BotInstanceOnStarted;
                     oldValue.LogDataReceived -= BotInstanceOnLogDataReceived;
+                }
 
                 if (e.NewValue is BotInstance newValue)
+                {
+                    newValue.Started += BotInstanceOnStarted;
                     newValue.LogDataReceived += BotInstanceOnLogDataReceived;
+                }
+            }
+        }
+
+        private void BotInstanceOnStarted(object sender, IDataProvider e)
+        {
+            if (VisualTreeHelper.GetChild(DataProviderPresenter, 0) is UIElement container)
+            {
+                container.Focus();
             }
         }
 

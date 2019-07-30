@@ -40,7 +40,11 @@ namespace PaperIoStrategy.AISolver
 
             Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb));
 
-            Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount), Line.ToArray());
+            var checkedPoints = Line.ToList();
+            if (Direction != Direction.Unknown)
+                checkedPoints.Add(Position[Direction.Invert()]);
+
+            Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount), checkedPoints.ToArray());
         }
     }
 }

@@ -22,10 +22,9 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
 
-        //---------------------
+        public List<Point[]> Paths = new List<Point[]>();
 
-        public Dictionary<Direction, IEnumerable<Point>> PathsToHome { get; } =
-            new Dictionary<Direction, IEnumerable<Point>>();
+        //---------------------
 
         public int EnemiesMap(Point p) => EnemiesMap(p.X, p.Y);
         public int EnemiesMap(int i, int j)
@@ -58,11 +57,31 @@ namespace PaperIoStrategy.AISolver
                 for (var y = 0; y < Size.Height; ++y)
                     this[x, y].Pos = new Point(x, y);
 
-            Bonuses = jPacket.Params.Bonuses?.Select(jb => new Bonus(jPacket, jb));
+            Bonuses = jPacket.Params.Bonuses?.Select(jb => new Bonus(jPacket, jb)).ToArray();
+
+            if (Bonuses != null && Bonuses.Any())
+            { 
+                foreach (var bonuse in Bonuses)
+                {
+                    switch (bonuse.BonusType)
+                    {
+                        case JBonusType.SpeedUp:
+                            this[bonuse.Position].Element = Element.FLASH;
+                            break;
+                        case JBonusType.SlowDown:
+                            this[bonuse.Position].Element = Element.EXPLORER;
+                            break;
+                        case JBonusType.Saw:
+                            this[bonuse.Position].Element = Element.SAW;
+                            break;
+                        default: break;
+                    }
+                }
+            }
 
             Players = JPacket.Params.Players?.ToDictionary(jp => jp.Key, jp => new Player(jp.Key, JPacket));
 
-            if (Players != null && Players.Count > 0)
+            if (Players != null && Players.Any())
             {
                 foreach (var player in Enemies)
                 {
@@ -76,19 +95,6 @@ namespace PaperIoStrategy.AISolver
                 this[IPlayer.Position].Element = Element.ME;
 
                 Parallel.ForEach(Players.Values, player => { player.Map.Check(player.Position); });
-
-                foreach (var direction in PossibleDirections)
-                {
-                    var path = GatPathToHomeAfterMove(direction);
-                    if (path != null) PathsToHome.Add(direction, path.ToArray());
-                }
-
-                if (PathsToHome.Count == 0)
-                {
-                    var path = GetMinPathToHome(IPlayer.Map, IPlayer.Line);
-                    if (path != null)
-                        PathsToHome.Add(IPlayer.Position.GetDirectionTo(path.First()), path);
-                }
             }
         }
 
@@ -159,18 +165,19 @@ namespace PaperIoStrategy.AISolver
             .Where(d => IPlayer.Direction.Invert() != d && IPlayer.Position[d].OnBoard(Size))
             .Where(d => IPlayer.Position[d].OnBoard(Size) && this[IPlayer.Position[d]].Element != Element.ME_LINE);
 
-        public int Square(Direction direction)
+        public int Square(Direction direction, Point[] path)
         {
             var s = 0;
 
             var points = new List<Point>() { IPlayer.Position, IPlayer.Position[direction] };
+
             foreach (var point in IPlayer.Line)
             {
                 if (!points.Contains(point))
                     points.Add(point);
             }
 
-            foreach (var point in PathsToHome[direction])
+            foreach (var point in path)
             {
                 if (!points.Contains(point))
                     points.Add(point);
@@ -196,10 +203,48 @@ namespace PaperIoStrategy.AISolver
 
         public string GetResponse()
         {
-            var squares = PathsToHome.Keys.ToDictionary(d => d, Square).OrderByDescending(pair => pair.Value);
+            Direction direction;
 
-            var direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
+            if (Bonuses.Any())
+            {
+                var path = IPlayer.Map.Tracert(Bonuses.First().Position).Reverse().ToArray();
+                direction = IPlayer.Position.GetDirectionTo(path.First());
+                Paths.Add(path);
+            }
+            else
+            {
+                if (IPlayer.Territory.Contains(IPlayer.Position))
+                {
+                    direction = PossibleDirections.FirstOrDefault(d =>
+                        this[IPlayer.Position[d]].Element == Element.ME_TERRITORY);
+                }
+                else
+                {
+                    var path = IPlayer.Map.Tracert(IPlayer.Territory.First()).Reverse().ToArray();
+                    direction = IPlayer.Position.GetDirectionTo(path.First());
+                    Paths.Add(path);
+                }
+            }
 
+//            var PathsToHome = new Dictionary<Direction, Point[]>();
+//
+//            foreach (var d in PossibleDirections)
+//            {
+//                var path = GatPathToHomeAfterMove(d);
+//                if (path != null) PathsToHome.Add(d, path.ToArray());
+//            }
+//
+//            if (PathsToHome.Count == 0)
+//            {
+//                var path = GetMinPathToHome(IPlayer.Map, IPlayer.Line);
+//                if (path != null)
+//                    PathsToHome.Add(IPlayer.Position.GetDirectionTo(path.First()), path.ToArray());
+//            }
+//
+//            var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
+//
+//            var direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
+//
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }
     }

@@ -20,7 +20,7 @@ namespace FileSystemDataProvider
         public FileSystemDataProviderSettings Settings { get; }
 
         public string Title => Settings.BoardFile;
-        public string Name { get; }
+        public string Name { get; private set; }
         
         public uint FrameNumber { get; private set; }
         public int FrameCount => _boards?.Count ?? 0;
@@ -37,6 +37,11 @@ namespace FileSystemDataProvider
 
             _timer.AutoReset = true;
             _timer.Elapsed += TimerOnElapsed;
+
+            Settings.PropertyChanged += SettingsOnPropertyChanged;
+
+            if (!string.IsNullOrEmpty(Settings.BoardFile))
+                Name = GetNameFromDir(Settings.BoardFile);
         }
 
         public FileSystemDataProvider(SerializationInfo info, StreamingContext context) : this(info.GetValue("Settings", typeof(FileSystemDataProviderSettings)) as FileSystemDataProviderSettings)
@@ -47,6 +52,14 @@ namespace FileSystemDataProvider
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Settings", Settings);
+        }
+
+        private void SettingsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Settings.BoardFile))
+            {
+                Name = GetNameFromDir(Settings.BoardFile);
+            }
         }
 
         private string GetNameFromDir(string file)
