@@ -52,11 +52,18 @@ namespace PaperIoStrategy
             var board = new Board(instanceName, startTime, frame, jPacket.PacketType == JPacketType.StartGame ? _startInfo = jPacket : jPacket.Merge(_startInfo));
             OnBoardChanged(board);
 
+            foreach (var playerBonuse in board.IPlayer.Bonuses)
+            {
+                OnLogDataReceived(new LogRecord(frame, $"({board.JPacket.Params.Tick}) Bonus {playerBonuse.BonusType}; Ticks: {playerBonuse.Ticks}"));
+            }
+
             if (board.JPacket.PacketType != JPacketType.Tick) return false;
 
             response = board.GetResponse();
 
             return true;
         }
+
+        protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
     }
 }

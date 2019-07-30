@@ -22,13 +22,13 @@
 
         <ContentPresenter Margin="3" Grid.RowSpan="3" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceView}}, Path=BotInstance.Solver}" MinWidth="300" MinHeight="100"/>
 
-        <!-- <ListView Grid.Column="1" Grid.Row="0" Margin="3" VerticalContentAlignment="Top" MinWidth="300" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BotInstanceDebugControl}}, Path=BotInstance.LogFilterEntries}"> -->
-        <!--     <ListView.Resources> -->
-        <!--         <DataTemplate DataType="{x:Type LogFilterEntry}"> -->
-        <!--             <CheckBox Content="{Binding Header}" IsChecked="{Binding IsEnabled}"/> -->
-        <!--         </DataTemplate> -->
-        <!--     </ListView.Resources> -->
-        <!-- </ListView> -->
+        <ListView Grid.Column="1" Grid.Row="0" Margin="3" VerticalContentAlignment="Top" MinWidth="300" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BotInstanceView}}, Path=FilterRecords}">
+            <ListView.Resources>
+                <DataTemplate DataType="{x:Type local:FilterRecord}">
+                    <CheckBox Content="{Binding Header}" IsChecked="{Binding IsEnabled}"/>
+                </DataTemplate>
+            </ListView.Resources>
+        </ListView>
 
         <TextBox x:Name="LogTextBlock" IsReadOnly="True"  Margin="3" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                  MinWidth="300" MinHeight="200"/>

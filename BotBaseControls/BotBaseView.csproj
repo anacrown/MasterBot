@@ -63,7 +63,7 @@
     <Compile Include="BotInstanceView.xaml.cs">
       <DependentUpon>BotInstanceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Command.cs" />
+    <Compile Include="FilterRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -81,6 +81,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

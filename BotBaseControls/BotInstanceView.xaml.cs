@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,13 +29,36 @@ namespace BotBaseControls
 
         public BotInstance BotInstance
         {
-            get => (BotInstance) GetValue(BotInstanceProperty);
+            get => (BotInstance)GetValue(BotInstanceProperty);
             set => SetValue(BotInstanceProperty, value);
+        }
+
+        public static readonly DependencyProperty FilterRecordsProperty = DependencyProperty.Register(
+            "FilterRecords", typeof(ObservableCollection<FilterRecord>), typeof(BotInstanceView), new PropertyMetadata(default(ObservableCollection<FilterRecord>)));
+
+        public ObservableCollection<FilterRecord> FilterRecords
+        {
+            get => (ObservableCollection<FilterRecord>)GetValue(FilterRecordsProperty);
+            set => SetValue(FilterRecordsProperty, value);
         }
 
         public BotInstanceView()
         {
             InitializeComponent();
+
+            FilterRecords = new ObservableCollection<FilterRecord>();
+            foreach (var recordHeader in Properties.Settings.Default.DisabledFilterRecords)
+            {
+                var filterRecord = new FilterRecord() {Header = recordHeader, IsEnabled = false};
+                filterRecord.PropertyChanged += FilterRecordOnPropertyChanged;
+                FilterRecords.Add(filterRecord);
+            }
+
+        }
+
+        private void FilterRecordOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -67,16 +92,18 @@ namespace BotBaseControls
         {
             Dispatcher.InvokeAsync(() =>
             {
-                //                var logSourceFilter = LogFilterEntries.FirstOrDefault(t => t.Header == sender?.GetType().Name);
-                //
-                //                if (logSourceFilter == null)
-                //                {
-                //                    LogFilterEntries.Add(new LogFilterEntry { Header = sender.GetType().Name, IsEnabled = true });
-                //                }
+                var filterRecord = FilterRecords.FirstOrDefault(t => t.Header == sender?.GetType().Name);
 
-                LogTextBlock.AppendText($"[{sender.GetType().Name}][{e.DataFrame?.FrameNumber}] {e.Message}{Environment.NewLine}");
-                LogTextBlock.ScrollToEnd();
+                if (filterRecord == null)
+                {
+                    FilterRecords.Add(filterRecord = new FilterRecord { Header = sender.GetType().Name, IsEnabled = true });
+                }
 
+                if (filterRecord.IsEnabled)
+                {
+                    LogTextBlock.AppendText($"[{sender.GetType().Name}][{e.DataFrame?.FrameNumber}] {e.Message}{Environment.NewLine}");
+                    LogTextBlock.ScrollToEnd();
+                }
             });
         }
     }

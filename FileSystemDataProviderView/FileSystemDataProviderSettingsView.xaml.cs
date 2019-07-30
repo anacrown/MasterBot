@@ -29,7 +29,7 @@ namespace FileSystemDataProviderView
         {
             var dialog = new OpenFileDialog();
             if (!string.IsNullOrEmpty(Settings.BoardFile))
-                dialog.InitialDirectory = Path.GetDirectoryName(Settings.BoardFile) ?? string.Empty;
+                dialog.InitialDirectory = FileSystemConfigurator.MainLogDir;
             if (dialog.ShowDialog(Application.Current.MainWindow) == true)
                 Settings.BoardFile = dialog.FileName;
 
