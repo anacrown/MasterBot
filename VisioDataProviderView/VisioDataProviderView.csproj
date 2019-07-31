@@ -4,21 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4A2A0299-1E37-44FE-AAC4-9CB24004B686}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>Debugger</RootNamespace>
-    <AssemblyName>Debugger</AssemblyName>
+    <ProjectGuid>{8E4C7352-6BFD-450C-82A8-E961AFE54E8E}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>VisioDataProviderView</RootNamespace>
+    <AssemblyName>VisioDataProviderView</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -28,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -37,40 +32,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CalcBinding, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CalcBinding.2.5.1\lib\net45\CalcBinding.dll</HintPath>
-    </Reference>
-    <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net461\DynamicExpresso.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Command.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -86,48 +61,42 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="VisioDataProviderSettingsView.xaml.cs">
+      <DependentUpon>VisioDataProviderSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VisioDataProviderView.xaml.cs">
+      <DependentUpon>VisioDataProviderView.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.config" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BotBaseControls\BotBaseView.csproj">
-      <Project>{C2742165-3129-4C89-82C4-00D712713EAB}</Project>
-      <Name>BotBaseView</Name>
-    </ProjectReference>
+    <Page Include="ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VisioDataProviderSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VisioDataProviderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\BotBase\BotBase.csproj">
       <Project>{52c7baf6-e076-4cee-9c51-7843e0d87695}</Project>
       <Name>BotBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FileSystemDataProviderView\FileSystemDataProviderView.csproj">
-      <Project>{3760a0e7-73ad-4e0d-bfb8-d5a13f1c96e2}</Project>
-      <Name>FileSystemDataProviderView</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileSystemDataProvider\FileSystemDataProvider.csproj">
-      <Project>{a06d9f81-7e4f-42b4-b152-1a7bb44d1e8a}</Project>
-      <Name>FileSystemDataProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PaperIoStrategyView\PaperIoStrategyView.csproj">
-      <Project>{967ce9e1-4fa9-4135-b93f-a3dd6ac2aff0}</Project>
-      <Name>PaperIoStrategyView</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PaperIoStrategy\PaperIoStrategy.csproj">
-      <Project>{fdbc9c2f-8cf1-46a9-8c0d-32473686ea17}</Project>
-      <Name>PaperIoStrategy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VisioDataProviderView\VisioDataProviderView.csproj">
-      <Project>{8e4c7352-6bfd-450c-82a8-e961afe54e8e}</Project>
-      <Name>VisioDataProviderView</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VisioDataProvider\VisioDataProvider.csproj">
-      <Project>{f710444f-1c3a-476b-b2ad-4479bd847812}</Project>
+      <Project>{F710444F-1C3A-476B-B2AD-4479BD847812}</Project>
       <Name>VisioDataProvider</Name>
     </ProjectReference>
   </ItemGroup>

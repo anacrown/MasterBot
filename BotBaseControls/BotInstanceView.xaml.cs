@@ -105,7 +105,7 @@ namespace BotBaseControls
         {
             Dispatcher.InvokeAsync(() =>
             {
-                if (_lastTick != e.DataFrame.FrameNumber)
+                if (ClearBeforeTickCheckBox.IsChecked == true && _lastTick != e.DataFrame.FrameNumber)
                 {
                     LogTextBlock.Clear();
                     _lastTick = e.DataFrame.FrameNumber;

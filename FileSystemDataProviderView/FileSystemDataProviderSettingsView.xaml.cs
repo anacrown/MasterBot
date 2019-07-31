@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using BotBase;
 using FileSystemDataProvider;
 using Microsoft.Win32;
 
@@ -32,7 +33,6 @@ namespace FileSystemDataProviderView
                 dialog.InitialDirectory = FileSystemConfigurator.MainLogDir;
             if (dialog.ShowDialog(Application.Current.MainWindow) == true)
                 Settings.BoardFile = dialog.FileName;
-
         }
     }
 }

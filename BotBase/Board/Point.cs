@@ -64,6 +64,8 @@ namespace BotBase.Board
 
         public static Point Empty => new Point(0, 0);
 
+        public bool IsEmpty => X == 0 && Y == 0;
+
         public static Dictionary<Direction, Point> Neighbor { get; set; } = new Dictionary<Direction, Point>()
         {
             {Direction.Up, new Point(0, 1)},
@@ -76,9 +78,17 @@ namespace BotBase.Board
 
         public static Point operator -(Point p1, Point p2) => new Point(p1.X - p2.X, p1.Y - p2.Y);
 
+        public static Point operator +(Point p1, int i) => new Point(p1.X + i, p1.Y + i);
+
+        public static Point operator -(Point p1, int i) => new Point(p1.X - i, p1.Y - i);
+
         public static Point operator *(Point p1, int i) => new Point(p1.X * i, p1.Y * i);
 
         public static Point operator /(Point p1, int i) => new Point(p1.X / i, p1.Y / i);
+
+        public static Point operator %(Point p1, Point p2) => new Point(p1.X % p2.X, p1.Y % p2.Y);
+
+        public static Point operator %(Point p1, int i) => new Point(p1.X % i, p1.Y % i);
 
         public static bool operator ==(Point p1, Point p2)
         {

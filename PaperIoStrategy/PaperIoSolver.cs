@@ -49,9 +49,18 @@ namespace PaperIoStrategy
                 return false;
             }
 
-            var board = new Board(instanceName, startTime, frame,
-                jPacket.PacketType == JPacketType.StartGame ? _startInfo = jPacket : jPacket.Merge(_startInfo));
+            var board = new Board(instanceName, startTime, frame, jPacket.PacketType == JPacketType.StartGame ? _startInfo = jPacket : jPacket.Merge(_startInfo));
             OnBoardChanged(board);
+
+            if (board.Players != null)
+            {
+                foreach (var player in board.Players)
+                {
+                    OnLogDataReceived(new LogRecord(frame, $"{board.JPacket.Params.Tick} {player.Value.Position} {player.Value.JPlayer.Position} {player.Value.Direction}"));
+                }
+            }
+
+            if (board.Player == null) return false;
 
             if (board.Player != null)
             {

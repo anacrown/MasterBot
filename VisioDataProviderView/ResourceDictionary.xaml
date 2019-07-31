@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:VisioDataProviderView"
+                    xmlns:visioDataProvider="clr-namespace:VisioDataProvider;assembly=VisioDataProvider">
+
+    <DataTemplate DataType="{x:Type visioDataProvider:VisioDataProviderSettings}">
+        <local:VisioDataProviderSettingsView Settings="{Binding}"/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type visioDataProvider:VisioDataProvider}">
+        <local:VisioDataProviderView DataProvider="{Binding}"/>
+    </DataTemplate>
+
+</ResourceDictionary>

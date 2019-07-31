@@ -21,7 +21,7 @@ namespace PaperIoStrategy.AISolver
         public Bonus(JPacket jPacket, JBonus jBonus) : this(jBonus)
         {
             if (jBonus.Position != null)
-                Position = jBonus.Position / jPacket.Params.Width;
+                Position = jBonus.Position.ToGrid(jPacket.Params.Width);
         }
     }
 }

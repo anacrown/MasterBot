@@ -64,7 +64,7 @@ namespace FileSystemDataProviderView
 
         private void FrameSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            DataProvider.MoveToFrame((uint)e.NewValue);
+            DataProvider?.MoveToFrame((uint)e.NewValue);
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)

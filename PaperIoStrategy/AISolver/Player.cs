@@ -24,7 +24,7 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Bonus> Bonuses { get; }
 
-        public Map Map { get; }
+        public Map Map { get; set; }
 
         public Player(string name, JPacket jPacket)
         {
@@ -32,19 +32,13 @@ namespace PaperIoStrategy.AISolver
 
             JPlayer = jPacket.Params.Players[name];
 
-            Line = JPlayer.Lines.Select(point => point / jPacket.Params.Width);
+            Line = JPlayer.Lines.Select(point => point.ToGrid(jPacket.Params.Width));
 
-            Territory = JPlayer.Territory.Select(point => point / jPacket.Params.Width);
+            Territory = JPlayer.Territory.Select(point => point.ToGrid(jPacket.Params.Width));
 
-            Position = JPlayer.Position / jPacket.Params.Width;
+            Position = JPlayer.Position.ToGrid(jPacket.Params.Width, Direction);
 
             Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb));
-
-            var checkedPoints = Line.ToList();
-            if (Direction != Direction.Unknown)
-                checkedPoints.Add(Position[Direction.Invert()]);
-
-            Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount), checkedPoints.ToArray());
         }
     }
 }

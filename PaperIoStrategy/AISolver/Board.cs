@@ -78,10 +78,21 @@ namespace PaperIoStrategy.AISolver
                 }
             }
 
-            Players = JPacket.Params.Players?.ToDictionary(jp => jp.Key, jp => new Player(jp.Key, JPacket));
-
-            if (Players != null && Players.Any())
+            if ((Players = JPacket.Params.Players?.ToDictionary(jp => jp.Key, jp => new Player(jp.Key, JPacket))) != null)
             {
+                foreach (var player in Players.Values)
+                {
+                    var checkedPoints = player.Line.ToList();
+                    if (player.Direction != Direction.Unknown)
+                    {
+                        var backPoint = player.Position[player.Direction.Invert()];
+                        if (player.Direction != Direction.Unknown && backPoint.OnBoard(Size))
+                            checkedPoints.Add(player.Position[player.Direction.Invert()]);
+                    }
+
+                    player.Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount), checkedPoints.ToArray());
+                }
+
                 foreach (var player in Enemies)
                 {
                     foreach (var point in player.Territory) this[point].Element = Element.PLAYER_TERRITORY;
@@ -89,9 +100,12 @@ namespace PaperIoStrategy.AISolver
                     this[player.Position].Element = Element.PLAYER;
                 }
 
-                foreach (var point in Player.Territory) this[point].Element = Element.ME_TERRITORY;
-                foreach (var point in Player.Line) this[point].Element = Element.ME_LINE;
-                this[Player.Position].Element = Element.ME;
+                if (Player != null)
+                {
+                    foreach (var point in Player.Territory) this[point].Element = Element.ME_TERRITORY;
+                    foreach (var point in Player.Line) this[point].Element = Element.ME_LINE;
+                    this[Player.Position].Element = Element.ME;
+                }
 
                 Parallel.ForEach(Players.Values, player => { player.Map.Check(player.Position); });
             }
@@ -160,7 +174,7 @@ namespace PaperIoStrategy.AISolver
             return GetPathToHome(map, checkedPoints, 1);
         }
 
-        public IEnumerable<Direction> PossibleDirections => Point.Neighbor.Keys
+        public IEnumerable<Direction> PossibleDirections => Player == null ? null : Point.Neighbor.Keys
             .Where(d => Player.Direction.Invert() != d && Player.Position[d].OnBoard(Size))
             .Where(d => Player.Position[d].OnBoard(Size) && this[Player.Position[d]].Element != Element.ME_LINE);
 
@@ -204,45 +218,45 @@ namespace PaperIoStrategy.AISolver
         {
             Direction direction;
 
-            if (Bonuses.Any())
-            {
-                var path = Player.Map.Tracert(Bonuses.First().Position);
-                direction = Player.Position.GetDirectionTo(path.First());
-                Paths.Add(path);
-            }
-            else
-            {
-                if (Player.Territory.Contains(Player.Position))
-                {
-                    direction = PossibleDirections.FirstOrDefault(d =>
-                        this[Player.Position[d]].Element == Element.ME_TERRITORY);
-                }
-                else
-                {
-                    var path = Player.Map.Tracert(Player.Territory.First());
-                    direction = Player.Position.GetDirectionTo(path.First());
-                    Paths.Add(path);
-                }
-            }
+//            if (Bonuses.Any())
+//            {
+//                var path = Player.Map.Tracert(Bonuses.First().Position);
+//                direction = Player.Position.GetDirectionTo(path.First());
+//                Paths.Add(path);
+//            }
+//            else
+//            {
+//                if (Player.Territory.Contains(Player.Position))
+//                {
+//                    direction = PossibleDirections.FirstOrDefault(d =>
+//                        this[Player.Position[d]].Element == Element.ME_TERRITORY);
+//                }
+//                else
+//                {
+//                    var path = Player.Map.Tracert(Player.Territory.First());
+//                    direction = Player.Position.GetDirectionTo(path.First());
+//                    Paths.Add(path);
+//                }
+//            }
 
-            //var PathsToHome = new Dictionary<Direction, Point[]>();
-            //
-            //foreach (var d in PossibleDirections)
-            //{
-            //    var path = GatPathToHomeAfterMove(d);
-            //    if (path != null) PathsToHome.Add(d, path.ToArray());
-            //}
-            //
-            //if (PathsToHome.Count == 0)
-            //{
-            //    var path = GetMinPathToHome(IPlayer.Map, IPlayer.Line);
-            //    if (path != null)
-            //        PathsToHome.Add(IPlayer.Position.GetDirectionTo(path.First()), path.ToArray());
-            //}
-            //
-            //var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
-            //
-            //var direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
+            var PathsToHome = new Dictionary<Direction, Point[]>();
+            
+            foreach (var d in PossibleDirections)
+            {
+                var path = GatPathToHomeAfterMove(d);
+                if (path != null) PathsToHome.Add(d, path.ToArray());
+            }
+            
+            if (PathsToHome.Count == 0)
+            {
+                var path = GetMinPathToHome(Player.Map, Player.Line);
+                if (path != null)
+                    PathsToHome.Add(Player.Position.GetDirectionTo(path.First()), path.ToArray());
+            }
+            
+            var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
+            
+            direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
             
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }

@@ -53,6 +53,7 @@
     <Compile Include="BotInstance\Settings\DataProviderSettingsBase.cs" />
     <Compile Include="BotInstance\Settings\SettingsBase.cs" />
     <Compile Include="BotInstance\Settings\SolverSettingsBase.cs" />
+    <Compile Include="FileSystemConfigurator.cs" />
     <Compile Include="Interfaces\IDataLogger.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
