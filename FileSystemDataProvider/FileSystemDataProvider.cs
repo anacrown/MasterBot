@@ -100,7 +100,7 @@ namespace FileSystemDataProvider
         public void Start()
         {
             if (!File.Exists(Settings.BoardFile))
-                throw new Exception();
+                return; //throw new Exception();
 
             _boards = File.ReadAllLines(Settings.BoardFile).Select(ProcessMessage).ToDictionary(frame => frame.FrameNumber, frame => frame);
 

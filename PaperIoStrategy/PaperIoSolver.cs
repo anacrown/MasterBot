@@ -38,7 +38,7 @@ namespace PaperIoStrategy
         }
 
         protected virtual void OnBoardChanged(Board e) => BoardChanged?.Invoke(this, e);
-        
+
         public bool Answer(string instanceName, DateTime startTime, DataFrame frame, out string response)
         {
             response = string.Empty;
@@ -49,12 +49,17 @@ namespace PaperIoStrategy
                 return false;
             }
 
-            var board = new Board(instanceName, startTime, frame, jPacket.PacketType == JPacketType.StartGame ? _startInfo = jPacket : jPacket.Merge(_startInfo));
+            var board = new Board(instanceName, startTime, frame,
+                jPacket.PacketType == JPacketType.StartGame ? _startInfo = jPacket : jPacket.Merge(_startInfo));
             OnBoardChanged(board);
 
-            foreach (var playerBonuse in board.IPlayer.Bonuses)
+            if (board.Player != null)
             {
-                OnLogDataReceived(new LogRecord(frame, $"({board.JPacket.Params.Tick}) Bonus {playerBonuse.BonusType}; Ticks: {playerBonuse.Ticks}"));
+                foreach (var playerBonus in board.Player?.Bonuses)
+                {
+                    OnLogDataReceived(new LogRecord(frame,
+                        $"({board.JPacket.Params.Tick}) Bonus {playerBonus.BonusType}; Ticks: {playerBonus.Ticks}"));
+                }
             }
 
             if (board.JPacket.PacketType != JPacketType.Tick) return false;

@@ -9,8 +9,8 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
     {
         public bool CanIGoTo(Board board, Direction direction)
         {
-            return board.IPlayer.Direction.Invert() != direction &&
-                   board.IPlayer.Position[direction].OnBoard(board.Size);
+            return board.Player.Direction.Invert() != direction &&
+                   board.Player.Position[direction].OnBoard(board.Size);
         }
 
         public IEnumerable<Direction> Order(Board board, IEnumerable<Direction> directions)

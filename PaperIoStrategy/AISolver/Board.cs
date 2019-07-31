@@ -17,7 +17,7 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Bonus> Bonuses { get; }
 
-        public Player IPlayer => Players.ContainsKey("i") ? Players["i"] : null;
+        public Player Player => Players != null && Players.ContainsKey("i") ? Players["i"] : null;
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
 
@@ -89,9 +89,9 @@ namespace PaperIoStrategy.AISolver
                     this[player.Position].Element = Element.PLAYER;
                 }
 
-                foreach (var point in IPlayer.Territory) this[point].Element = Element.ME_TERRITORY;
-                foreach (var point in IPlayer.Line) this[point].Element = Element.ME_LINE;
-                this[IPlayer.Position].Element = Element.ME;
+                foreach (var point in Player.Territory) this[point].Element = Element.ME_TERRITORY;
+                foreach (var point in Player.Line) this[point].Element = Element.ME_LINE;
+                this[Player.Position].Element = Element.ME;
 
                 Parallel.ForEach(Players.Values, player => { player.Map.Check(player.Position); });
             }
@@ -99,10 +99,10 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Point> GetMinPathToHome(Map map, IEnumerable<Point> line)
         {
-            var entries = IPlayer.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
+            var entries = Player.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
             foreach (var entry in entries)
             {
-                var path = map.Tracert(entries.First().Position).Reverse().ToArray();
+                var path = map.Tracert(entries.First().Position);
                 if (path.Length > 0) return path;
             }
 
@@ -113,12 +113,12 @@ namespace PaperIoStrategy.AISolver
         {
             try
             {
-                var entries = IPlayer.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
+                var entries = Player.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
 
                 foreach (var entry in entries)
                 {
                     Point[] path;
-                    if ((path = map.Tracert(entry.Position).Reverse().ToArray()).Length > 0)
+                    if ((path = map.Tracert(entry.Position)).Length > 0)
                     {
                         if (path.Length == 0) continue;
 
@@ -151,26 +151,26 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Point> GatPathToHomeAfterMove(Direction direction)
         {
-            var checkedPoints = new List<Point> { IPlayer.Position };
-            checkedPoints.AddRange(IPlayer.Line);
+            var checkedPoints = new List<Point> { Player.Position };
+            checkedPoints.AddRange(Player.Line);
 
             var map = new Map(Size, checkedPoints.ToArray());
-            map.Check(IPlayer.Position[direction]);
+            map.Check(Player.Position[direction]);
 
             return GetPathToHome(map, checkedPoints, 1);
         }
 
         public IEnumerable<Direction> PossibleDirections => Point.Neighbor.Keys
-            .Where(d => IPlayer.Direction.Invert() != d && IPlayer.Position[d].OnBoard(Size))
-            .Where(d => IPlayer.Position[d].OnBoard(Size) && this[IPlayer.Position[d]].Element != Element.ME_LINE);
+            .Where(d => Player.Direction.Invert() != d && Player.Position[d].OnBoard(Size))
+            .Where(d => Player.Position[d].OnBoard(Size) && this[Player.Position[d]].Element != Element.ME_LINE);
 
         public int Square(Direction direction, Point[] path)
         {
             var s = 0;
 
-            var points = new List<Point>() { IPlayer.Position, IPlayer.Position[direction] };
+            var points = new List<Point>() { Player.Position, Player.Position[direction] };
 
-            foreach (var point in IPlayer.Line)
+            foreach (var point in Player.Line)
             {
                 if (!points.Contains(point))
                     points.Add(point);
@@ -206,45 +206,68 @@ namespace PaperIoStrategy.AISolver
 
             if (Bonuses.Any())
             {
-                var path = IPlayer.Map.Tracert(Bonuses.First().Position).Reverse().ToArray();
-                direction = IPlayer.Position.GetDirectionTo(path.First());
+                var path = Player.Map.Tracert(Bonuses.First().Position);
+                direction = Player.Position.GetDirectionTo(path.First());
                 Paths.Add(path);
             }
             else
             {
-                if (IPlayer.Territory.Contains(IPlayer.Position))
+                if (Player.Territory.Contains(Player.Position))
                 {
                     direction = PossibleDirections.FirstOrDefault(d =>
-                        this[IPlayer.Position[d]].Element == Element.ME_TERRITORY);
+                        this[Player.Position[d]].Element == Element.ME_TERRITORY);
                 }
                 else
                 {
-                    var path = IPlayer.Map.Tracert(IPlayer.Territory.First()).Reverse().ToArray();
-                    direction = IPlayer.Position.GetDirectionTo(path.First());
+                    var path = Player.Map.Tracert(Player.Territory.First());
+                    direction = Player.Position.GetDirectionTo(path.First());
                     Paths.Add(path);
                 }
             }
 
-//            var PathsToHome = new Dictionary<Direction, Point[]>();
-//
-//            foreach (var d in PossibleDirections)
-//            {
-//                var path = GatPathToHomeAfterMove(d);
-//                if (path != null) PathsToHome.Add(d, path.ToArray());
-//            }
-//
-//            if (PathsToHome.Count == 0)
-//            {
-//                var path = GetMinPathToHome(IPlayer.Map, IPlayer.Line);
-//                if (path != null)
-//                    PathsToHome.Add(IPlayer.Position.GetDirectionTo(path.First()), path.ToArray());
-//            }
-//
-//            var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
-//
-//            var direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
-//
+            //var PathsToHome = new Dictionary<Direction, Point[]>();
+            //
+            //foreach (var d in PossibleDirections)
+            //{
+            //    var path = GatPathToHomeAfterMove(d);
+            //    if (path != null) PathsToHome.Add(d, path.ToArray());
+            //}
+            //
+            //if (PathsToHome.Count == 0)
+            //{
+            //    var path = GetMinPathToHome(IPlayer.Map, IPlayer.Line);
+            //    if (path != null)
+            //        PathsToHome.Add(IPlayer.Position.GetDirectionTo(path.First()), path.ToArray());
+            //}
+            //
+            //var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
+            //
+            //var direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
+            
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }
+    }
+
+    public static class EnumerableExtention
+    {
+        public static T MinSingle<T>(this IEnumerable<T> collection, Func<T, int> selector) => collection.Aggregate((r, x) => selector(r) < selector(x) ? r : x);
+
+        public static IEnumerable<T> Min<T>(this IEnumerable<T> collection, Func<T, int> selector)
+        {
+            var enumerable = collection as T[] ?? collection.ToArray();
+            var min = enumerable.Select(selector).Min();
+            return enumerable.Where(t => selector(t) == min);
+        }
+
+        public static T MaxSingle<T>(this IEnumerable<T> collection, Func<T, int> selector) => collection.Aggregate((r, x) => selector(r) > selector(x) ? r : x);
+
+        public static IEnumerable<T> Max<T>(this IEnumerable<T> collection, Func<T, int> selector)
+        {
+            var enumerable = collection as T[] ?? collection.ToArray();
+            var max = enumerable.Select(selector).Max();
+            return enumerable.Where(t => selector(t) == max);
+        }
+
+
     }
 }

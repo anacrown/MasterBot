@@ -55,7 +55,6 @@ namespace FileSystemDataProvider
             if (!LockerLockSlims.ContainsKey(name))
                 LockerLockSlims.Add(name, new ReaderWriterLockSlim());
             while (LockerLockSlims[name].IsWriteLockHeld) ;
-            OnLogDataReceived(frame.FrameNumber, name, "write is hold");
             LockerLockSlims[name].EnterWriteLock();
             try
             {
@@ -64,7 +63,6 @@ namespace FileSystemDataProvider
                     streamWriter.Write($"[{frame.Time.ToString(Settings.DataFormat)}] ({frame.FrameNumber}): {frame.Board}{Environment.NewLine}");
                     streamWriter.Close();
                 }
-                OnLogDataReceived(frame.FrameNumber, name, "damp saved");
             }
             catch (Exception ex)
             {
@@ -83,8 +81,6 @@ namespace FileSystemDataProvider
             var path = Path.Combine(battleBotInstance, "Response.txt");
             if (!LockerLockSlims.ContainsKey(name))
                 LockerLockSlims.Add(name, new ReaderWriterLockSlim());
-            do
-                ;
             while (LockerLockSlims[name].IsWriteLockHeld);
             LockerLockSlims[name].EnterWriteLock();
             try
@@ -110,10 +106,7 @@ namespace FileSystemDataProvider
             var path = Path.Combine(GetLogDirForBattleBotInstance(startTime, name), "Exception.txt");
             if (!LockerLockSlims.ContainsKey(name))
                 LockerLockSlims.Add(name, new ReaderWriterLockSlim());
-            do
-                ;
             while (LockerLockSlims[name].IsWriteLockHeld);
-            OnLogDataReceived(frame.FrameNumber, name, "write is hold");
             LockerLockSlims[name].EnterWriteLock();
             try
             {
@@ -138,8 +131,7 @@ namespace FileSystemDataProvider
             var path = Path.Combine(GetLogDirForBattleBotInstance(startTime, name), "Dead.txt");
             if (!LockerLockSlims.ContainsKey(name))
                 LockerLockSlims.Add(name, new ReaderWriterLockSlim());
-            while (LockerLockSlims[name].IsWriteLockHeld)
-                OnLogDataReceived(frame.FrameNumber, name, "write is hold");
+            while (LockerLockSlims[name].IsWriteLockHeld) ;
             LockerLockSlims[name].EnterWriteLock();
             try
             {

@@ -18,8 +18,8 @@ namespace PaperIoStrategy.AISolver
             }
 
             for (var i = 0; i < Size.Width; i++)
-            for (var j = 0; j < Size.Height; j++)
-                this[i, j].Position = new Point(i, j);
+                for (var j = 0; j < Size.Height; j++)
+                    this[i, j].Position = new Point(i, j);
         }
 
         public void Check(Point checkPoint)
@@ -39,30 +39,10 @@ namespace PaperIoStrategy.AISolver
             while (pointList.Count > 0);
         }
 
-        public IEnumerable<Point> Tracert(Point point)
-        {
-//            if (fPoint == null || fPoint == CheckPoint) return null;
-//
-//            var point = fPoint;
-//            var points = new List<Point>() { point };
-//        
-//            while (point != null)
-//            {
-//                var cross = point.GetCrossVicinity(Size).ToArray();
-//
-//                var min = cross.Select(t => this[t].Weight).Where(t => t >= 0).Min();
-//                if (min == 0)
-//                {
-//                    if (cross.Contains(CheckPoint)) break;
-//                    return null;
-//                }
-//
-//                points.Add(point = cross.FirstOrDefault(t => this[t].Weight == min));
-//            }
-//
-//            points.Reverse();
-//            return points.ToArray();
+        public Point[] Tracert(Point point) => tracert_forward(point).Reverse().ToArray();
 
+        private IEnumerable<Point> tracert_forward(Point point)
+        {
             var entry = this[point];
 
             while (entry != null && entry.Weight > 0)

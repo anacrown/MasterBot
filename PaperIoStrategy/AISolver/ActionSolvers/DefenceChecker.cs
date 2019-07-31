@@ -9,7 +9,7 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
     {
         public bool CanIGoTo(Board board, Direction direction)
         {
-            var nextPoint = board.IPlayer.Position[direction];
+            var nextPoint = board.Player.Position[direction];
             if (!nextPoint.OnBoard(board.Size) || board[nextPoint].Element == Element.ME_LINE)
                 return false;
             if (board[nextPoint].Element == Element.ME_TERRITORY)
@@ -24,8 +24,8 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
 
         private bool BExistReversPath(Board board, Point point)
         {
-            var checkedPoints = new List<Point> { board.IPlayer.Position };
-            checkedPoints.AddRange(board.IPlayer.Line);
+            var checkedPoints = new List<Point> { board.Player.Position };
+            checkedPoints.AddRange(board.Player.Line);
 
             var map = new Map(board.Size, checkedPoints.ToArray());
             map.Check(point);

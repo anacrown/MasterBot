@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -42,23 +43,35 @@ namespace BotBaseControls
             set => SetValue(FilterRecordsProperty, value);
         }
 
+        private uint _lastTick = 0;
+
         public BotInstanceView()
         {
             InitializeComponent();
 
+            ClearBeforeTickCheckBox.IsChecked = Properties.Settings.Default.ClearLogBeforeTick;
+
             FilterRecords = new ObservableCollection<FilterRecord>();
-            foreach (var recordHeader in Properties.Settings.Default.DisabledFilterRecords)
+            if (Properties.Settings.Default.DisabledFilterRecords != null)
             {
-                var filterRecord = new FilterRecord() {Header = recordHeader, IsEnabled = false};
-                filterRecord.PropertyChanged += FilterRecordOnPropertyChanged;
-                FilterRecords.Add(filterRecord);
+                foreach (var recordHeader in Properties.Settings.Default.DisabledFilterRecords)
+                {
+                    var filterRecord = new FilterRecord() { Header = recordHeader, IsEnabled = false };
+                    filterRecord.PropertyChanged += FilterRecordOnPropertyChanged;
+                    FilterRecords.Add(filterRecord);
+                }
             }
 
         }
 
         private void FilterRecordOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            
+            if (Properties.Settings.Default.DisabledFilterRecords != null)
+                Properties.Settings.Default.DisabledFilterRecords.Clear();
+            else Properties.Settings.Default.DisabledFilterRecords = new StringCollection();
+
+            Properties.Settings.Default.DisabledFilterRecords.AddRange(FilterRecords.Where(t => !t.IsEnabled).Select(t => t.Header).ToArray());
+            Properties.Settings.Default.Save();
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -92,19 +105,37 @@ namespace BotBaseControls
         {
             Dispatcher.InvokeAsync(() =>
             {
+                if (_lastTick != e.DataFrame.FrameNumber)
+                {
+                    LogTextBlock.Clear();
+                    _lastTick = e.DataFrame.FrameNumber;
+                }
+
                 var filterRecord = FilterRecords.FirstOrDefault(t => t.Header == sender?.GetType().Name);
 
                 if (filterRecord == null)
                 {
                     FilterRecords.Add(filterRecord = new FilterRecord { Header = sender.GetType().Name, IsEnabled = true });
+                    filterRecord.PropertyChanged += FilterRecordOnPropertyChanged;
                 }
 
                 if (filterRecord.IsEnabled)
                 {
-                    LogTextBlock.AppendText($"[{sender.GetType().Name}][{e.DataFrame?.FrameNumber}] {e.Message}{Environment.NewLine}");
+                    LogTextBlock.AppendText($"[{sender.GetType().Name}][{e.DataFrame.FrameNumber}] {e.Message}{Environment.NewLine}");
                     LogTextBlock.ScrollToEnd();
                 }
             });
+        }
+
+        private void ClearLogButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            LogTextBlock.Clear();
+        }
+
+        private void ClearBeforeTickCheckBox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.ClearLogBeforeTick = ClearBeforeTickCheckBox.IsChecked == true;
+            Properties.Settings.Default.Save();
         }
     }
 }
