@@ -172,7 +172,7 @@ namespace VisioDataProvider
 
         public void SendResponse(string response)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void MoveToFrame(uint frameNumber)
@@ -183,7 +183,9 @@ namespace VisioDataProvider
             FrameNumber = frameNumber;
             OnTimeChanged(FrameNumber);
 
-            if (CurrentPlayer != 0)
+            if (CurrentPlayer != 0 && 
+                _boards[FrameNumber]["type"].Value<string>() != "start_game" &&
+                _boards[FrameNumber]["type"].Value<string>() != "end_game" )
             {
                 var players = new JObject();
                 foreach (JProperty token in _boards[FrameNumber]["params"]["players"])

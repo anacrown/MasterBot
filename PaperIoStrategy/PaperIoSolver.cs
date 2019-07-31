@@ -56,7 +56,11 @@ namespace PaperIoStrategy
             {
                 foreach (var player in board.Players)
                 {
-                    OnLogDataReceived(new LogRecord(frame, $"{board.JPacket.Params.Tick} {player.Value.Position} {player.Value.JPlayer.Position} {player.Value.Direction}"));
+                    OnLogDataReceived(new LogRecord(frame, $"Player {player.Key}: {player.Value.Position} {player.Value.JPlayer.Position} {player.Value.Direction}"));
+                    foreach (var bonus in player.Value.Bonuses)
+                    {
+                        OnLogDataReceived(new LogRecord(frame, $"Bonus {bonus.BonusType}: {bonus.Ticks} left"));
+                    }
                 }
             }
 

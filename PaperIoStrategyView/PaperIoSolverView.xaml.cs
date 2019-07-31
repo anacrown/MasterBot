@@ -33,9 +33,9 @@ namespace PaperIoStrategyView
         }
 
         private Image[,] _images;
-        private Label[,] _labelsMe;
-        private Label[,] _labelsOpp;
-        private Label[,] _labelsRev;
+        private Label[,] _labels;
+//        private Label[,] _labelsOpp;
+//        private Label[,] _labelsRev;
 
         public PaperIoSolverView()
         {
@@ -63,9 +63,9 @@ namespace PaperIoStrategyView
             if (board.JPacket.PacketType == JPacketType.StartGame)
             {
                 _images = new Image[board.Size.Width, board.Size.Height];
-                _labelsMe = new Label[board.Size.Width, board.Size.Height];
-                _labelsOpp = new Label[board.Size.Width, board.Size.Height];
-                _labelsRev = new Label[board.Size.Width, board.Size.Height];
+                _labels = new Label[board.Size.Width, board.Size.Height];
+//                _labelsOpp = new Label[board.Size.Width, board.Size.Height];
+//                _labelsRev = new Label[board.Size.Width, board.Size.Height];
 
                 var width = board.JPacket.Params.Width;
                 var height = board.JPacket.Params.Width;
@@ -77,42 +77,43 @@ namespace PaperIoStrategyView
                 {
                     for (var j = 0; j < board.Size.Height; ++j)
                     {
-                        _images[i, j] = new Image { Width = width, Height = height, SnapsToDevicePixels = true };
+                        _images[i, j] = new Image
+                        {
+                            Width = width,
+                            Height = height,
+                            SnapsToDevicePixels = true
+                        };
 
 
                         Canvas.Children.Add(_images[i, j]);
                         Canvas.SetLeft(_images[i, j], i * width);
                         Canvas.SetBottom(_images[i, j], j * height);
+                    }
+                }
 
-                        _labelsMe[i, j] = new Label
+                for (var i = 0; i < board.Size.Width; ++i)
+                {
+                    for (var j = 0; j < board.Size.Height; ++j)
+                    {
+                        _labels[i, j] = new Label
                         {
                             FontSize = 10.0,
                             Foreground = Brushes.Green,
                             SnapsToDevicePixels = true
                         };
 
-                        Canvas.Children.Add(_labelsMe[i, j]);
-                        Canvas.SetLeft(_labelsMe[i, j], i * width);
-                        Canvas.SetBottom(_labelsMe[i, j], j * height + 12);
-
-                        _labelsOpp[i, j] = new Label
-                        {
-                            FontSize = 10.0,
-                            Foreground = Brushes.Black,
-                            SnapsToDevicePixels = true
-                        };
-
-                        Canvas.Children.Add(_labelsOpp[i, j]);
-                        Canvas.SetLeft(_labelsOpp[i, j], i * width);
-                        Canvas.SetBottom(_labelsOpp[i, j], j * height + 4);
+                        Canvas.Children.Add(_labels[i, j]);
+                        Canvas.SetLeft(_labels[i, j], i * width);
+                        Canvas.SetBottom(_labels[i, j], j * height + 12);
                     }
                 }
             }
-            
+
             for (var i = 0; i < board.Size.Width; i++)
             {
                 for (var j = 0; j < board.Size.Height; j++)
                 {
+                    _labels[i, j].Content = null;
                     if (board[i, j].Element == Element.NONE && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
                     {
                         _images[i, j].Source = ResourceManager.GetSource("path");
@@ -128,6 +129,14 @@ namespace PaperIoStrategyView
                     //                        if (board.Enemies.Any())
                     //                            _labelsOpp[i, j].Content = board.EnemiesMap(i, j);
                     //                    }
+                }
+            }
+
+            if (board.Players != null && board.Players.Any())
+            {
+                foreach (var player in board.Players)
+                {
+                    _labels[player.Value.Position.X, player.Value.Position.Y].Content = player.Value.JPlayer.Position;
                 }
             }
         }
