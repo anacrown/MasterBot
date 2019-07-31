@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -30,11 +31,20 @@ namespace VisioDataProviderView
             set => SetValue(DataProviderProperty, value);
         }
 
+        public static readonly DependencyProperty PlayersProperty = DependencyProperty.Register(
+            "Players", typeof(ObservableCollection<string>), typeof(VisioDataProviderView), new PropertyMetadata(default(ObservableCollection<string>)));
+
+        public ObservableCollection<string> Players
+        {
+            get => (ObservableCollection<string>) GetValue(PlayersProperty);
+            set => SetValue(PlayersProperty, value);
+        }
+
         public VisioDataProviderView()
         {
             InitializeComponent();
 
-            GotFocus += (sender, args) => FrameSlider.Focus();
+            //GotFocus += (sender, args) => FrameSlider.Focus();
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -59,13 +69,16 @@ namespace VisioDataProviderView
         {
             if (e.PropertyName == nameof(DataProvider.PlayersCount))
             {
-                var players = new List<ComboBoxItem>();
-                for (var i = 1; i <= DataProvider.PlayersCount; i++)
+                Dispatcher.InvokeAsync(() =>
                 {
-                    players.Add(new ComboBoxItem(){Tag = i, Content = $"Player {i}"});
-                }
+                    if (Players == null) Players = new ObservableCollection<string>();
+                    for (var i = 1; i <= DataProvider.PlayersCount; i++)
+                    {
+                        Players.Add($"Player {i}");
+                    }
 
-                PlayerCombobox.ItemsSource = players;
+                    PlayerCombobox.SelectedIndex = 0;
+                });
             }
         }
 
@@ -89,6 +102,11 @@ namespace VisioDataProviderView
         private void FrameSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             DataProvider?.MoveToFrame((uint)e.NewValue);
+        }
+
+        private void PlayerCombobox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DataProvider.CurrentPlayer = PlayerCombobox.SelectedIndex + 1;
         }
     }
 }

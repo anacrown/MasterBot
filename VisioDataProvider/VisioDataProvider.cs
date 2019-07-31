@@ -20,6 +20,7 @@ namespace VisioDataProvider
         private uint _frameNumber;
         private string _name;
         private int _playersCount;
+        private int _currentPlayer;
 
         public VisioDataProviderSettings Settings { get; }
 
@@ -66,7 +67,7 @@ namespace VisioDataProvider
 
         public int FrameCount => _boards?.Count ?? 0;
         public int FrameMaximumKey => _boards?.Count - 1 ?? 0;
-               
+
         public int PlayersCount
         {
             get => _playersCount;
@@ -74,6 +75,17 @@ namespace VisioDataProvider
             {
                 if (value == _playersCount) return;
                 _playersCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int CurrentPlayer
+        {
+            get => _currentPlayer;
+            set
+            {
+                if (value == _currentPlayer) return;
+                _currentPlayer = value;
                 OnPropertyChanged();
             }
         }
@@ -170,6 +182,26 @@ namespace VisioDataProvider
 
             FrameNumber = frameNumber;
             OnTimeChanged(FrameNumber);
+
+            if (CurrentPlayer != 0)
+            {
+                var players = new JObject();
+                foreach (JProperty token in _boards[FrameNumber]["params"]["players"])
+                {
+                    if (token.Name == CurrentPlayer.ToString())
+                    {
+                        var player = new JProperty("i", token.Value);
+                        players.Add(player);
+                    }
+                    else
+                    {
+                        players.Add(token);
+                    }
+                }
+
+                _boards[FrameNumber]["params"]["players"] = players;
+            }
+
             OnDataReceived(new DataFrame(DateTime.Now, _boards[FrameNumber].ToString(), FrameNumber));
 
             //            if (_responses != null)

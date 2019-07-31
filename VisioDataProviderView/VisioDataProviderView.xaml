@@ -23,7 +23,9 @@
         <TextBox x:Name="CurrentFrameTextBox" Grid.Column="1" MinWidth="30" VerticalAlignment="Center" VerticalContentAlignment="Center" 
                  Margin="3" Text="0" TextChanged="CurrentFrameTextBox_OnTextChanged"/>
 
-        <ComboBox x:Name="PlayerCombobox" VerticalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" MinWidth="120" Margin="10 0"/>
+        <ComboBox x:Name="PlayerCombobox" VerticalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" MinWidth="120" Margin="10 0" IsEnabled="True"
+                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:VisioDataProviderView}}, Path=Players}"
+                  SelectionChanged="PlayerCombobox_OnSelectionChanged"/>
 
     </Grid>
 </UserControl>
