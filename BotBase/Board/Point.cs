@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BotBase.Board
@@ -89,6 +90,13 @@ namespace BotBase.Board
         public static Point operator %(Point p1, Point p2) => new Point(p1.X % p2.X, p1.Y % p2.Y);
 
         public static Point operator %(Point p1, int i) => new Point(p1.X % i, p1.Y % i);
+
+        public double Abs()
+        {
+            if (X == 0) return Y;
+            if (Y == 0) return X;
+            return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
+        }
 
         public static bool operator ==(Point p1, Point p2)
         {

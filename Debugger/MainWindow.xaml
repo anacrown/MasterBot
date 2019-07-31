@@ -5,7 +5,7 @@
         xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
         xmlns:botBaseControls="clr-namespace:BotBaseControls;assembly=BotBaseControls"
         xmlns:botBase="clr-namespace:BotBase;assembly=BotBase"
-        Title="CodenjoyBot Debugger" Width="1300" MinHeight="1000"
+        Title="Master Bot Debugger" Width="1800" MinHeight="1000"
         WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded"
         Closing="MainWindow_OnClosing">

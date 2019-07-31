@@ -218,45 +218,45 @@ namespace PaperIoStrategy.AISolver
         {
             Direction direction;
 
-//            if (Bonuses.Any())
-//            {
-//                var path = Player.Map.Tracert(Bonuses.First().Position);
-//                direction = Player.Position.GetDirectionTo(path.First());
-//                Paths.Add(path);
-//            }
-//            else
-//            {
-//                if (Player.Territory.Contains(Player.Position))
-//                {
-//                    direction = PossibleDirections.FirstOrDefault(d =>
-//                        this[Player.Position[d]].Element == Element.ME_TERRITORY);
-//                }
-//                else
-//                {
-//                    var path = Player.Map.Tracert(Player.Territory.First());
-//                    direction = Player.Position.GetDirectionTo(path.First());
-//                    Paths.Add(path);
-//                }
-//            }
+            if (Bonuses.Any())
+            {
+                var path = Player.Map.Tracert(Bonuses.First().Position);
+                direction = Player.Position.GetDirectionTo(path.First());
+                Paths.Add(path);
+            }
+            else
+            {
+                if (Player.Territory.Contains(Player.Position))
+                {
+                    direction = PossibleDirections.FirstOrDefault(d =>
+                        this[Player.Position[d]].Element == Element.ME_TERRITORY);
+                }
+                else
+                {
+                    var path = Player.Map.Tracert(Player.Territory.First());
+                    direction = Player.Position.GetDirectionTo(path.First());
+                    Paths.Add(path);
+                }
+            }
 
-            var PathsToHome = new Dictionary<Direction, Point[]>();
-            
-            foreach (var d in PossibleDirections)
-            {
-                var path = GatPathToHomeAfterMove(d);
-                if (path != null) PathsToHome.Add(d, path.ToArray());
-            }
-            
-            if (PathsToHome.Count == 0)
-            {
-                var path = GetMinPathToHome(Player.Map, Player.Line);
-                if (path != null)
-                    PathsToHome.Add(Player.Position.GetDirectionTo(path.First()), path.ToArray());
-            }
-            
-            var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
-            
-            direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
+//            var PathsToHome = new Dictionary<Direction, Point[]>();
+//            
+//            foreach (var d in PossibleDirections)
+//            {
+//                var path = GatPathToHomeAfterMove(d);
+//                if (path != null) PathsToHome.Add(d, path.ToArray());
+//            }
+//            
+//            if (PathsToHome.Count == 0)
+//            {
+//                var path = GetMinPathToHome(Player.Map, Player.Line);
+//                if (path != null)
+//                    PathsToHome.Add(Player.Position.GetDirectionTo(path.First()), path.ToArray());
+//            }
+//            
+//            var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d])).OrderByDescending(pair => pair.Value);
+//            
+//            direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
             
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }

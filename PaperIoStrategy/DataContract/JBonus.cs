@@ -14,7 +14,7 @@ namespace PaperIoStrategy.DataContract
         public JBonusType BonusType { get; set; }
 
         [JsonProperty(PropertyName = "ticks")]
-        public int Ticks { get; set; }
+        public int Moves { get; set; }
 
         [JsonProperty(PropertyName = "position")]
         [JsonConverter(typeof(JPointConverter))]

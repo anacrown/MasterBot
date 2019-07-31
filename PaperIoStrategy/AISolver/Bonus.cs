@@ -1,4 +1,5 @@
-﻿using BotBase.Board;
+﻿using System;
+using BotBase.Board;
 using PaperIoStrategy.DataContract;
 
 namespace PaperIoStrategy.AISolver
@@ -7,9 +8,24 @@ namespace PaperIoStrategy.AISolver
     {
         public Point Position { get; } = Point.Empty;
 
-        public int Ticks => JBonus.Ticks;
+        public int Moves => JBonus.Moves;
+
+        public int Ticks { get; set; }
 
         public JBonusType BonusType => JBonus.BonusType;
+
+        public int Speed
+        {
+            get
+            {
+                switch (BonusType)
+                {
+                    case JBonusType.SpeedUp: return 6;
+                    case JBonusType.SlowDown: return 3;
+                    default: return 5;
+                }
+            }
+        }
 
         public JBonus JBonus { get; }
 

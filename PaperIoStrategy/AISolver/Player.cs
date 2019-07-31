@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BotBase.Board;
 using PaperIoStrategy.DataContract;
@@ -15,6 +16,8 @@ namespace PaperIoStrategy.AISolver
         public JPlayer JPlayer { get; }
 
         public Direction Direction => JPlayer.Direction;
+
+        public int Speed { get; private set; }
 
         public int Score => JPlayer.Score;
 
@@ -38,7 +41,26 @@ namespace PaperIoStrategy.AISolver
 
             Position = JPlayer.Position.ToGrid(jPacket.Params.Width, Direction);
 
-            Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb));
+            Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb)).ToArray();
+
+            //TODO: переделать!
+            if (Bonuses.Any(t => t.BonusType == JBonusType.SlowDown) &&
+                Bonuses.Any(t => t.BonusType == JBonusType.SpeedUp))
+                Speed = jPacket.Params.Speed;
+            else if (Bonuses.Any(t => t.BonusType == JBonusType.SlowDown))
+                Speed = 3;
+            else if (Bonuses.Any(t => t.BonusType == JBonusType.SpeedUp))
+                Speed = 6;
+            else Speed = jPacket.Params.Speed;
+
+            foreach (var bonus in Bonuses)
+            {
+                var desk = (int) ((JPlayer.Position - jPacket.Params.Width / 2) % jPacket.Params.Width).Abs();
+
+                var rest = Direction == Direction.Up || Direction == Direction.Right ? desk : jPacket.Params.Width - desk;
+
+                bonus.Ticks = (bonus.Moves * jPacket.Params.Width - rest % jPacket.Params.Width) / Speed;
+            }
         }
     }
 }

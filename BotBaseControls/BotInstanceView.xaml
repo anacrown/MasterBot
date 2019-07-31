@@ -17,11 +17,11 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
 
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ContentPresenter Margin="3" Grid.RowSpan="3" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceView}}, Path=BotInstance.Solver}" MinWidth="300" MinHeight="100"/>
+        <ContentPresenter Margin="3" Grid.RowSpan="3" Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:BotInstanceView}}, Path=BotInstance.Solver}" MinWidth="200" MinHeight="100"/>
 
         <ListView Grid.Column="1" Grid.Row="0" Margin="3" VerticalContentAlignment="Top" MinWidth="300" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BotInstanceView}}, Path=FilterRecords}">
             <ListView.Resources>
@@ -35,12 +35,12 @@
                  MinWidth="300" MinHeight="200"/>
 
         <Grid Grid.Column="1" Grid.Row="3">
-            
+
             <StackPanel Orientation="Horizontal">
 
-            <Button x:Name="ClearLogButton" Margin="3" Click="ClearLogButton_OnClick" VerticalAlignment="Center" Content="Clear Log"/>
+                <Button x:Name="ClearLogButton" Margin="3" Click="ClearLogButton_OnClick" VerticalAlignment="Center" Content="Clear Log"/>
 
-            <CheckBox x:Name="ClearBeforeTickCheckBox" Margin="3" Checked="ClearBeforeTickCheckBox_OnChecked" VerticalContentAlignment="Center" Content="Clear before tick"/>
+                <CheckBox x:Name="ClearBeforeTickCheckBox" Margin="3" Checked="ClearBeforeTickCheckBox_OnChecked" VerticalContentAlignment="Center" Content="Clear before tick"/>
 
             </StackPanel>
 

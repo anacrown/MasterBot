@@ -100,7 +100,7 @@ namespace VisioDataProvider
             var visioFile = Settings.VisioFile;
             if (Path.GetExtension(Settings.VisioFile) == ".gz")
             {
-                visioFile = Path.Combine(Path.GetDirectoryName(Settings.VisioFile), Path.GetFileNameWithoutExtension(Settings.VisioFile));
+                visioFile = Path.Combine(FileSystemConfigurator.AppDataDir, Path.GetFileNameWithoutExtension(Settings.VisioFile));
                 using (FileStream sourceStream = new FileStream(Settings.VisioFile, FileMode.OpenOrCreate))
                 using (FileStream targetStream = File.Create(visioFile))
                 using (GZipStream decompressionStream = new GZipStream(sourceStream, CompressionMode.Decompress))
