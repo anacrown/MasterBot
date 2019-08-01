@@ -10,22 +10,9 @@ namespace PaperIoStrategy.AISolver
 
         public int Moves => JBonus.Moves;
 
-        public int Ticks { get; set; }
+        public int Pixels { get; set; }
 
         public JBonusType BonusType => JBonus.BonusType;
-
-        public int Speed
-        {
-            get
-            {
-                switch (BonusType)
-                {
-                    case JBonusType.SpeedUp: return 6;
-                    case JBonusType.SlowDown: return 3;
-                    default: return 5;
-                }
-            }
-        }
 
         public JBonus JBonus { get; }
 

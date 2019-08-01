@@ -26,5 +26,7 @@ namespace PaperIoStrategy.AISolver
             var p = corner / width;
             return !(corner % width).IsEmpty && (direction == Direction.Left || direction == Direction.Down) ? p[direction.Invert()] : p;
         }
+
+        public static Point FromGrid(this Point point, int width) => point * width + width / 2;
     }
 }

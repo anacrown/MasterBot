@@ -34,7 +34,7 @@ namespace PaperIoStrategyView
 
         private Image[,] _images;
         private Label[,] _labels;
-//        private Label[,] _labelsOpp;
+        private Label[,] _labelsOpp;
 //        private Label[,] _labelsRev;
 
         public PaperIoSolverView()
@@ -64,7 +64,7 @@ namespace PaperIoStrategyView
             {
                 _images = new Image[board.Size.Width, board.Size.Height];
                 _labels = new Label[board.Size.Width, board.Size.Height];
-//                _labelsOpp = new Label[board.Size.Width, board.Size.Height];
+                _labelsOpp = new Label[board.Size.Width, board.Size.Height];
 //                _labelsRev = new Label[board.Size.Width, board.Size.Height];
 
                 var width = board.JPacket.Params.Width;
@@ -105,6 +105,17 @@ namespace PaperIoStrategyView
                         Canvas.Children.Add(_labels[i, j]);
                         Canvas.SetLeft(_labels[i, j], i * width);
                         Canvas.SetBottom(_labels[i, j], j * height + 12);
+
+                        _labelsOpp[i, j] = new Label()
+                        {
+                            FontSize = 10.0,
+                            Foreground = Brushes.Black,
+                            SnapsToDevicePixels = true
+                        };
+
+                        Canvas.Children.Add(_labelsOpp[i, j]);
+                        Canvas.SetLeft(_labelsOpp[i, j], i * width);
+                        Canvas.SetBottom(_labelsOpp[i, j], j * height);
                     }
                 }
             }
@@ -114,6 +125,7 @@ namespace PaperIoStrategyView
                 for (var j = 0; j < board.Size.Height; j++)
                 {
                     _labels[i, j].Content = null;
+                    _labelsOpp[i, j].Content = board.Player?.GetTimeForPoint(board[i, j].Pos);
                     if (board[i, j].Element == Element.NONE && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
                     {
                         _images[i, j].Source = ResourceManager.GetSource("path");

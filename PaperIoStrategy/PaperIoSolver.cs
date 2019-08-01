@@ -59,12 +59,12 @@ namespace PaperIoStrategy
                     OnLogDataReceived(new LogRecord(frame, $"Player {player.Key}: {player.Value.Position} V({player.Value.Speed}) {player.Value.JPlayer.Position} {player.Value.Direction}"));
                     foreach (var bonus in player.Value.Bonuses)
                     {
-                        OnLogDataReceived(new LogRecord(frame, $"({board.JPacket.Params.Tick}) Bonus {bonus.BonusType}; Moves: {bonus.Moves}; Ticks: {bonus.Ticks}"));
+                        OnLogDataReceived(new LogRecord(frame, $"({board.JPacket.Params.Tick}) Bonus {bonus.BonusType}; Moves: {bonus.Moves}; Ticks: {bonus.Pixels}"));
                     }
                 }
             }
 
-           if (board.JPacket.PacketType != JPacketType.Tick) return false;
+            if (board.JPacket.PacketType != JPacketType.Tick) return false;
 
             response = board.GetResponse();
 
