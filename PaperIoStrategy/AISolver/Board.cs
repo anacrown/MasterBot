@@ -90,7 +90,9 @@ namespace PaperIoStrategy.AISolver
                             checkedPoints.Add(player.Position[player.Direction.Invert()]);
                     }
 
-                    player.Map = new Map(new Size(jPacket.Params.XCellsCount, jPacket.Params.YCellsCount), checkedPoints.ToArray());
+                    player.Times = new Matrix<uint>(Size);
+
+                    player.Map = new Map(Size, checkedPoints.ToArray());
                 }
 
                 foreach (var player in Enemies)
@@ -107,7 +109,14 @@ namespace PaperIoStrategy.AISolver
                     this[Player.Position].Element = Element.ME;
                 }
 
-                Parallel.ForEach(Players.Values, player => { player.Map.Check(player.Position); });
+                Parallel.ForEach(Players.Values, player =>
+                {
+                    player.Map.Check(player.Position);
+
+                    for (int i = 0; i < Size.Width; i++)
+                    for (int j = 0; j < Size.Height; j++)
+                        player.Times[i, j] = player.GetTimeForPoint(new Point(i, j));
+                });
             }
         }
 
@@ -222,7 +231,7 @@ namespace PaperIoStrategy.AISolver
             {
                 var path = Player.Map.Tracert(Bonuses.First().Position);
                 direction = Player.Position.GetDirectionTo(path.First());
-                Paths.Add(path);
+                //Paths.Add(path);
             }
             else
             {
@@ -235,7 +244,7 @@ namespace PaperIoStrategy.AISolver
                 {
                     var path = Player.Map.Tracert(Player.Territory.First());
                     direction = Player.Position.GetDirectionTo(path.First());
-                    Paths.Add(path);
+                    //Paths.Add(path);
                 }
             }
 

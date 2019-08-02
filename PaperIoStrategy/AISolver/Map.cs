@@ -40,17 +40,54 @@ namespace PaperIoStrategy.AISolver
         }
 
         public Point[] Tracert(Point point) => tracert_forward(point).Reverse().ToArray();
-
+        
         private IEnumerable<Point> tracert_forward(Point point)
         {
             var entry = this[point];
-
+        
             while (entry != null && entry.Weight > 0)
             {
                 yield return entry.Position;
                 entry = entry.Position.GetCrossVicinity(Size).Select(p => this[p]).FirstOrDefault(e => e.Weight == entry.Weight - 1);
             }
         }
+
+//        public IEnumerable<Point> PathAfterMove(Direction direction, Point point)
+//        {
+//            var node = TracertTree(point);
+//
+//            node = node.Child.FirstOrDefault(n => point[direction] == n.Content);
+//
+//            while (node != null)
+//            {
+//                yield return node.Content;
+//
+//                node = node.Child.FirstOrDefault();
+//            }
+//        }
+//
+//        public TreeNode<Point> TracertTree(Point point)
+//        {
+//            var node = new TreeNode<Point>(point);
+//
+//            TracertTree(node);
+//
+//            while (node.Parent.Count > 0) node = node.Parent.First();
+//
+//            return node;
+//        }
+//
+//        private void TracertTree(TreeNode<Point> node)
+//        {
+//            node.Parent.AddRange(node.Content.GetCrossVicinity(Size)
+//                .Where(p => this[p].Weight == this[node.Content].Weight - 1)
+//                .Select(p => new TreeNode<Point>(p) { Child = { node } }));
+//
+//            foreach (var parent in node.Parent.Where(n => this[n.Content].Weight > 0))
+//            {
+//                TracertTree(parent);
+//            }
+//        }
 
         private IEnumerable<Point> check(Point point)
         {
@@ -63,6 +100,19 @@ namespace PaperIoStrategy.AISolver
                 this[index].Weight = this[point].Weight + 1;
             }
             return array;
+        }
+    }
+
+    public class TreeNode<T>
+    {
+        public List<TreeNode<T>> Parent { get; } = new List<TreeNode<T>>();
+        public List<TreeNode<T>> Child { get; } = new List<TreeNode<T>>();
+
+        public T Content { get; set; }
+
+        public TreeNode(T content)
+        {
+            Content = content;
         }
     }
 }

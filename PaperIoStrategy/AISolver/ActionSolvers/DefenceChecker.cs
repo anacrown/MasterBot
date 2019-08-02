@@ -53,8 +53,8 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
 //
 //            return true;
 
-            var path = board.GetPathToHome(map, checkedPoints, 1);
-            if (path == null) return false;
+//            var path = board.GetPathToHome(map, checkedPoints, 1);
+//            if (path == null) return false;
 
             return true;
         }

@@ -30,6 +30,8 @@ namespace PaperIoStrategy.AISolver
 
         public Map Map { get; set; }
 
+        public Matrix<uint> Times { get; set; }
+
         public Player(string name, JPacket jPacket)
         {
             Name = name;
@@ -73,20 +75,20 @@ namespace PaperIoStrategy.AISolver
 
         public uint GetTimeForPoint(Point p)
         {
-            var path = Map.Tracert(p);
+            var path = Map.Tracert(p).ToArray();
             if (path == null || path.Length == 0) return 0;
 
             uint ticks = 0;
-            var bonuses = Bonuses.ToArray();
-            var S = path.Length * _jPacket.Params.Width - (int)(JPlayer.Position - path.First().FromGrid(_jPacket.Params.Width)).Abs();
+            var bonuses = Bonuses.Where(b => b.Pixels > 0).Select(b => (type: b.BonusType, pixels: b.Pixels)).ToArray();
+            var S = (path.Length - 1) * _jPacket.Params.Width + (path.First().FromGrid(_jPacket.Params.Width) - JPlayer.Position).Abs();
             while (S > 0)
             {
                 int s;
-                var v = GetSpeed(bonuses.Where(b => b.Pixels > 0).Select(b => b.BonusType).ToArray());
+                var v = GetSpeed(bonuses.Select(b => b.type).ToArray());
                 if (bonuses.Any())
                 {
-                    var bonus = bonuses.Min(b => b.Pixels).First(); // минимальный остаток пути с текушей скоростью
-                    s = bonus.Pixels;
+                    s = bonuses.Select(b => b.pixels).Min(); // минимальный остаток пути с текушей скоростью
+                    s = Math.Min(S, s);
                 }
                 else
                 {
@@ -100,11 +102,7 @@ namespace PaperIoStrategy.AISolver
 
                 if (bonuses.Any())
                 {
-                    foreach (var b in bonuses)
-                    {
-                        if (b.Pixels > 0)
-                            b.Pixels -= s;
-                    }
+                    bonuses = bonuses.Where(b => b.pixels > 0).Select(b => (type: b.type, pixels: b.pixels - s)).ToArray();
                 }
             }
 
