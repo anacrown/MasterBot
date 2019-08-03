@@ -20,8 +20,18 @@ namespace FileSystemDataProvider
         public FileSystemDataProviderSettings Settings { get; }
 
         public string Title => Settings.BoardFile;
-        public string Name { get; private set; }
-        
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (value == _name) return;
+                _name = value; 
+                OnPropertyChanged();
+            }
+        }
+
         public uint FrameNumber { get; private set; }
         public int FrameCount => _boards?.Count ?? 0;
         public int FrameMaximumKey => _boards?.Count - 1 ?? 0;
@@ -30,6 +40,7 @@ namespace FileSystemDataProvider
         private Dictionary<uint, string> _responses;
         private static readonly Regex Pattern = new Regex(@"^\[([\.\d\s]*)\]\s\((\d*)\):\s(.*)$");
         private readonly Timer _timer = new Timer(800);
+        private string _name;
 
         public FileSystemDataProvider(FileSystemDataProviderSettings settings)
         {

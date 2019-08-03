@@ -14,6 +14,8 @@ namespace PaperIoStrategy.AISolver
 
         public Point Position { get; }
 
+        public bool IsCenterCell { get; }
+
         public JPlayer JPlayer { get; }
 
         public Direction Direction => JPlayer.Direction;
@@ -29,6 +31,8 @@ namespace PaperIoStrategy.AISolver
         public IEnumerable<Bonus> Bonuses { get; }
 
         public Map Map { get; set; }
+
+        public Dictionary<Direction, Map> PossibleMaps { get; set; } = new Dictionary<Direction, Map>();
 
         public Player(string name, JPacket jPacket)
         {
@@ -46,11 +50,13 @@ namespace PaperIoStrategy.AISolver
 
             Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb)).ToArray();
 
-            Speed = GetSpeed(Bonuses.Select(b => b.BonusType).ToArray());
+            Speed = GetSpeed();
+
+            IsCenterCell = (JPlayer.Position - jPacket.Params.Width / 2) % jPacket.Params.Width == 0;
 
             foreach (var bonus in Bonuses)
             {
-                var desk = (int)((JPlayer.Position - jPacket.Params.Width / 2) % jPacket.Params.Width).Abs();
+                var desk = GetShift();
 
                 var rest = Direction == Direction.Up || Direction == Direction.Right ? desk : jPacket.Params.Width - desk;
 
@@ -58,17 +64,37 @@ namespace PaperIoStrategy.AISolver
             }
         }
 
-        private int GetSpeed(params JBonusType[] bonuses)
-        {
-            if (bonuses.Any(t => t == JBonusType.SlowDown) &&
-                bonuses.Any(t => t == JBonusType.SpeedUp))
-                return _jPacket.Params.Speed;
+        public int GetSpeed() => Board.GetSpeed(_jPacket.Params.Speed, _jPacket.Params.Width, Bonuses.Select(t => t.BonusType).ToArray());
 
-            if (bonuses.Any(t => t == JBonusType.SlowDown))
-                return _jPacket.Params.Speed - 2;
-            if (bonuses.Any(t => t == JBonusType.SpeedUp))
-                return _jPacket.Params.Speed + 1;
-            return _jPacket.Params.Speed;
+        public int GetShift() => (int)((JPlayer.Position - _jPacket.Params.Width / 2) % _jPacket.Params.Width).Abs();
+
+        public SpeedSnapshot[] GetSpeedSnapshots()
+        {
+            var pixels = 0;
+            var snapshots = new List<SpeedSnapshot>();
+            if (Bonuses.Any())
+            {
+                var bonuses = Bonuses.Where(b => b.BonusType != JBonusType.Saw).OrderBy(b => b.Pixels).ToArray();
+                for (var i = 0; i < bonuses.Length; i++)
+                {
+                    var bonus = bonuses[i];
+                    snapshots.Add(new SpeedSnapshot()
+                    {
+                        Speed = Board.GetSpeed(_jPacket.Params.Speed, _jPacket.Params.Width, bonuses.Skip(i).Select(b => b.BonusType).ToArray()),
+                        Pixels = bonus.Pixels - pixels
+                    });
+
+                    pixels += bonus.Pixels;
+                }
+            }
+
+            snapshots.Add(new SpeedSnapshot()
+            {
+                Speed = _jPacket.Params.Speed,
+                Pixels = int.MaxValue
+            });
+
+            return snapshots.ToArray();
         }
 
         public uint GetTimeForPoint(Point p)
@@ -82,7 +108,7 @@ namespace PaperIoStrategy.AISolver
             while (S > 0)
             {
                 int s;
-                var v = GetSpeed(bonuses.Where(b => b.Pixels > 0).Select(b => b.BonusType).ToArray());
+                var v = GetSpeed();
                 if (bonuses.Any())
                 {
                     var bonus = bonuses.Min(b => b.Pixels).First(); // минимальный остаток пути с текушей скоростью

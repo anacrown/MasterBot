@@ -91,6 +91,10 @@ namespace BotBase.Board
 
         public static Point operator %(Point p1, int i) => new Point(p1.X % i, p1.Y % i);
 
+        public static bool operator ==(Point p, int i) => p.X == i && p.Y == i;
+
+        public static bool operator !=(Point p, int i) => !(p == i);
+
         public double Abs()
         {
             if (X == 0) return Y;

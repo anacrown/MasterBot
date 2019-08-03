@@ -2,6 +2,7 @@
 using System.Linq;
 using BotBase.Board;
 using PaperIoStrategy.AISolver.ActionSolvers.Interfaces;
+using PaperIoStrategy.DataContract;
 
 namespace PaperIoStrategy.AISolver.ActionSolvers
 {
@@ -28,7 +29,7 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
             checkedPoints.AddRange(board.Player.Line);
 
             var map = new Map(board.Size, checkedPoints.ToArray());
-            map.Check(point);
+            map.Check(point, board.JPacket.Params.Width, board.JPacket.Params.Speed);
 
 //            var entries = board.IPlayer.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
 //
@@ -53,8 +54,8 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
 //
 //            return true;
 
-            var path = board.GetPathToHome(map, checkedPoints, 1);
-            if (path == null) return false;
+//            var path = board.GetPathToHome(map, checkedPoints, 1);
+//            if (path == null) return false;
 
             return true;
         }
