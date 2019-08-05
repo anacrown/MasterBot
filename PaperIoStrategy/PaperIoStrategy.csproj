@@ -46,6 +46,7 @@
     <Compile Include="AISolver\BetterMap.cs" />
     <Compile Include="AISolver\Board.cs" />
     <Compile Include="AISolver\Bonus.cs" />
+    <Compile Include="AISolver\Border.cs" />
     <Compile Include="AISolver\Cell.cs" />
     <Compile Include="AISolver\DirectionExtention.cs" />
     <Compile Include="AISolver\Element.cs" />

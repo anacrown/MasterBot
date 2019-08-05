@@ -22,6 +22,8 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
 
+        public Border Border { get; }
+
         public BetterMap BetterMap { get; }
 
         public List<Point[]> Paths = new List<Point[]>();
@@ -132,6 +134,8 @@ namespace PaperIoStrategy.AISolver
 
             if (Player != null)
             {
+                Border = new Border(Size, Player.Territory.Select(p => this[p]).ToArray());
+
                 var speedSnapshots = Player.GetSpeedSnapshots();
                 speedSnapshots[0].Pixels -= JPacket.Params.Width;
 
@@ -204,7 +208,7 @@ namespace PaperIoStrategy.AISolver
                 var path = map.Tracert(entries.First().Position);
                 if (path.Length > 0) return path;
             }
-        
+
             return null;
         }
 
@@ -213,16 +217,16 @@ namespace PaperIoStrategy.AISolver
             try
             {
                 var entries = Player.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
-        
+
                 foreach (var entry in entries)
                 {
                     Point[] path;
                     if ((path = map.Tracert(entry.Position)).Length > 0)
                     {
                         if (path.Length == 0) continue;
-        
+
                         var eMove = path.Select(EnemiesMap).Min() - 1 - move;
-        
+
                         var c = false;
                         foreach (var p in path)
                         {
@@ -232,19 +236,19 @@ namespace PaperIoStrategy.AISolver
                             break;
                         }
                         if (c) continue;
-        
+
                         if (line.Select(EnemiesMap).Min() - 1 - move <= path.Length)
                             continue;
-        
+
                         return path;
                     }
                 }
             }
             catch (Exception e)
             {
-        
+
             }
-        
+
             return null;
         }
 
@@ -252,7 +256,7 @@ namespace PaperIoStrategy.AISolver
         {
             var checkedPoints = new List<Point> { Player.Position };
             checkedPoints.AddRange(Player.Line);
-        
+
             return GetPathToHome(Player.PossibleMaps[direction], checkedPoints, 1);
         }
 
