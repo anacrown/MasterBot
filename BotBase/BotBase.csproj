@@ -37,7 +37,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppData.cs" />
+    <Compile Include="Utils\AppData.cs" />
     <Compile Include="Board\BoardBase.cs" />
     <Compile Include="Board\CellBase.cs" />
     <Compile Include="Board\Direction.cs" />
@@ -53,18 +53,20 @@
     <Compile Include="BotInstance\Settings\DataProviderSettingsBase.cs" />
     <Compile Include="BotInstance\Settings\SettingsBase.cs" />
     <Compile Include="BotInstance\Settings\SolverSettingsBase.cs" />
-    <Compile Include="FileSystemConfigurator.cs" />
+    <Compile Include="Utils\EnumerableExtention.cs" />
+    <Compile Include="Utils\FileSystemConfigurator.cs" />
     <Compile Include="Interfaces\IDataLogger.cs" />
     <Compile Include="Interfaces\IDataProvider.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\ISolver.cs" />
     <Compile Include="BotInstance\LogRecord.cs" />
-    <Compile Include="PluginLoader.cs" />
+    <Compile Include="Utils\PluginLoader.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

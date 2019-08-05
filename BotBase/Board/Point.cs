@@ -6,14 +6,6 @@ namespace BotBase.Board
 {
     public class Point
     {
-        private static readonly Point[] DiagonalNeighbors = new Point[4]
-        {
-            new Point(-1, -1),
-            new Point(-1, 1),
-            new Point(1, 1),
-            new Point(1, -1)
-        };
-
         public int X { get; set; }
 
         public int Y { get; set; }
@@ -24,9 +16,15 @@ namespace BotBase.Board
             Y = y;
         }
 
+        public Point(Point point)
+        {
+            X = point.X;
+            Y = point.Y;
+        }
+
         public IEnumerable<Point> GetCrossVicinity(Size size)
         {
-            return Neighbor.Values.Select(dp => new
+            return CrossNeighbors.Values.Select(dp => new
             {
                 dp = dp,
                 v = this + dp
@@ -36,12 +34,12 @@ namespace BotBase.Board
         public Direction GetDirectionTo(Point p)
         {
             var dP = p - this;
-            var neighborPair = Neighbor.SingleOrDefault(pair => pair.Value == dP);
+            var neighborPair = CrossNeighbors.SingleOrDefault(pair => pair.Value == dP);
 
             return neighborPair.Key;
         }
 
-        public Point this[Direction direction] => this + Neighbor[direction];
+        public Point this[Direction direction] => this + Neighbors[direction];
 
         public IEnumerable<Point> GetLine(Direction direction, Size size, int deep = -1)
         {
@@ -61,18 +59,38 @@ namespace BotBase.Board
 
         public bool OnBoard(int Size) => OnBoard(new Size(Size, Size));
 
-        public bool IsDiagonal(Point p) => DiagonalNeighbors.Select(t => this + t).Contains(p);
+        public bool IsDiagonal(Point p) => DiagonalNeighbors.Select(t => this + t.Value).Contains(p);
 
         public static Point Empty => new Point(0, 0);
 
         public bool IsEmpty => X == 0 && Y == 0;
 
-        public static Dictionary<Direction, Point> Neighbor { get; set; } = new Dictionary<Direction, Point>()
+        public static Dictionary<Direction, Point> CrossNeighbors { get; set; } = new Dictionary<Direction, Point>()
         {
             {Direction.Up, new Point(0, 1)},
             {Direction.Right, new Point(1, 0)},
             {Direction.Down, new Point(0, -1)},
             {Direction.Left, new Point(-1, 0)}
+        };
+
+        public static Dictionary<Direction, Point> DiagonalNeighbors { get; set; } = new Dictionary<Direction, Point>()
+        {
+            {Direction.UpRight, new Point(1, 1)},
+            {Direction.DownRight, new Point(1, -1)},
+            {Direction.DownLeft, new Point(-1, -1)},
+            {Direction.UpLeft, new Point(-1, 1)}
+        };
+
+        public static Dictionary<Direction, Point> Neighbors { get; set; } = new Dictionary<Direction, Point>()
+        {
+            {Direction.Up, new Point(0, 1)},
+            {Direction.UpRight, new Point(1, 1)},
+            {Direction.Right, new Point(1, 0)},
+            {Direction.DownRight, new Point(1, -1)},
+            {Direction.Down, new Point(0, -1)},
+            {Direction.DownLeft, new Point(-1, -1)},
+            {Direction.Left, new Point(-1, 0)},
+            {Direction.UpLeft, new Point(-1, 1)}
         };
 
         public static Point operator +(Point p1, Point p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
@@ -94,6 +112,22 @@ namespace BotBase.Board
         public static bool operator ==(Point p, int i) => p.X == i && p.Y == i;
 
         public static bool operator !=(Point p, int i) => !(p == i);
+
+        public static bool operator <(Point p, Size size) => p.X < size.Width && p.Y < size.Height;
+
+        public static bool operator >(Point p, Size size) => p.X > size.Width && p.Y > size.Height;
+
+        public static bool operator >=(Point p, Size size) => p.X >= size.Width && p.Y >= size.Height;
+
+        public static bool operator <=(Point p, Size size) => p.X <= size.Width && p.Y <= size.Height;
+
+        public static bool operator <(Point p, int i) => p.X < i && p.Y < i;
+
+        public static bool operator >(Point p, int i) => p.X > i && p.Y > i;
+
+        public static bool operator >=(Point p, int i) => p.X >= i && p.Y >= i;
+
+        public static bool operator <=(Point p, int i) => p.X <= i && p.Y <= i;
 
         public double Abs()
         {
@@ -124,71 +158,9 @@ namespace BotBase.Board
             return !(nullable2.GetValueOrDefault() == nullable1.GetValueOrDefault() & nullable2.HasValue == nullable1.HasValue);
         }
 
-        public static bool operator <(Point p, Size size)
-        {
-            if (p.X < size.Width)
-                return p.Y < size.Height;
-            return false;
-        }
+        public override string ToString() => $"({X}:{Y})";
 
-        public static bool operator >(Point p, Size size)
-        {
-            if (p.X > size.Width)
-                return p.Y > size.Height;
-            return false;
-        }
-
-        public static bool operator >=(Point p, Size size)
-        {
-            if (p.X >= size.Width)
-                return p.Y >= size.Height;
-            return false;
-        }
-
-        public static bool operator <=(Point p, Size size)
-        {
-            if (p.X <= size.Width)
-                return p.Y <= size.Height;
-            return false;
-        }
-
-        public static bool operator <(Point p, int i)
-        {
-            if (p.X < i)
-                return p.Y < i;
-            return false;
-        }
-
-        public static bool operator >(Point p, int i)
-        {
-            if (p.X > i)
-                return p.Y > i;
-            return false;
-        }
-
-        public static bool operator >=(Point p, int i)
-        {
-            if (p.X >= i)
-                return p.Y >= i;
-            return false;
-        }
-
-        public static bool operator <=(Point p, int i)
-        {
-            if (p.X <= i)
-                return p.Y <= i;
-            return false;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("({0}:{1})", X, Y);
-        }
-
-        protected bool Equals(Point other)
-        {
-            return X == other.X && Y == other.Y;
-        }
+        protected bool Equals(Point other) => X == other.X && Y == other.Y;
 
         public override bool Equals(object obj)
         {
@@ -201,9 +173,6 @@ namespace BotBase.Board
             return Equals((Point)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return X * 397 ^ Y;
-        }
+        public override int GetHashCode() => X * 397 ^ Y;
     }
 }

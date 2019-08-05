@@ -1,53 +1,76 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BotBase.Board;
 
 namespace PaperIoStrategy.AISolver
 {
-    public class Border : IEnumerable<Point>
+    public class BorderCell
     {
-        private readonly Size _boardSize;
-        private readonly Cell[] _territory;
-        private IEnumerable<Point> _borderPoints;
+        public Point Position { get; set; }
 
-        public Border(Size boardSize, Cell[] territory)
+        public bool IsBoundary { get; set; }
+        public bool IsTerritory { get; set; }
+        public Direction OutDirection { get; set; }
+    }
+
+    public class Border : Matrix<BorderCell>
+    {
+        private readonly Board _board;
+
+        public Border(Board board, IEnumerable<Point> territory) : base(board.Size)
         {
-            _boardSize = boardSize;
-            _territory = territory;
+            _board = board;
 
-            var startCell = _territory.Min(c => c.X).MinSingle(c => c.Y);
+            foreach (var point in territory) this[point].IsTerritory = true;
 
+            for (var i = 0; i < Size.Width; i++)
+                for (var j = 0; j < Size.Height; j++)
+                {
+                    this[i, j].Position = new Point(i, j);
 
+                    if (!this[i, j].IsTerritory) continue;
+                    
+                    this[i, j].IsBoundary = Point.Neighbors.Keys.Any(d => this[i, j].Position[d].OnBoard(board.Size) && !this[this[i, j].Position[d]].IsTerritory);
+                }
         }
 
-        public IEnumerator<Point> GetEnumerator() => new BorderEnumerator<Point>(_borderPoints.ToArray());
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public class BorderEnumerator<TPoint> : IEnumerator<TPoint>
+        public IEnumerable<Point> GetAlongPath(Point point)
         {
-            private int _current = 0;
-            private readonly TPoint[] _points;
+            if (!this[point].IsBoundary) yield break;
 
-            public BorderEnumerator(TPoint[] points)
+            var p = new Point(point);
+
+            yield return p;
+
+            this[p].OutDirection = Point.Neighbors.Keys.Last(t => !this[point[t]].IsTerritory);
+
+            do
             {
-                _points = points;
-            }
+                var d = this[p].OutDirection;
+                while (!this[p[d]].IsTerritory) d = d.Clockwise();
+                d = d.CounterClockwise();
 
-            public void Dispose() { }
+                var nonePoint = p[d];
+                d = d.Invert().CounterClockwise();
+                while (!this[nonePoint[d]].IsBoundary) d = d.CounterClockwise();
 
-            public bool MoveNext()
-            {
-                _current = (_current + 1) % _points.Length;
-                return true;
-            }
+                var t = nonePoint[d];
+                if (!this[t].IsBoundary) yield break;
+                while (t.OnBoard(_board.Size) && this[t].IsTerritory)
+                {
+                    p = t;
+                    this[p].OutDirection = d.Invert();
+                    yield return p;
 
-            public void Reset() => _current = 0;
-
-            public object Current => _points[_current];
-
-            TPoint IEnumerator<TPoint>.Current => _points[_current];
+                    t = nonePoint[d = d.CounterClockwise()];
+                    if (t == point) yield break;
+                }
+            } while (p != point);
         }
+
+        //        private Point GetNext(Point point)
+        //        {
+        //            
+        //        }
     }
 }

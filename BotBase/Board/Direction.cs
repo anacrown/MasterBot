@@ -19,12 +19,15 @@ namespace BotBase.Board
             switch (direction)
             {
                 case Direction.Up: return Direction.Down;
+                case Direction.UpRight: return Direction.DownLeft;
                 case Direction.Right: return Direction.Left;
+                case Direction.DownRight: return Direction.UpLeft;
                 case Direction.Down: return Direction.Up;
+                case Direction.DownLeft: return Direction.UpRight;
                 case Direction.Left: return Direction.Right;
-                case Direction.Unknown: return Direction.Unknown;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+                case Direction.UpLeft: return Direction.DownRight;
+                case Direction.Unknown:
+                default: return Direction.Unknown;
             }
         }
 

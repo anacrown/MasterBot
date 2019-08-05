@@ -50,11 +50,13 @@
     <Compile Include="AISolver\Cell.cs" />
     <Compile Include="AISolver\DirectionExtention.cs" />
     <Compile Include="AISolver\Element.cs" />
+    <Compile Include="AISolver\EnumerableExtention.cs" />
     <Compile Include="AISolver\Map.cs" />
     <Compile Include="AISolver\MapEntry.cs" />
     <Compile Include="AISolver\Player.cs" />
     <Compile Include="AISolver\PointExtention.cs" />
     <Compile Include="AISolver\SolverCommand.cs" />
+    <Compile Include="AISolver\SpeedSnapshot.cs" />
     <Compile Include="DataContract\JBonus.cs" />
     <Compile Include="DataContract\JBonusType.cs" />
     <Compile Include="DataContract\JBonusTypeConverter.cs" />

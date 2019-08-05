@@ -5,24 +5,6 @@ namespace PaperIoStrategy.AISolver
 {
     public static class DirectionExtention
     {
-        public static Direction Invert(this Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.Up:
-                    return Direction.Down;
-                case Direction.Right:
-                    return Direction.Left;
-                case Direction.Down:
-                    return Direction.Up;
-                case Direction.Left:
-                    return Direction.Right;
-                case Direction.Unknown:
-                    return Direction.Unknown;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-        }
         public static SolverCommand GetCommand(this Direction direction)
         {
             switch (direction)

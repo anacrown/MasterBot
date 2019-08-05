@@ -22,9 +22,9 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
 
-        public Border Border { get; }
-
         public BetterMap BetterMap { get; }
+
+        public Border Border { get; }
 
         public List<Point[]> Paths = new List<Point[]>();
 
@@ -134,7 +134,7 @@ namespace PaperIoStrategy.AISolver
 
             if (Player != null)
             {
-                Border = new Border(Size, Player.Territory.Select(p => this[p]).ToArray());
+                Border = new Border(this, Player.Territory);
 
                 var speedSnapshots = Player.GetSpeedSnapshots();
                 speedSnapshots[0].Pixels -= JPacket.Params.Width;
@@ -260,7 +260,7 @@ namespace PaperIoStrategy.AISolver
             return GetPathToHome(Player.PossibleMaps[direction], checkedPoints, 1);
         }
 
-        public IEnumerable<Direction> PossibleDirections => Player == null ? null : Point.Neighbor.Keys
+        public IEnumerable<Direction> PossibleDirections => Player == null ? null : Point.CrossNeighbors.Keys
             .Where(d => Player.Direction.Invert() != d && Player.Position[d].OnBoard(Size))
             .Where(d => Player.Position[d].OnBoard(Size) && this[Player.Position[d]].Element != Element.ME_LINE);
 
@@ -344,62 +344,35 @@ namespace PaperIoStrategy.AISolver
             //                }
             //            }
 
-            if (Player.Position.GetCrossVicinity(Size).All(t => this[t].Element == Element.ME_TERRITORY))
-                direction = Player.Position.GetDirectionTo(PossibleDirections.Select(d => Player.Position[d])
-                    .OrderBy(p => BetterMap[p].Weight).First());
-            else
-            {
-                var PathsToHome = new Dictionary<Direction, Point[]>();
+//            if (Player.Position.GetCrossVicinity(Size).All(t => this[t].Element == Element.ME_TERRITORY))
+//                direction = Player.Position.GetDirectionTo(PossibleDirections.Select(d => Player.Position[d])
+//                    .OrderBy(p => BetterMap[p].Weight).First());
+//            else
+//            {
+//                var PathsToHome = new Dictionary<Direction, Point[]>();
+//
+//                foreach (var d in PossibleDirections)
+//                {
+//                    var path = GatPathToHomeAfterMove(d);
+//                    if (path != null) PathsToHome.Add(d, path.ToArray());
+//                }
+//
+//                if (PathsToHome.Count == 0)
+//                {
+//                    var path = GetMinPathToHome(Player.Map, Player.Line);
+//                    if (path != null)
+//                        PathsToHome.Add(Player.Position.GetDirectionTo(path.First()), path.ToArray());
+//                }
+//
+//                var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d]))
+//                    .OrderByDescending(pair => pair.Value);
+//
+//                direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
+//            }
 
-                foreach (var d in PossibleDirections)
-                {
-                    var path = GatPathToHomeAfterMove(d);
-                    if (path != null) PathsToHome.Add(d, path.ToArray());
-                }
-
-                if (PathsToHome.Count == 0)
-                {
-                    var path = GetMinPathToHome(Player.Map, Player.Line);
-                    if (path != null)
-                        PathsToHome.Add(Player.Position.GetDirectionTo(path.First()), path.ToArray());
-                }
-
-                var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d]))
-                    .OrderByDescending(pair => pair.Value);
-
-                direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
-            }
+            Paths.Add(Border.GetAlongPath(Border.FirstOrDefault(c => c.IsBoundary)?.Position).ToArray());
 
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }
-    }
-
-    public struct SpeedSnapshot
-    {
-        public int Speed { get; set; }
-        public int Pixels { get; set; }
-    }
-
-    public static class EnumerableExtention
-    {
-        public static T MinSingle<T>(this IEnumerable<T> collection, Func<T, int> selector) => collection.Aggregate((r, x) => selector(r) < selector(x) ? r : x);
-
-        public static IEnumerable<T> Min<T>(this IEnumerable<T> collection, Func<T, int> selector)
-        {
-            var enumerable = collection as T[] ?? collection.ToArray();
-            var min = enumerable.Select(selector).Min();
-            return enumerable.Where(t => selector(t) == min);
-        }
-
-        public static T MaxSingle<T>(this IEnumerable<T> collection, Func<T, int> selector) => collection.Aggregate((r, x) => selector(r) > selector(x) ? r : x);
-
-        public static IEnumerable<T> Max<T>(this IEnumerable<T> collection, Func<T, int> selector)
-        {
-            var enumerable = collection as T[] ?? collection.ToArray();
-            var max = enumerable.Select(selector).Max();
-            return enumerable.Where(t => selector(t) == max);
-        }
-
-
     }
 }
