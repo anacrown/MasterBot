@@ -16,6 +16,8 @@ namespace PaperIoStrategy.AISolver
 
         public JBonus JBonus { get; }
 
+        public Map Map { get; set; }
+
         public Bonus(JBonus jBonus)
         {
             JBonus = jBonus;

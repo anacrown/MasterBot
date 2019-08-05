@@ -125,8 +125,9 @@ namespace PaperIoStrategyView
                 for (var j = 0; j < board.Size.Height; j++)
                 {
                     _labels[i, j].Content = null;
-                    _labelsOpp[i, j].Content = board.Player?.Times[i, j];
-                    if (board[i, j].Element == Element.NONE && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
+//                    _labelsOpp[i, j].Content = board.Player?.Map[i, j].Weight;
+                    _labelsOpp[i, j].Content = board.BetterMap[i, j].Weight;
+                    if (board.Paths != null && board[i, j].Element == Element.NONE && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
                     {
                         _images[i, j].Source = ResourceManager.GetSource("path");
                     }

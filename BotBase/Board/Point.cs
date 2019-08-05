@@ -91,11 +91,15 @@ namespace BotBase.Board
 
         public static Point operator %(Point p1, int i) => new Point(p1.X % i, p1.Y % i);
 
-        public int Abs()
+        public static bool operator ==(Point p, int i) => p.X == i && p.Y == i;
+
+        public static bool operator !=(Point p, int i) => !(p == i);
+
+        public double Abs()
         {
-            if (X == 0) return Math.Abs(Y);
-            if (Y == 0) return Math.Abs(X);
-            return 0;
+            if (X == 0) return Y;
+            if (Y == 0) return X;
+            return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
         }
 
         public static bool operator ==(Point p1, Point p2)

@@ -4,7 +4,12 @@ namespace BotBase.Board
 {
     public enum Direction
     {
-        Up, Right, Down, Left, Unknown
+        Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft, Unknown
+    }
+
+    public enum RoundDirection
+    {
+        Clockwise, CounterClockwise
     }
 
     public static class DirectionExtention
@@ -20,6 +25,68 @@ namespace BotBase.Board
                 case Direction.Unknown: return Direction.Unknown;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
+
+        public static Direction Rotate(this Direction direction, RoundDirection roundDirection)
+        {
+            switch (roundDirection)
+            {
+                case RoundDirection.Clockwise:
+                    return direction.Clockwise();
+                case RoundDirection.CounterClockwise:
+                    return direction.CounterClockwise();
+                default: return Direction.Unknown;
+            }
+        }
+
+        public static Direction Clockwise(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return Direction.UpRight;
+                case Direction.UpRight:
+                    return Direction.Right;
+                case Direction.Right:
+                    return Direction.DownRight;
+                case Direction.DownRight:
+                    return Direction.Down;
+                case Direction.Down:
+                    return Direction.DownLeft;
+                case Direction.DownLeft:
+                    return Direction.Left;
+                case Direction.Left:
+                    return Direction.UpLeft;
+                case Direction.UpLeft:
+                    return Direction.Up;
+                case Direction.Unknown:
+                default: return Direction.Unknown;
+            }
+        }
+
+        public static Direction CounterClockwise(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return Direction.UpLeft;
+                case Direction.UpRight:
+                    return Direction.Up;
+                case Direction.Right:
+                    return Direction.UpRight;
+                case Direction.DownRight:
+                    return Direction.Right;
+                case Direction.Down:
+                    return Direction.DownRight;
+                case Direction.DownLeft:
+                    return Direction.Down;
+                case Direction.Left:
+                    return Direction.DownLeft;
+                case Direction.UpLeft:
+                    return Direction.Left;
+                case Direction.Unknown:
+                default: return Direction.Unknown;
             }
         }
 
