@@ -125,8 +125,8 @@ namespace PaperIoStrategyView
                 for (var j = 0; j < board.Size.Height; j++)
                 {
                     _labels[i, j].Content = null;
-//                    _labelsOpp[i, j].Content = board.Player?.Map[i, j].Weight;
-                    _labelsOpp[i, j].Content = board.BetterMap[i, j].Weight;
+                    _labelsOpp[i, j].Content = board.Player?.Map[i, j].Weight;
+                    _labelsOpp[i, j].Content = board.EnemiesMap(i, j);
                     if (board.Paths != null && board[i, j].Element != Element.ME && board[i, j].Element != Element.PLAYER && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
                     {
                         _images[i, j].Source = ResourceManager.GetSource("path");
@@ -145,13 +145,13 @@ namespace PaperIoStrategyView
                 }
             }
 
-            if (board.Players != null && board.Players.Any())
-            {
-                foreach (var player in board.Players)
-                {
-                    _labels[player.Value.Position.X, player.Value.Position.Y].Content = player.Value.JPlayer.Position;
-                }
-            }
+//            if (board.Players != null && board.Players.Any())
+//            {
+//                foreach (var player in board.Players)
+//                {
+//                    _labels[player.Value.Position.X, player.Value.Position.Y].Content = player.Value.JPlayer.Position;
+//                }
+//            }
         }
     }
 }

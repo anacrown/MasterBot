@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace PaperIoStrategy.AISolver
 {
@@ -24,6 +25,12 @@ namespace PaperIoStrategy.AISolver
             return enumerable.Where(t => selector(t) == max);
         }
 
+        public static IEnumerable<T> While<T>(this IEnumerable<T> collection, Func<T, bool> selector)
+        {
+            foreach (var item in collection)
+                if (selector(item)) yield return item;
+                else yield break;
+        }
 
     }
 }

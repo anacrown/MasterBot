@@ -18,6 +18,8 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Bonus> Bonuses { get; }
 
+        public Direction[] PossibleDirections { get; }
+
         public Player Player => Players != null && Players.ContainsKey("i") ? Players["i"] : null;
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
@@ -33,6 +35,8 @@ namespace PaperIoStrategy.AISolver
         public int EnemiesMap(Point p) => EnemiesMap(p.X, p.Y);
         public int EnemiesMap(int i, int j)
         {
+            if (Enemies == null) return -1;
+
             var min = int.MaxValue;
             var enemyMapEntries = Enemies.Select(enemy => enemy.Map[i, j]).ToArray();
             foreach (var enemyMapEntry in enemyMapEntries)
@@ -134,6 +138,11 @@ namespace PaperIoStrategy.AISolver
 
             if (Player != null)
             {
+                PossibleDirections = Player == null ? null : Point.CrossNeighbors.Keys
+                    .Where(d => Player.Direction.Invert() != d && Player.Position[d].OnBoard(Size))
+                    .Where(d => Player.Position[d].OnBoard(Size) && this[Player.Position[d]].Element != Element.ME_LINE)
+                    .ToArray();
+
                 Border = new Border(this, Player.Territory);
 
                 var speedSnapshots = Player.GetSpeedSnapshots();
@@ -198,181 +207,6 @@ namespace PaperIoStrategy.AISolver
             }
 
             return defaultSpeed;
-        }
-
-        public IEnumerable<Point> GetMinPathToHome(Map map, IEnumerable<Point> line)
-        {
-            var entries = Player.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
-            foreach (var entry in entries)
-            {
-                var path = map.Tracert(entries.First().Position);
-                if (path.Length > 0) return path;
-            }
-
-            return null;
-        }
-
-        public IEnumerable<Point> GetPathToHome(Map map, IEnumerable<Point> line, int move = 0)
-        {
-            try
-            {
-                var entries = Player.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
-
-                foreach (var entry in entries)
-                {
-                    Point[] path;
-                    if ((path = map.Tracert(entry.Position)).Length > 0)
-                    {
-                        if (path.Length == 0) continue;
-
-                        var eMove = path.Select(EnemiesMap).Min() - 1 - move;
-
-                        var c = false;
-                        foreach (var p in path)
-                        {
-                            var iMove = 1 + map[p].Weight;
-                            if (iMove < eMove) continue;
-                            c = true;
-                            break;
-                        }
-                        if (c) continue;
-
-                        if (line.Select(EnemiesMap).Min() - 1 - move <= path.Length)
-                            continue;
-
-                        return path;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            return null;
-        }
-
-        public IEnumerable<Point> GatPathToHomeAfterMove(Direction direction)
-        {
-            var checkedPoints = new List<Point> { Player.Position };
-            checkedPoints.AddRange(Player.Line);
-
-            return GetPathToHome(Player.PossibleMaps[direction], checkedPoints, 1);
-        }
-
-        public IEnumerable<Direction> PossibleDirections => Player == null ? null : Point.CrossNeighbors.Keys
-            .Where(d => Player.Direction.Invert() != d && Player.Position[d].OnBoard(Size))
-            .Where(d => Player.Position[d].OnBoard(Size) && this[Player.Position[d]].Element != Element.ME_LINE);
-
-        public int Square(Direction direction, Point[] path)
-        {
-            var s = 0;
-
-            var points = new List<Point>() { Player.Position, Player.Position[direction] };
-
-            foreach (var point in Player.Line)
-            {
-                if (!points.Contains(point))
-                    points.Add(point);
-            }
-
-            foreach (var point in path)
-            {
-                if (!points.Contains(point))
-                    points.Add(point);
-            }
-
-            var allX = points.Select(p => p.X).ToArray();
-            var minX = allX.Min();
-            var maxX = allX.Max();
-
-            for (var i = minX; i <= maxX; i++)
-            {
-                var x = i;
-                var pairY = points
-                    .Where(p => p.X == x)
-                    .Select(p => p.Y)
-                    .ToArray();
-
-                s += pairY.Max() - pairY.Min() + 1;
-            }
-
-            return s;
-        }
-
-        Point[] GetPathToHomeAfterMove(Direction direction)
-        {
-            var reversePoint = Player.Territory.MinSingle(EnemiesMap);
-
-            if (EnemiesMap(Player.Position[direction]) <= Player.PossibleMaps[direction][reversePoint].Weight)
-                return null;
-
-            if (Player.Line.Any(p => EnemiesMap(p) <= Player.PossibleMaps[direction][reversePoint].Weight))
-                return null;
-
-            var path = Player.PossibleMaps[direction].Tracert(reversePoint);
-
-            if (path.Any(p => EnemiesMap(p) <= Player.PossibleMaps[direction][reversePoint].Weight))
-                return null;
-
-            return path;
-        }
-
-        public string GetResponse()
-        {
-            Direction direction = Direction.Unknown;
-
-            //
-            //            if (Bonuses.Any())
-            //            {
-            //                var path = Player.Map.Tracert(Bonuses.First().Position);
-            //                direction = Player.Position.GetDirectionTo(path.First());
-            //                Paths.Add(path);
-            //            }
-            //            else
-            //            {
-            //                if (Player.Territory.Contains(Player.Position))
-            //                {
-            //                    direction = PossibleDirections.FirstOrDefault(d =>
-            //                        this[Player.Position[d]].Element == Element.ME_TERRITORY);
-            //                }
-            //                else
-            //                {
-            //                    var path = Player.Map.Tracert(Player.Territory.First());
-            //                    direction = Player.Position.GetDirectionTo(path.First());
-            //                    Paths.Add(path);
-            //                }
-            //            }
-
-//            if (Player.Position.GetCrossVicinity(Size).All(t => this[t].Element == Element.ME_TERRITORY))
-//                direction = Player.Position.GetDirectionTo(PossibleDirections.Select(d => Player.Position[d])
-//                    .OrderBy(p => BetterMap[p].Weight).First());
-//            else
-//            {
-//                var PathsToHome = new Dictionary<Direction, Point[]>();
-//
-//                foreach (var d in PossibleDirections)
-//                {
-//                    var path = GatPathToHomeAfterMove(d);
-//                    if (path != null) PathsToHome.Add(d, path.ToArray());
-//                }
-//
-//                if (PathsToHome.Count == 0)
-//                {
-//                    var path = GetMinPathToHome(Player.Map, Player.Line);
-//                    if (path != null)
-//                        PathsToHome.Add(Player.Position.GetDirectionTo(path.First()), path.ToArray());
-//                }
-//
-//                var squares = PathsToHome.Keys.ToDictionary(d => d, d => Square(d, PathsToHome[d]))
-//                    .OrderByDescending(pair => pair.Value);
-//
-//                direction = !squares.Any() ? PossibleDirections.First() : squares.First().Key;
-//            }
-
-            Paths.Add(Border.GetAlongPath(Border.FirstOrDefault(c => c.IsBoundary)?.Position).ToArray());
-
-            return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }
     }
 }

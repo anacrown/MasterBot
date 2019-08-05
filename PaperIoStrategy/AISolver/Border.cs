@@ -10,7 +10,7 @@ namespace PaperIoStrategy.AISolver
 
         public bool IsBoundary { get; set; }
         public bool IsTerritory { get; set; }
-        public Direction OutDirection { get; set; }
+        public Direction[] OutDirections { get; set; }
     }
 
     public class Border : Matrix<BorderCell>
@@ -30,47 +30,48 @@ namespace PaperIoStrategy.AISolver
 
                     if (!this[i, j].IsTerritory) continue;
                     
-                    this[i, j].IsBoundary = Point.Neighbors.Keys.Any(d => this[i, j].Position[d].OnBoard(board.Size) && !this[this[i, j].Position[d]].IsTerritory);
+                    this[i, j].OutDirections = (from d in Point.CrossNeighbors.Keys
+                                                let p = this[i, j].Position[d]
+                                                where p.OnBoard(Size) && !this[p].IsTerritory
+                                                select d).ToArray();
+
+
+                    this[i, j].IsBoundary = this[i, j].OutDirections.Length > 0;
                 }
         }
 
-        public IEnumerable<Point> GetAlongPath(Point point)
-        {
-            if (!this[point].IsBoundary) yield break;
-
-            var p = new Point(point);
-
-            yield return p;
-
-            this[p].OutDirection = Point.Neighbors.Keys.Last(t => !this[point[t]].IsTerritory);
-
-            do
-            {
-                var d = this[p].OutDirection;
-                while (!this[p[d]].IsTerritory) d = d.Clockwise();
-                d = d.CounterClockwise();
-
-                var nonePoint = p[d];
-                d = d.Invert().CounterClockwise();
-                while (!this[nonePoint[d]].IsBoundary) d = d.CounterClockwise();
-
-                var t = nonePoint[d];
-                if (!this[t].IsBoundary) yield break;
-                while (t.OnBoard(_board.Size) && this[t].IsTerritory)
-                {
-                    p = t;
-                    this[p].OutDirection = d.Invert();
-                    yield return p;
-
-                    t = nonePoint[d = d.CounterClockwise()];
-                    if (t == point) yield break;
-                }
-            } while (p != point);
-        }
-
-        //        private Point GetNext(Point point)
+        //        public IEnumerable<Point> GetAlongPath(Point point)
         //        {
-        //            
+        //            if (!this[point].IsBoundary) yield break;
+        //
+        //            var p = new Point(point);
+        //
+        //            yield return p;
+        //
+        //            this[p].OutDirection = Point.Neighbors.Keys.Last(t => !this[point[t]].IsTerritory);
+        //
+        //            do
+        //            {
+        //                var d = this[p].OutDirection;
+        //                while (!this[p[d]].IsTerritory) d = d.Clockwise();
+        //                d = d.CounterClockwise();
+        //
+        //                var nonePoint = p[d];
+        //                d = d.Invert().CounterClockwise();
+        //                while (!this[nonePoint[d]].IsBoundary) d = d.CounterClockwise();
+        //
+        //                var t = nonePoint[d];
+        //                if (!this[t].IsBoundary) yield break;
+        //                while (t.OnBoard(_board.Size) && this[t].IsTerritory)
+        //                {
+        //                    p = t;
+        //                    this[p].OutDirection = d.Invert();
+        //                    yield return p;
+        //
+        //                    t = nonePoint[d = d.CounterClockwise()];
+        //                    if (t == point) yield break;
+        //                }
+        //            } while (p != point);
         //        }
     }
 }

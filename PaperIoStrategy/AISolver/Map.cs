@@ -23,6 +23,29 @@ namespace PaperIoStrategy.AISolver
                     this[i, j].Position = new Point(i, j);
         }
 
+        public int GetTimeForMove(int cellCount, int width, params SpeedSnapshot[] speedSnapshots)
+        {
+            var time = 0;
+            var currentSnapshotIndex = 0;
+            var speedSnapshot = speedSnapshots.First();
+
+            var ticks = width / speedSnapshot.Speed;
+
+            for (var i = 0; i < cellCount; i++)
+            {
+                time += ticks;
+                speedSnapshot.Pixels -= width;
+
+                if (speedSnapshot.Pixels <= 0)
+                {
+                    speedSnapshot = speedSnapshots[++currentSnapshotIndex];
+                    ticks = width / speedSnapshot.Speed;
+                }
+            }
+
+            return time;
+        }
+
         internal void Check(Point checkPoint, int width, int startWeight, params SpeedSnapshot[] speedSnapshots)
         {
             this[CheckPoint = checkPoint].Weight = startWeight;

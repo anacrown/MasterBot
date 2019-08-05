@@ -34,7 +34,7 @@ namespace BotBase.Board
         public Direction GetDirectionTo(Point p)
         {
             var dP = p - this;
-            var neighborPair = CrossNeighbors.SingleOrDefault(pair => pair.Value == dP);
+            var neighborPair = Neighbors.SingleOrDefault(pair => pair.Value == dP);
 
             return neighborPair.Key;
         }

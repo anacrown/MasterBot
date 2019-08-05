@@ -37,6 +37,7 @@ namespace BotBase.Board
             {
                 case RoundDirection.Clockwise:
                     return direction.Clockwise();
+
                 case RoundDirection.CounterClockwise:
                     return direction.CounterClockwise();
                 default: return Direction.Unknown;
@@ -66,6 +67,14 @@ namespace BotBase.Board
                 case Direction.Unknown:
                 default: return Direction.Unknown;
             }
+        }
+
+        public static Direction Clockwise(this Direction direction, int count)
+        {
+            var d = direction;
+            for (var i = 0; i < count; i++) d = d.Clockwise();
+
+            return d;
         }
 
         public static Direction CounterClockwise(this Direction direction)
