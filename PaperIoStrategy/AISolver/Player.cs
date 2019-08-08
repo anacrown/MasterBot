@@ -9,7 +9,7 @@ namespace PaperIoStrategy.AISolver
 {
     public class Player
     {
-        private readonly JPacket _jPacket;
+        public Board Board { get; }
         public string Name { get; }
 
         public Point Position { get; }
@@ -32,41 +32,50 @@ namespace PaperIoStrategy.AISolver
 
         public Map Map { get; set; }
 
+        public BBox BBox { get; set; }
+
+        public Border Border { get; set; }
+
         public Dictionary<Direction, Map> PossibleMaps { get; set; } = new Dictionary<Direction, Map>();
 
-        public Player(string name, JPacket jPacket)
+        public Player(Board board, string name)
         {
+            Board = board;
             Name = name;
 
-            _jPacket = jPacket;
+            JPlayer = Board.JPacket.Params.Players[name];
 
-            JPlayer = jPacket.Params.Players[name];
+            Line = JPlayer.Lines.Select(point => point.ToGrid(Board.JPacket.Params.Width));
 
-            Line = JPlayer.Lines.Select(point => point.ToGrid(jPacket.Params.Width));
+            Territory = JPlayer.Territory.Select(point => point.ToGrid(Board.JPacket.Params.Width)).ToArray();
 
-            Territory = JPlayer.Territory.Select(point => point.ToGrid(jPacket.Params.Width));
-
-            Position = JPlayer.Position.ToGrid(jPacket.Params.Width, Direction);
+            Position = JPlayer.Position.ToGrid(Board.JPacket.Params.Width, Direction);
 
             Bonuses = JPlayer.Bonuses.Select(jb => new Bonus(jb)).ToArray();
 
             Speed = GetSpeed();
 
-            IsCenterCell = (JPlayer.Position - jPacket.Params.Width / 2) % jPacket.Params.Width == 0;
+            IsCenterCell = (JPlayer.Position - Board.JPacket.Params.Width / 2) % Board.JPacket.Params.Width == 0;
 
             foreach (var bonus in Bonuses)
             {
                 var desk = GetShift();
 
-                var rest = Direction == Direction.Up || Direction == Direction.Right ? desk : jPacket.Params.Width - desk;
+                var rest = Direction == Direction.Up || Direction == Direction.Right ? desk : Board.JPacket.Params.Width - desk;
 
-                bonus.Pixels = (bonus.Moves * jPacket.Params.Width - rest % jPacket.Params.Width);
+                bonus.Pixels = (bonus.Moves * Board.JPacket.Params.Width - rest % Board.JPacket.Params.Width);
             }
+
+            var xs = Territory.Select(t => t.X).ToArray();
+            var ys = Territory.Select(t => t.Y).ToArray();
+            BBox = new BBox(Board, Territory, new Point(xs.Min(), ys.Min()), new Point(xs.Max(), ys.Max()));
+
+            Border = new Border(Board, Territory);
         }
 
-        public int GetSpeed() => Board.GetSpeed(_jPacket.Params.Speed, _jPacket.Params.Width, Bonuses.Select(t => t.BonusType).ToArray());
+        public int GetSpeed() => Board.GetSpeed(Board.JPacket.Params.Speed, Board.JPacket.Params.Width, Bonuses.Select(t => t.BonusType).ToArray());
 
-        public int GetShift() => (int)((JPlayer.Position - _jPacket.Params.Width / 2) % _jPacket.Params.Width).Abs();
+        public int GetShift() => (int)((JPlayer.Position - Board.JPacket.Params.Width / 2) % Board.JPacket.Params.Width).Abs();
 
         public SpeedSnapshot[] GetSpeedSnapshots()
         {
@@ -80,7 +89,7 @@ namespace PaperIoStrategy.AISolver
                     var bonus = bonuses[i];
                     snapshots.Add(new SpeedSnapshot()
                     {
-                        Speed = Board.GetSpeed(_jPacket.Params.Speed, _jPacket.Params.Width, bonuses.Skip(i).Select(b => b.BonusType).ToArray()),
+                        Speed = Board.GetSpeed(Board.JPacket.Params.Speed, Board.JPacket.Params.Width, bonuses.Skip(i).Select(b => b.BonusType).ToArray()),
                         Pixels = bonus.Pixels - pixels
                     });
 
@@ -90,7 +99,7 @@ namespace PaperIoStrategy.AISolver
 
             snapshots.Add(new SpeedSnapshot()
             {
-                Speed = _jPacket.Params.Speed,
+                Speed = Board.JPacket.Params.Speed,
                 Pixels = int.MaxValue
             });
 
@@ -104,7 +113,7 @@ namespace PaperIoStrategy.AISolver
 
             uint ticks = 0;
             var bonuses = Bonuses.ToArray();
-            var S = path.Length * _jPacket.Params.Width - (int)(JPlayer.Position - path.First().FromGrid(_jPacket.Params.Width)).Abs();
+            var S = path.Length * Board.JPacket.Params.Width - (int)(JPlayer.Position - path.First().FromGrid(Board.JPacket.Params.Width)).Abs();
             while (S > 0)
             {
                 int s;

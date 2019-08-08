@@ -209,8 +209,10 @@ namespace BotBase
         private void DataLoggerOnLogDataReceived(object sender, LogRecord logRecord) => OnLogDataReceived(sender, logRecord);
         private void DataProviderOnDataReceived(object sender, DataFrame frame)
         {
+#if !DEBUG
             try
             {
+#endif
                 DataLogger.Log(Name, StartTime, frame);
 
                 if (Solver.Answer(Name, StartTime, frame, out var response))
@@ -222,15 +224,15 @@ namespace BotBase
                     DataLogger.Log(Name, StartTime, frame.Time, frame.FrameNumber, response);
                 }
                 else OnLogDataReceived(Solver, new LogRecord(frame, $"Response skip"));
+#if !DEBUG
             }
             catch (Exception e)
             {
                 DataLogger.Log(Name, StartTime, frame, e);
-#if DEBUG
                 //throw new Exception("Exception in DataProviderOnDataReceived", e);
                 OnLogDataReceived(this, new LogRecord(frame, $"EXCEPTION: {e}"));
-#endif
             }
+#endif
         }
 
         public event EventHandler<IDataProvider> Started;

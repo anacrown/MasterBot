@@ -53,10 +53,12 @@
     <Compile Include="AISolver\EnumerableExtention.cs" />
     <Compile Include="AISolver\Map.cs" />
     <Compile Include="AISolver\MapEntry.cs" />
+    <Compile Include="AISolver\PathManager.cs" />
     <Compile Include="AISolver\Player.cs" />
     <Compile Include="AISolver\PointExtention.cs" />
     <Compile Include="AISolver\SolverCommand.cs" />
     <Compile Include="AISolver\SpeedSnapshot.cs" />
+    <Compile Include="BBox.cs" />
     <Compile Include="DataContract\JBonus.cs" />
     <Compile Include="DataContract\JBonusType.cs" />
     <Compile Include="DataContract\JBonusTypeConverter.cs" />

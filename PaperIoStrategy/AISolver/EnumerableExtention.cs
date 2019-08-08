@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace PaperIoStrategy.AISolver
 {
@@ -28,8 +27,11 @@ namespace PaperIoStrategy.AISolver
         public static IEnumerable<T> While<T>(this IEnumerable<T> collection, Func<T, bool> selector)
         {
             foreach (var item in collection)
-                if (selector(item)) yield return item;
-                else yield break;
+            {
+                yield return item;
+                if (!selector(item))
+                    yield break;
+            }
         }
 
     }

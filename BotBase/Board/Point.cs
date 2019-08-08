@@ -129,11 +129,11 @@ namespace BotBase.Board
 
         public static bool operator <=(Point p, int i) => p.X <= i && p.Y <= i;
 
-        public double Abs()
+        public int Abs()
         {
-            if (X == 0) return Y;
-            if (Y == 0) return X;
-            return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
+            if (X == 0) return Y > 0 ? Y : -Y;
+            if (Y == 0) return X > 0 ? X : -X;
+            return -1;
         }
 
         public static bool operator ==(Point p1, Point p2)

@@ -83,40 +83,45 @@ namespace PaperIoStrategy
 
             //            board.Paths.Add(board.Border.Where(c => c.IsBoundary).Select(c => c.Position).ToArray());
 
-            var point = board.Player.Position[Direction.Up];
+            //            var point1 = board.Min(c => c.X).MinSingle(c => c.Y).Pos;
+            ////            var point2 = board.Max(c => c.X).MaxSingle(c => c.Y).Pos;
+            //
+            //            var bBox = new BBox(board.Size, point1, point2);
 
-            board.Paths.Add(CreatePath(board, point, Direction.Up, 1, 1).ToArray());
+            board.Player.BBox.Expand(Direction.UpRight);
+            board.Player.BBox.Expand(Direction.UpRight);
+            board.Player.BBox.Expand(Direction.UpRight);
+            board.Player.BBox.Expand(Direction.DownLeft);
+            board.Player.BBox.Expand(Direction.DownLeft);
+            board.Player.BBox.Expand(Direction.DownLeft);
+
+            var m = new PathManager(board, board.Player);
+            var paths = m.GetPaths().ToArray();
 
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }
 
-//        public IEnumerable<int[]> GetPathLengths(Board board, Point point, Direction direction, RoundDirection roundDirection)
+//        public IEnumerable<Point> CreatePaths(Point point, Board board, Border border, BBox bBox)
 //        {
-//            var points = point.GetLine(direction, board.Size).While(p => board.EnemiesMap(p) > board.Player.Map[p].Weight);
+//            foreach (var d in border[point].OutDirections)
+//            {
+//                var direction = d;
+//                var corner = point;
+//                foreach (var p in point.GetLine(direction, board.Size).While(p => !bBox[p].IsCorner && !border[p].IsBoundary))
+//                {
+//                    yield return corner = p;
+//                }
 //
+//                if (border[corner].IsBoundary) yield break;
 //
-//            return new[] {points};
+//                direction = direction.Clockwise(2);
+//
+//                foreach (var VARIABLE in corner.GetLine(direction, board.Size))
+//                {
+//                    
+//                }
+//            }
 //        }
-
-        public IEnumerable<Point> CreatePath(Board board, Point point, Direction direction, params int[] lengths)
-        {
-            var corner = point;
-            if (lengths.Length == 0)
-            {
-                foreach (var p in point.GetLine(direction.Clockwise(2), board.Size))
-                {
-                    yield return p;
-                    if (board[p].Element == Element.ME_TERRITORY) yield break;
-                }
-            }
-
-            
-            foreach (var p in point.GetLine(direction, board.Size, lengths.First()))
-                yield return corner = p;
-
-            foreach (var p2 in CreatePath(board, corner, direction.Clockwise(2), lengths.Skip(1).ToArray()))
-                yield return p2;
-        }
 
 
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);

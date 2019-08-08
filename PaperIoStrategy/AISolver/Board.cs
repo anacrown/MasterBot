@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Threading.Tasks;
@@ -24,30 +25,30 @@ namespace PaperIoStrategy.AISolver
 
         public IEnumerable<Player> Enemies => Players?.Where(pair => pair.Key != "i").Select(pair => pair.Value);
 
-        public BetterMap BetterMap { get; }
+        public Matrix<int> EnemiesMap;
 
-        public Border Border { get; }
+        public BetterMap BetterMap { get; }
 
         public List<Point[]> Paths = new List<Point[]>();
 
         //---------------------
-
-        public int EnemiesMap(Point p) => EnemiesMap(p.X, p.Y);
-        public int EnemiesMap(int i, int j)
-        {
-            if (Enemies == null) return -1;
-
-            var min = int.MaxValue;
-            var enemyMapEntries = Enemies.Select(enemy => enemy.Map[i, j]).ToArray();
-            foreach (var enemyMapEntry in enemyMapEntries)
-            {
-                if (enemyMapEntry == null) continue;
-                if (min > enemyMapEntry.Weight)
-                    min = enemyMapEntry.Weight;
-            }
-
-            return min;
-        }
+//
+//        public int EnemiesMap(Point p) => EnemiesMap(p.X, p.Y);
+//        public int EnemiesMap(int i, int j)
+//        {
+//            if (Enemies == null) return -1;
+//
+//            var min = int.MaxValue;
+//            var enemyMapEntries = Enemies.Select(enemy => enemy.Map[i, j]).ToArray();
+//            foreach (var enemyMapEntry in enemyMapEntries)
+//            {
+//                if (enemyMapEntry == null) continue;
+//                if (min > enemyMapEntry.Weight)
+//                    min = enemyMapEntry.Weight;
+//            }
+//
+//            return min;
+//        }
 
         //---------------------
 
@@ -99,7 +100,7 @@ namespace PaperIoStrategy.AISolver
                 });
             }
 
-            if ((Players = JPacket.Params.Players?.ToDictionary(jp => jp.Key, jp => new Player(jp.Key, JPacket))) != null)
+            if ((Players = JPacket.Params.Players?.ToDictionary(jp => jp.Key, jp => new Player(this, jp.Key))) != null)
             {
                 foreach (var player in Players.Values)
                 {
@@ -129,11 +130,17 @@ namespace PaperIoStrategy.AISolver
 
                 Parallel.ForEach(Players.Values, player =>
                 {
-                    var startWeight = player.IsCenterCell ? 0 : (player.GetShift()) / player.GetSpeed();
+//                    var startWeight = player.IsCenterCell ? 0 : (JPacket.Params.Width - player.GetShift()) / player.GetSpeed();
+                    var startWeight = player.IsCenterCell ? 0 : (player.JPlayer.Position - player.Position[player.Direction].FromGrid(jPacket.Params.Width)).Abs() / player.GetSpeed();
 
                     player.Map.Check(player.IsCenterCell ? player.Position : player.Position[player.Direction],
                         jPacket.Params.Width, startWeight, player.GetSpeedSnapshots());
                 });
+
+                EnemiesMap = new Matrix<int>(Size);
+                for (var i = 0; i < Size.Width; i++)
+                for (var j = 0; j < Size.Height; j++)
+                    EnemiesMap[i, j] = Enemies.Select(e => e.Map[i, j].Weight).Min();
             }
 
             if (Player != null)
@@ -142,9 +149,7 @@ namespace PaperIoStrategy.AISolver
                     .Where(d => Player.Direction.Invert() != d && Player.Position[d].OnBoard(Size))
                     .Where(d => Player.Position[d].OnBoard(Size) && this[Player.Position[d]].Element != Element.ME_LINE)
                     .ToArray();
-
-                Border = new Border(this, Player.Territory);
-
+                
                 var speedSnapshots = Player.GetSpeedSnapshots();
                 speedSnapshots[0].Pixels -= JPacket.Params.Width;
 
