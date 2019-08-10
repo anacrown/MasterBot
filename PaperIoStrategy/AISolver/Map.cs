@@ -8,10 +8,14 @@ namespace PaperIoStrategy.AISolver
 {
     public class Map : Matrix<MapEntry>
     {
+        public Board Board { get; }
+        public Player Player { get; }
         public Point CheckPoint { get; private set; }
 
-        public Map(Size size, params Point[] checkedPoints) : base(size)
+        public Map(Board board, Player player = null, params Point[] checkedPoints) : base(board.Size)
         {
+            Board = board;
+            Player = player;
             foreach (var checkedPoint in checkedPoints)
             {
                 this[checkedPoint].Weight = -1;
@@ -94,10 +98,19 @@ namespace PaperIoStrategy.AISolver
         {
             var entry = this[point];
 
+            var iAntiCycle = Math.Max(Board.JPacket.Params.XCellsCount, Board.JPacket.Params.YCellsCount);
             while (entry != null && entry.Weight > 0)
             {
+                iAntiCycle--;
+                if (iAntiCycle < 0) yield break;
+
                 yield return entry.Position;
-                entry = entry.Position.GetCrossVicinity(Size).Select(p => this[p]).MinSingle(e => e.Weight);
+                var array = entry.Position.GetCrossVicinity(Size).Select(p => this[p]).Where(e => e.Weight != -1 && e.Weight < entry.Weight).ToArray();
+                if (!array.Any()) yield break;
+
+                entry = Player != null
+                    ? array.Min(e => e.Weight).MaxSingle(e => Player.BetterMap[e.Position].Weight)
+                    : array.MinSingle(e => e.Weight);
             }
         }
     }

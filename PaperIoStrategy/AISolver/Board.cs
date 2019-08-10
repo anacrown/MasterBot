@@ -27,30 +27,7 @@ namespace PaperIoStrategy.AISolver
 
         public Matrix<int> EnemiesMap;
 
-        public BetterMap BetterMap { get; }
-
         public List<Point[]> Paths = new List<Point[]>();
-
-        //---------------------
-//
-//        public int EnemiesMap(Point p) => EnemiesMap(p.X, p.Y);
-//        public int EnemiesMap(int i, int j)
-//        {
-//            if (Enemies == null) return -1;
-//
-//            var min = int.MaxValue;
-//            var enemyMapEntries = Enemies.Select(enemy => enemy.Map[i, j]).ToArray();
-//            foreach (var enemyMapEntry in enemyMapEntries)
-//            {
-//                if (enemyMapEntry == null) continue;
-//                if (min > enemyMapEntry.Weight)
-//                    min = enemyMapEntry.Weight;
-//            }
-//
-//            return min;
-//        }
-
-        //---------------------
 
         public Board(string instanceName, DateTime startTime, DataFrame frame, JPacket jPacket) : base(instanceName, startTime, frame)
         {
@@ -86,7 +63,7 @@ namespace PaperIoStrategy.AISolver
                         default: break;
                     }
 
-                    bonus.Map = new Map(Size);
+                    bonus.Map = new Map(this);
                 }
 
                 Parallel.ForEach(Bonuses, bonus =>
@@ -95,7 +72,7 @@ namespace PaperIoStrategy.AISolver
                     bonus.Map.Check(bonus.Position, jPacket.Params.Width, 0, new SpeedSnapshot()
                     {
                         Speed = speed,
-                        Pixels = Int32.MaxValue
+                        Pixels = int.MaxValue
                     });
                 });
             }
@@ -111,7 +88,7 @@ namespace PaperIoStrategy.AISolver
                         if (backPoint.OnBoard(Size)) checkedPoints.Add(backPoint);
                     }
 
-                    player.Map = new Map(Size, checkedPoints.ToArray());
+                    player.Map = new Map(this, player, checkedPoints.ToArray());
                 }
 
                 foreach (var player in Enemies)
@@ -130,11 +107,12 @@ namespace PaperIoStrategy.AISolver
 
                 Parallel.ForEach(Players.Values, player =>
                 {
-//                    var startWeight = player.IsCenterCell ? 0 : (JPacket.Params.Width - player.GetShift()) / player.GetSpeed();
                     var startWeight = player.IsCenterCell ? 0 : (player.JPlayer.Position - player.Position[player.Direction].FromGrid(jPacket.Params.Width)).Abs() / player.GetSpeed();
 
                     player.Map.Check(player.IsCenterCell ? player.Position : player.Position[player.Direction],
                         jPacket.Params.Width, startWeight, player.GetSpeedSnapshots());
+
+                    player.BetterMap = new BetterMap(this, player);
                 });
 
                 EnemiesMap = new Matrix<int>(Size);
@@ -170,14 +148,12 @@ namespace PaperIoStrategy.AISolver
                                 checkedPoints.Add(backPoint);
                         }
 
-                        Player.PossibleMaps.Add(direction, new Map(Size, checkedPoints.Count == 0 ? new Point[] { } : checkedPoints.ToArray()));
+                        Player.PossibleMaps.Add(direction, new Map(this, Player, checkedPoints.Count == 0 ? new Point[] { } : checkedPoints.ToArray()));
 
                         Player.PossibleMaps[direction].Check(position, JPacket.Params.Width, 0, speedSnapshots);
                     }
                 }
             }
-
-            BetterMap = new BetterMap(this);
         }
 
         private static readonly Dictionary<JBonusType, int> BonusSpeed = new Dictionary<JBonusType, int>();

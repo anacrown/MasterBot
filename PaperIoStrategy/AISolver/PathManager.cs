@@ -14,31 +14,31 @@ namespace PaperIoStrategy.AISolver
 
         public PathManager(Board board, Player player)
         {
-            Board = board;
-            Player = player;
-
-            Lane = new List<IEnumerable<Point>>();
-
-            var rays = new List<IEnumerable<Point>>();
-
-            foreach (var borderCell in player.Border.Where(b => b.IsBoundary))
-            {
-                foreach (var outDirection in borderCell.OutDirections)
-                {
-                    IEnumerable<Point> line;
-                    if (Player.BBox[borderCell.Position].IsBound)
-                        line = borderCell.Position.GetLine(outDirection, Player.Board.Size).While(p => !player.BBox[p].IsCorner && !player.Border[p].IsBoundary).ToArray();
-                    else
-                        line = borderCell.Position.GetLine(outDirection, Player.Board.Size).While(p => !player.BBox[p].IsBound && !player.Border[p].IsBoundary).ToArray();
-
-                    if (player.BBox[line.Last()].IsBound)
-                        rays.Add(line);
-                    else
-                        Lane.Add(line);
-                }
-            }
-
-            Rays = rays.ToLookup(line => line.Last(), line => line);
+//            Board = board;
+//            Player = player;
+//
+//            Lane = new List<IEnumerable<Point>>();
+//
+//            var rays = new List<IEnumerable<Point>>();
+//
+//            foreach (var borderCell in player.Border.Where(b => b.IsBoundary))
+//            {
+//                foreach (var outDirection in borderCell.OutDirections)
+//                {
+//                    IEnumerable<Point> line;
+//                    if (Player.BBox[borderCell.Position].IsBound)
+//                        line = borderCell.Position.GetLine(outDirection, Player.Board.Size).While(p => !player.BBox[p].IsCorner && !player.Border[p].IsBoundary).ToArray();
+//                    else
+//                        line = borderCell.Position.GetLine(outDirection, Player.Board.Size).While(p => !player.BBox[p].IsBound && !player.Border[p].IsBoundary).ToArray();
+//
+//                    if (player.BBox[line.Last()].IsBound)
+//                        rays.Add(line);
+//                    else
+//                        Lane.Add(line);
+//                }
+//            }
+//
+//            Rays = rays.ToLookup(line => line.Last(), line => line);
         }
 
 //        public IEnumerable<Point[]> GetPaths()

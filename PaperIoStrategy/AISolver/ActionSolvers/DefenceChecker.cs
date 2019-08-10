@@ -28,8 +28,8 @@ namespace PaperIoStrategy.AISolver.ActionSolvers
             var checkedPoints = new List<Point> { board.Player.Position };
             checkedPoints.AddRange(board.Player.Line);
 
-            var map = new Map(board.Size, checkedPoints.ToArray());
-            map.Check(point, board.JPacket.Params.Width, board.JPacket.Params.Speed);
+//            var map = new Map(board, checkedPoints.ToArray());
+//            map.Check(point, board.JPacket.Params.Width, board.JPacket.Params.Speed);
 
 //            var entries = board.IPlayer.Territory.Select(p => map[p]).OrderBy(e => e.Weight);
 //

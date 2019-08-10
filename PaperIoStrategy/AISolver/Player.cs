@@ -32,7 +32,7 @@ namespace PaperIoStrategy.AISolver
 
         public Map Map { get; set; }
 
-        public BBox BBox { get; set; }
+        public BetterMap BetterMap { get; set; }
 
         public Border Border { get; set; }
 
@@ -66,9 +66,9 @@ namespace PaperIoStrategy.AISolver
                 bonus.Pixels = (bonus.Moves * Board.JPacket.Params.Width - rest % Board.JPacket.Params.Width);
             }
 
-            var xs = Territory.Select(t => t.X).ToArray();
-            var ys = Territory.Select(t => t.Y).ToArray();
-            BBox = new BBox(Board, Territory, new Point(xs.Min(), ys.Min()), new Point(xs.Max(), ys.Max()));
+//            var xs = Territory.Select(t => t.X).ToArray();
+//            var ys = Territory.Select(t => t.Y).ToArray();
+//            BBox = new BBox(Board, Territory, new Point(xs.Min(), ys.Min()), new Point(xs.Max(), ys.Max()));
 
             Border = new Border(Board, Territory);
         }

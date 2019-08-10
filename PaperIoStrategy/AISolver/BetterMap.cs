@@ -8,30 +8,31 @@ namespace PaperIoStrategy.AISolver
     public class BetterMap : Matrix<MapEntry>
     {
         public Board Board { get; }
+        public Player Player { get; }
 
-        public BetterMap(Board board) : base(board.Size)
+        public BetterMap(Board board, Player player) : base(board.Size)
         {
             Board = board;
+            Player = player;
 
             for (var i = 0; i < Size.Width; i++)
-            for (var j = 0; j < Size.Height; j++)
-                this[i, j].Position = new Point(i, j);
+                for (var j = 0; j < Size.Height; j++)
+                    this[i, j].Position = new Point(i, j);
 
-            if (board.Enemies == null || !board.Enemies.Any()) return;
-
-            foreach (var point in board.Enemies.SelectMany(e => e.Territory))
-            {
-                Check(point);
-
-                foreach (var e in this) e.BChecked = e.BWatched = false;
-            }
+            if (Player.Line.Any())
+                Check(Player.Line.ToArray());
         }
 
-        void Check(Point checkPoint)
+        void Check(Point[] checkPoints)
         {
-            this[checkPoint].Weight += 10;
+            foreach (var checkPoint in checkPoints)
+            {
+                this[checkPoint].BChecked = true;
+                this[checkPoint].BWatched = true;
+                this[checkPoint].Weight = 0;
+            }
 
-            var pointList = new List<Point>() { checkPoint };
+            var pointList = checkPoints.ToList();
 
             do
             {
@@ -52,7 +53,7 @@ namespace PaperIoStrategy.AISolver
             foreach (var index in array)
             {
                 this[index].BWatched = true;
-                this[index].Weight = Math.Max(this[index].Weight, this[point].Weight - 1);
+                this[index].Weight += this[point].Weight + 1;
             }
 
             return array;

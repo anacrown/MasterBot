@@ -124,13 +124,13 @@ namespace PaperIoStrategyView
             {
                 for (var j = 0; j < board.Size.Height; j++)
                 {
-                    _labels[i, j].Content = null;
+                    _labels[i, j].Content = board?.Player?.BetterMap?[i, j].Weight;
                     _labelsOpp[i, j].Content = board.Player?.Map[i, j].Weight;
 
-                    if (board.Player != null && board.Player.BBox[i, j].IsBound)
-                    {
-                        _labels[i, j].Content = board.Player.BBox[i, j].Direction;
-                    } 
+//                    if (board.Player != null && board.Player.BBox[i, j].IsBound)
+//                    {
+//                        _labels[i, j].Content = board.Player.BBox[i, j].Direction;
+//                    } 
 
                     if (board.Paths != null && board[i, j].Element != Element.ME && board[i, j].Element != Element.PLAYER && board.Paths.Any(path => path.Contains(board[i, j].Pos)))
                     {
