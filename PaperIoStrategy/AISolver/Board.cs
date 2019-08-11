@@ -112,13 +112,14 @@ namespace PaperIoStrategy.AISolver
                     player.Map.Check(player.IsCenterCell ? player.Position : player.Position[player.Direction],
                         jPacket.Params.Width, startWeight, player.GetSpeedSnapshots());
 
-                    player.BetterMap = new BetterMap(this, player);
+                    player.LineMap = new Map2(this, player);
+                    player.LineMap.Check(player.Line.ToArray());
                 });
 
                 EnemiesMap = new Matrix<int>(Size);
                 for (var i = 0; i < Size.Width; i++)
                 for (var j = 0; j < Size.Height; j++)
-                    EnemiesMap[i, j] = Enemies.Select(e => e.Map[i, j].Weight).Min();
+                    EnemiesMap[i, j] = Enemies.Any() ? Enemies.Select(e => e.Map[i, j].Weight).Min() : int.MaxValue;
             }
 
             if (Player != null)

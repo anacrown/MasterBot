@@ -16,6 +16,7 @@ namespace PaperIoStrategy.AISolver
         {
             Board = board;
             Player = player;
+
             foreach (var checkedPoint in checkedPoints)
             {
                 this[checkedPoint].Weight = -1;
@@ -99,17 +100,18 @@ namespace PaperIoStrategy.AISolver
             var entry = this[point];
 
             var iAntiCycle = Math.Max(Board.JPacket.Params.XCellsCount, Board.JPacket.Params.YCellsCount);
-            while (entry != null && entry.Weight > 0)
+            while (entry != null && entry.Weight >= 0)
             {
                 iAntiCycle--;
                 if (iAntiCycle < 0) yield break;
 
-                yield return entry.Position;
                 var array = entry.Position.GetCrossVicinity(Size).Select(p => this[p]).Where(e => e.Weight != -1 && e.Weight < entry.Weight).ToArray();
                 if (!array.Any()) yield break;
 
+                yield return entry.Position;
+
                 entry = Player != null
-                    ? array.Min(e => e.Weight).MaxSingle(e => Player.BetterMap[e.Position].Weight)
+                    ? array.Min(e => e.Weight).MaxSingle(e => Player.LineMap[e.Position].Weight)
                     : array.MinSingle(e => e.Weight);
             }
         }

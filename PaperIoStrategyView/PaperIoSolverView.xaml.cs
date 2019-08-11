@@ -124,8 +124,8 @@ namespace PaperIoStrategyView
             {
                 for (var j = 0; j < board.Size.Height; j++)
                 {
-                    _labels[i, j].Content = board?.Player?.BetterMap?[i, j].Weight;
-                    _labelsOpp[i, j].Content = board.Player?.Map[i, j].Weight;
+                    _labels[i, j].Content = board.Player?.Map[i, j].Weight;
+                    _labelsOpp[i, j].Content = board.EnemiesMap?[i, j];
 
 //                    if (board.Player != null && board.Player.BBox[i, j].IsBound)
 //                    {

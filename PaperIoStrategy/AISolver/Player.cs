@@ -32,7 +32,7 @@ namespace PaperIoStrategy.AISolver
 
         public Map Map { get; set; }
 
-        public BetterMap BetterMap { get; set; }
+        public Map2 LineMap { get; set; }
 
         public Border Border { get; set; }
 

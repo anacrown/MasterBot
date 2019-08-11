@@ -43,7 +43,6 @@
     <Compile Include="AISolver\ActionSolvers\DefenceChecker.cs" />
     <Compile Include="AISolver\ActionSolvers\Interfaces\IActionComponentBase.cs" />
     <Compile Include="AISolver\ActionSolvers\PaperIoChecker.cs" />
-    <Compile Include="AISolver\BetterMap.cs" />
     <Compile Include="AISolver\Board.cs" />
     <Compile Include="AISolver\Bonus.cs" />
     <Compile Include="AISolver\Border.cs" />
@@ -52,6 +51,7 @@
     <Compile Include="AISolver\Element.cs" />
     <Compile Include="AISolver\EnumerableExtention.cs" />
     <Compile Include="AISolver\Map.cs" />
+    <Compile Include="AISolver\Map2.cs" />
     <Compile Include="AISolver\MapEntry.cs" />
     <Compile Include="AISolver\PathManager.cs" />
     <Compile Include="AISolver\Player.cs" />

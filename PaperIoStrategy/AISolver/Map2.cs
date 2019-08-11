@@ -5,25 +5,28 @@ using BotBase.Board;
 
 namespace PaperIoStrategy.AISolver
 {
-    public class BetterMap : Matrix<MapEntry>
+    public class Map2 : Matrix<MapEntry>
     {
         public Board Board { get; }
         public Player Player { get; }
 
-        public BetterMap(Board board, Player player) : base(board.Size)
+        public Map2(Board board, Player player, params Point[] checkedPoints) : base(board.Size)
         {
             Board = board;
             Player = player;
 
+            foreach (var checkedPoint in checkedPoints)
+            {
+                this[checkedPoint].Weight = -1;
+                this[checkedPoint].BChecked = true;
+            }
+
             for (var i = 0; i < Size.Width; i++)
                 for (var j = 0; j < Size.Height; j++)
                     this[i, j].Position = new Point(i, j);
-
-            if (Player.Line.Any())
-                Check(Player.Line.ToArray());
         }
 
-        void Check(Point[] checkPoints)
+        public void Check(params Point[] checkPoints)
         {
             foreach (var checkPoint in checkPoints)
             {
@@ -57,6 +60,28 @@ namespace PaperIoStrategy.AISolver
             }
 
             return array;
+        }
+
+        public Point[] Tracert(Point point) => tracert_forward(point).Reverse().ToArray();
+
+        private IEnumerable<Point> tracert_forward(Point point)
+        {
+            var entry = this[point];
+
+            var iAntiCycle = Math.Max(Board.JPacket.Params.XCellsCount, Board.JPacket.Params.YCellsCount);
+            while (entry != null && entry.Weight > 0)
+            {
+                iAntiCycle--;
+                if (iAntiCycle < 0) yield break;
+
+                yield return entry.Position;
+                var array = entry.Position.GetCrossVicinity(Size).Select(p => this[p]).Where(e => e.Weight != -1 && e.Weight < entry.Weight).ToArray();
+                if (!array.Any()) yield break;
+
+                entry = Player != null
+                    ? array.Min(e => e.Weight).MaxSingle(e => Player.LineMap[e.Position].Weight)
+                    : array.MinSingle(e => e.Weight);
+            }
         }
     }
 }
