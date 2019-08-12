@@ -84,7 +84,8 @@ namespace PaperIoStrategy
                 if (board.Player.Border[board.Player.Position].IsBoundary)
                 {
                     direction = board.Player.Border[board.Player.Position].OutDirections.First();
-                } else if (board.Player.Border[board.Player.Position].IsTerritory)
+                }
+                else if (board.Player.Border[board.Player.Position].IsTerritory)
                 {
                     var backPoint = board.Player.Direction != Direction.Unknown
                         ? board.Player.Position[board.Player.Direction.Invert()]
@@ -109,15 +110,14 @@ namespace PaperIoStrategy
                         .Where(e => e.IsBoundary && e.Position != backPoint)
                         .MinSingle(e => board.Player.Map[e.Position].Weight).Position;
 
-                    board.Paths.Add(new[]{targetPoint});
+                    board.Paths.Add(new[] { targetPoint });
 
-                    var entries = board.Player.PossibleMaps
-                        .Select(pair => (direction: pair.Key, score: GetScoreForMove(board, board.Player, targetPoint, pair.Key)));
+                    var entries = board.Player.PossibleMaps.Select(pair => GetScoreForMove(board, board.Player, targetPoint, pair.Key));
 
-                    var entry = entries.MaxSingle(e => e.score);
+                    var entry = entries.Where(e => board.JPacket.Params.Tick + e.Ticks < 1500 && e.Score < 50).MaxSingle(e => e.Score);
 
-                    if (entry.score > 0)
-                        direction = entry.direction;
+                    if (entry.Score > 0)
+                        direction = entry.Direction;
                     else
                     {
                         var path = board.Player.Map.Tracert(targetPoint);
@@ -131,42 +131,43 @@ namespace PaperIoStrategy
             return $"{{\"command\": \"{direction.GetCommand()}\"}}";
         }
 
-        public int GetScoreForMove(Board board, Player player, Point targetPoint, Direction direction)
+        public ScoreEntry GetScoreForMove(Board board, Player player, Point targetPoint, Direction direction)
         {
-            var map = player.PossibleMaps[direction];
-            var path = map.Tracert(targetPoint);
+            var entry = new ScoreEntry { Score = 0, Direction = direction };
 
-            if (path.Length == 0) return 0;
+            var map = player.PossibleMaps[direction];
+            entry.Path = map.Tracert(targetPoint);
+
+            if (entry.Path.Length == 0) return entry;
 
             var territoryMap = new Map2(board, board.Player, board.Player.Border.Select(e => e.Position).Where(p => !board.Player.Border[p].IsTerritory).ToArray());
             territoryMap.Check(board.Player.Line.First());
 
             var path2 = territoryMap.Tracert(targetPoint);
-           
-            var contur = path.ToList();
+
+            var contur = entry.Path.ToList();
             contur.AddRange(board.Player.Line);
             contur.Add(board.Player.Position);
 
-            var ticksToTarget = player.Map[player.Position[direction]].Weight + map[targetPoint].Weight;
-            if (contur.Any(p => board.EnemiesMap[p] < ticksToTarget))
-                return 0;
+            entry.Ticks = player.Map[player.Position[direction]].Weight + map[targetPoint].Weight;
+            if (contur.Any(p => board.EnemiesMap[p] < entry.Ticks))
+                return entry;
 
             contur.AddRange(path2);
 
             var s = GetPointsForPath(contur.ToArray()).ToArray();
 
-            var score = 0;
             foreach (var point in s)
             {
                 switch (board[point].Element)
                 {
                     case Element.ME_TERRITORY: continue;
-                    case Element.NONE: score += 1; break;
-                    case Element.PLAYER_TERRITORY: score += 5; break;
+                    case Element.NONE: entry.Score += 1; break;
+                    case Element.PLAYER_TERRITORY: entry.Score += 5; break;
                 }
             }
 
-            return score;
+            return entry;
         }
 
         public IEnumerable<Point> GetPointsForPath(Point[] path)
@@ -185,23 +186,31 @@ namespace PaperIoStrategy
                 {
                     yield return new Point(x, y);
                 }
-//
-//                if (xs.Length % 2 != 0)
-//                    yield break;
-//
-//                for (var i = 0; i < xs.Length / 2; i++)
-//                {
-//                    var x0 = i * 2;
-//                    var x1 = x0 + 1;
-//
-//                    for (var x = xs[x0]; x <= xs[x1]; x++)
-//                    {
-//                        yield return new Point(x, y);
-//                    }
-//                }
+                //
+                //                if (xs.Length % 2 != 0)
+                //                    yield break;
+                //
+                //                for (var i = 0; i < xs.Length / 2; i++)
+                //                {
+                //                    var x0 = i * 2;
+                //                    var x1 = x0 + 1;
+                //
+                //                    for (var x = xs[x0]; x <= xs[x1]; x++)
+                //                    {
+                //                        yield return new Point(x, y);
+                //                    }
+                //                }
             }
         }
 
         protected virtual void OnLogDataReceived(LogRecord e) => LogDataReceived?.Invoke(this, e);
+    }
+
+    public struct ScoreEntry
+    {
+        public Point[] Path { get; set; }
+        public int Score { get; set; }
+        public int Ticks { get; set; }
+        public Direction Direction { get; set; }
     }
 }

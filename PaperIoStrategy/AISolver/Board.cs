@@ -88,6 +88,11 @@ namespace PaperIoStrategy.AISolver
                         if (backPoint.OnBoard(Size)) checkedPoints.Add(backPoint);
                     }
 
+                    if (player.Name == "i")
+                    {
+                        checkedPoints.AddRange(Enemies.Select(e => e.Position).SelectMany(p => p.GetCrossVicinity(Size)));
+                    }
+
                     player.Map = new Map(this, player, checkedPoints.ToArray());
                 }
 

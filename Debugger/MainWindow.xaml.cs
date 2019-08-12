@@ -103,6 +103,11 @@ namespace Debugger
             foreach (var codenjoyBotInstance in BotInstances)
                 codenjoyBotInstance?.Stop();
 
+            SaveSettings();
+        }
+
+        private void SaveSettings()
+        {
             using (var fs = new FileStream(Path.Combine(FileSystemConfigurator.AppDataDir, "Settings.bin"), FileMode.Create))
             {
                 var formatter = new BinaryFormatter();

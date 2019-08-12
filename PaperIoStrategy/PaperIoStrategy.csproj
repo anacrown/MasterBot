@@ -40,9 +40,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AISolver\ActionSolvers\DefenceChecker.cs" />
-    <Compile Include="AISolver\ActionSolvers\Interfaces\IActionComponentBase.cs" />
-    <Compile Include="AISolver\ActionSolvers\PaperIoChecker.cs" />
     <Compile Include="AISolver\Board.cs" />
     <Compile Include="AISolver\Bonus.cs" />
     <Compile Include="AISolver\Border.cs" />
