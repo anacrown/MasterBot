@@ -114,6 +114,14 @@
       <Project>{a06d9f81-7e4f-42b4-b152-1a7bb44d1e8a}</Project>
       <Name>FileSystemDataProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LoderunnerStategy\LoderunnerStategy.csproj">
+      <Project>{7b9a234a-4888-469c-aa5f-f038c32e28a5}</Project>
+      <Name>LoderunnerStategy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LoderunnerStrategyView\LoderunnerStrategyView.csproj">
+      <Project>{218c5dff-1624-4053-a844-cf6be3f9cb8f}</Project>
+      <Name>LoderunnerStrategyView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PaperIoStrategyView\PaperIoStrategyView.csproj">
       <Project>{967ce9e1-4fa9-4135-b93f-a3dd6ac2aff0}</Project>
       <Name>PaperIoStrategyView</Name>

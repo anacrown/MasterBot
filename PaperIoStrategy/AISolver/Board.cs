@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Threading.Tasks;
 using BotBase;
 using BotBase.Board;

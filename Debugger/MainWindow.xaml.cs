@@ -8,9 +8,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using BotBase;
-using Debugger.Properties;
-using FileSystemDataProvider;
-using PaperIoStrategy;
 
 namespace Debugger
 {

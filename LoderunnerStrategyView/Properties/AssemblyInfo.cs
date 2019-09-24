@@ -5,11 +5,11 @@ using System.Windows;
 // Общие сведения об этой сборке предоставляются следующим набором
 // атрибутов. Отредактируйте значения этих атрибутов, чтобы изменить
 // связанные с этой сборкой.
-[assembly: AssemblyTitle("VisioDataProviderView")]
+[assembly: AssemblyTitle("LoderunnerStrategyView")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("VisioDataProviderView")]
+[assembly: AssemblyProduct("LoderunnerStrategyView")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

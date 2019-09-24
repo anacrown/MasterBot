@@ -1,5 +1,4 @@
-﻿using System;
-using BotBase.Board;
+﻿using BotBase.Board;
 using PaperIoStrategy.DataContract;
 
 namespace PaperIoStrategy.AISolver

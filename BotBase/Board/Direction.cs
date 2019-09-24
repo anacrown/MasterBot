@@ -1,5 +1,3 @@
-using System;
-
 namespace BotBase.Board
 {
     public enum Direction

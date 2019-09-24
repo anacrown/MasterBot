@@ -37,7 +37,7 @@ namespace WebSocketDataProvider
             info.AddValue("IdentityUser", IdentityUser);
         }
 
-        public uint Time { get; private set; }
+        public uint FrameNumber { get; private set; }
 
         public string Title => IdentityUser.ToString();
 
@@ -50,26 +50,26 @@ namespace WebSocketDataProvider
                 return;
             }
 
-            Time = 0;
-            OnLogDataReceived(Time, $"Open {IdentityUser}");
+            FrameNumber = 0;
+            OnLogDataReceived($"Open {IdentityUser}");
             _webSocket = new WebSocket(IdentityUser.ToString());
 
             _webSocket.MessageReceived += WebSocketOnMessageReceived;
 
             _webSocket.Opened += (sender, args) =>
             {
-                OnLogDataReceived(Time, "Opened");
+                OnLogDataReceived("Opened");
                 OnStarted();
             };
             _webSocket.Closed += (sender, args) =>
             {
-                OnLogDataReceived(Time, "Closed");
+                OnLogDataReceived("Closed");
                 OnStopped();
             };
 
             _webSocket.Error += (sender, args) =>
             {
-                OnLogDataReceived(Time, $"Error occurred: {args.Exception}");
+                OnLogDataReceived($"Error occurred: {args.Exception}");
                 OnStopped();
             };
 
@@ -88,7 +88,7 @@ namespace WebSocketDataProvider
             _webSocket = null;
 
             OnStopped();
-            OnLogDataReceived(Time, "Stopped");
+            OnLogDataReceived("Stopped");
         }
 
         public void SendResponse(string response)
@@ -112,13 +112,15 @@ namespace WebSocketDataProvider
 
         public event EventHandler<DataFrame> DataReceived;
         public event EventHandler<LogRecord> LogDataReceived;
-        protected virtual void OnLogDataReceived(uint time, string message) => LogDataReceived?.Invoke(this, new LogRecord(new DataFrame(time, ""), message));
+
+        protected virtual void OnLogDataReceived(DataFrame frame, string message) => LogDataReceived?.Invoke(this, new LogRecord(frame, message));
+        protected virtual void OnLogDataReceived(string message) => LogDataReceived?.Invoke(this, new LogRecord(message));
 
         private void WebSocketOnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            DataReceived?.Invoke(this, new DataFrame(Time, ProcessMessage(e.Message)));
+            DataReceived?.Invoke(this, new DataFrame(DateTime.Now, ProcessMessage(e.Message), FrameNumber));
 
-            Time++;
+            FrameNumber++;
         }
 
         protected virtual void OnStarted() => Started?.Invoke(this, EventArgs.Empty);
