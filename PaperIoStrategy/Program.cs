@@ -1,4 +1,6 @@
 ﻿using System;
+using BotBase;
+using FileSystemDataProvider;
 
 namespace PaperIoStrategy
 {
