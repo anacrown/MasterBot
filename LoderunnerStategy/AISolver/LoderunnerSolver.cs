@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using BotBase;
 using BotBase.Interfaces;
 
-namespace LoderunnerStategy.AISolver
+namespace LoderunnerStategy
 {
     public class LoderunnerSolver : ISolver
     {

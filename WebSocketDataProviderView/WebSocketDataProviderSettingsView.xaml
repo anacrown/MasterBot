@@ -7,6 +7,34 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" VerticalContentAlignment="Center" Content="Server Uri"/>
+        <TextBox x:Name="ServerUriTextBox" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Margin="10" HorizontalAlignment="Stretch" 
+                 Text="{Binding RelativeSource={RelativeSource AncestorType=local:WebSocketDataProviderSettingsView}, Path=Settings.IdentityUser.ServerUri, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="1" VerticalContentAlignment="Center" Content="User Name"/>
+        <TextBox x:Name="UserNameTextBox" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="10" HorizontalAlignment="Stretch" 
+                 Text="{Binding RelativeSource={RelativeSource AncestorType=local:WebSocketDataProviderSettingsView}, Path=Settings.IdentityUser.UserName, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="2" VerticalContentAlignment="Center" Content="Secret Code"/>
+        <TextBox x:Name="SecretCodeTextBox" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Margin="10" HorizontalAlignment="Stretch" 
+                 Text="{Binding RelativeSource={RelativeSource AncestorType=local:WebSocketDataProviderSettingsView}, Path=Settings.IdentityUser.SecretCode, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="3" VerticalContentAlignment="Center" Content="Uri"/>
+        <TextBox x:Name="UriTextBox" Grid.Column="1" Grid.Row="3" Margin="10" HorizontalAlignment="Stretch" 
+                 Text="{Binding RelativeSource={RelativeSource AncestorType=local:WebSocketDataProviderSettingsView}, Path=Settings.IdentityUser.Uri, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Button x:Name="GoToLinkButton" Grid.Column="1" Grid.Row="3" Content="Go to link" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" Click="GoToLinkButton_OnClick"/>
+
     </Grid>
 </UserControl>

@@ -105,6 +105,9 @@ namespace Debugger
 
         private void SaveSettings()
         {
+            if (!Directory.Exists(FileSystemConfigurator.AppDataDir))
+                Directory.CreateDirectory(FileSystemConfigurator.AppDataDir);
+
             using (var fs = new FileStream(Path.Combine(FileSystemConfigurator.AppDataDir, "Settings.bin"), FileMode.Create))
             {
                 var formatter = new BinaryFormatter();

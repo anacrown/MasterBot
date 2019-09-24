@@ -62,7 +62,7 @@ namespace DataBaseDataProviderView
 
         private void DataProviderOnTimeChanged(object sender, uint time)
         {
-            Dispatcher.InvokeAsync(() =>
+            Dispatcher?.InvokeAsync(() =>
             {
                 FrameSlider.Value = time;
                 CurrentFrameTextBox.Text = time.ToString();
@@ -71,9 +71,9 @@ namespace DataBaseDataProviderView
 
         private void CurrentFrameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (uint.TryParse(CurrentFrameTextBox.Text, out uint time) && DataProvider?.Time != time)
+            if (uint.TryParse(CurrentFrameTextBox.Text, out var frameNumber) && DataProvider?.FrameNumber != frameNumber)
             {
-                DataProvider?.MoveToFrame(Math.Min(time, DataProvider.FrameMaximumKey));
+                DataProvider?.MoveToFrame(Math.Min(frameNumber, DataProvider.FrameMaximumKey));
             }
         }
 
@@ -95,10 +95,10 @@ namespace DataBaseDataProviderView
 
         private void FrameSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var time = (uint) e.NewValue;
+            var frameNumber = (uint) e.NewValue;
 
-            if (DataProvider.Time != time)
-                DataProvider.MoveToFrame(time);
+            if (DataProvider.FrameNumber != frameNumber)
+                DataProvider.MoveToFrame(frameNumber);
         }
     }
 }

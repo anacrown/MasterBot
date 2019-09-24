@@ -55,7 +55,7 @@ namespace DataBaseDataProvider
         }
 
         public string Name { get; private set; }
-        public uint Time { get; private set; }
+        public uint FrameNumber { get; private set; }
 
         public uint FrameCount
         {
@@ -87,8 +87,8 @@ namespace DataBaseDataProvider
 
         public void Start()
         {
-            Time = 0;
-            OnTimeChanged(Time);
+            FrameNumber = 0;
+            OnTimeChanged(FrameNumber);
             _dbContext = new BotDbContext();
             FrameCount = (uint)_dbContext.DataFrameModels.LongCount(t => t.LaunchModelId == _launchId);
 
@@ -109,31 +109,31 @@ namespace DataBaseDataProvider
         {
             _timer?.Stop();
         }
-        public void MoveToFrame(uint time)
+        public void MoveToFrame(uint frameNumber)
         {
             lock (_lock)
             {
-                var frame = _dbContext.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == _launchId && t.Time == time);
+                var frame = _dbContext.DataFrameModels.FirstOrDefault(t => t.LaunchModelId == _launchId && t.FrameNumber == frameNumber);
 
                 if (frame == null)
                     throw new Exception("Frame not found");
 
-                Time = time;
-                OnTimeChanged(Time);
-                OnDataReceived(frame.Board, time);
+                FrameNumber = frameNumber;
+                OnTimeChanged(FrameNumber);
+                OnDataReceived(new DataFrame(frame.Time, frame.Board, frame.FrameNumber));
             }
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            if (Time >= FrameCount)
+            if (FrameNumber >= FrameCount)
             {
                 _timer.Stop();
                 return;
             }
 
-            MoveToFrame(++Time);
-            OnTimeChanged(Time);
+            MoveToFrame(++FrameNumber);
+            OnTimeChanged(FrameNumber);
         }
 
         public void SendResponse(string response)
@@ -176,7 +176,7 @@ namespace DataBaseDataProvider
 
         protected virtual void OnStopped() => Stopped?.Invoke(this, EventArgs.Empty);
 
-        protected virtual void OnDataReceived(string board, uint time) => DataReceived?.Invoke(this, new DataFrame(time, board));
+        protected virtual void OnDataReceived(DataFrame frame) => DataReceived?.Invoke(this, frame);
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

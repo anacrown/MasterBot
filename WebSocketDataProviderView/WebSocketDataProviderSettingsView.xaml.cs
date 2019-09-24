@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WebSocketDataProvider;
 
 namespace WebSocketDataProviderView
 {
@@ -20,9 +22,24 @@ namespace WebSocketDataProviderView
     /// </summary>
     public partial class WebSocketDataProviderSettingsView : UserControl
     {
+        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
+            "Settings", typeof(WebSocketDataProviderSettings), typeof(WebSocketDataProviderSettingsView), new PropertyMetadata(default(WebSocketDataProviderSettings)));
+
+        public WebSocketDataProviderSettings Settings
+        {
+            get => (WebSocketDataProviderSettings) GetValue(SettingsProperty);
+            set => SetValue(SettingsProperty, value);
+        }
+
         public WebSocketDataProviderSettingsView()
         {
             InitializeComponent();
+        }
+
+        private void GoToLinkButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (Settings?.IdentityUser != null)
+                Process.Start(Settings.IdentityUser.ToUriString());
         }
     }
 }

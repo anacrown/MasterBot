@@ -113,6 +113,11 @@ namespace DataBaseDataProvider
             throw new NotImplementedException();
         }
 
+        public void Log(string name, DateTime startTime, DateTime time, uint frameNumber, string response)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Log(string name, DateTime startTime, uint time, string response)
         {
             throw new NotImplementedException();

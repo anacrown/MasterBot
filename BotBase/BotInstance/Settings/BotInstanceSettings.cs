@@ -52,7 +52,7 @@ namespace BotBase
 
         public BotInstanceSettings() : base()
         {
-            
+
         }
 
         public BotInstanceSettings(SerializationInfo info, StreamingContext context) : base(info, context)
@@ -61,21 +61,24 @@ namespace BotBase
             if (!string.IsNullOrEmpty(solverTypeName))
             {
                 var solverType = PluginLoader.LoadType(solverTypeName);
-                SolverSettings = (SolverSettingsBase)info.GetValue("SolverSettings", solverType);
+                if (solverType != null)
+                    SolverSettings = (SolverSettingsBase)info.GetValue("SolverSettings", solverType);
             }
 
             var dataLoggerTypeName = info.GetString("DataLoggerSettingsType");
             if (!string.IsNullOrEmpty(dataLoggerTypeName))
             {
                 var dataLoggerType = PluginLoader.LoadType(dataLoggerTypeName);
-                DataLoggerSettings = (DataLoggerSettingsBase)info.GetValue("DataLoggerSettings", dataLoggerType);
+                if (dataLoggerType != null)
+                    DataLoggerSettings = (DataLoggerSettingsBase)info.GetValue("DataLoggerSettings", dataLoggerType);
             }
 
             var dataProviderTypeName = info.GetString("DataProviderSettingsType");
             if (!string.IsNullOrEmpty(dataProviderTypeName))
             {
                 var dataProviderType = PluginLoader.LoadType(dataProviderTypeName);
-                DataProviderSettings = (DataProviderSettingsBase)info.GetValue("DataProviderSettings", dataProviderType);
+                if (dataProviderType != null)
+                    DataProviderSettings = (DataProviderSettingsBase)info.GetValue("DataProviderSettings", dataProviderType);
             }
         }
 

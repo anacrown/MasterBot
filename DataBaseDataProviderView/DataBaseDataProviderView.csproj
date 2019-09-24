@@ -100,6 +100,10 @@
       <Project>{c2742165-3129-4c89-82c4-00d712713eab}</Project>
       <Name>BotBaseView</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataBaseDataProvider\DataBaseDataProvider.csproj">
+      <Project>{2594CA33-D739-4B87-9A96-1C0098017494}</Project>
+      <Name>DataBaseDataProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

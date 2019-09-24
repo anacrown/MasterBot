@@ -106,6 +106,14 @@
       <Project>{52c7baf6-e076-4cee-9c51-7843e0d87695}</Project>
       <Name>BotBase</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataBaseDataProviderView\DataBaseDataProviderView.csproj">
+      <Project>{bcdb5779-2ba6-4570-b105-ace09f504649}</Project>
+      <Name>DataBaseDataProviderView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataBaseDataProvider\DataBaseDataProvider.csproj">
+      <Project>{2594ca33-d739-4b87-9a96-1c0098017494}</Project>
+      <Name>DataBaseDataProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FileSystemDataProviderView\FileSystemDataProviderView.csproj">
       <Project>{3760a0e7-73ad-4e0d-bfb8-d5a13f1c96e2}</Project>
       <Name>FileSystemDataProviderView</Name>
@@ -137,6 +145,14 @@
     <ProjectReference Include="..\VisioDataProvider\VisioDataProvider.csproj">
       <Project>{f710444f-1c3a-476b-b2ad-4479bd847812}</Project>
       <Name>VisioDataProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebSocketDataProviderView\WebSocketDataProviderView.csproj">
+      <Project>{65399229-f51a-4f7b-8bfe-3c154a028f75}</Project>
+      <Name>WebSocketDataProviderView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebSocketDataProvider\WebSocketDataProvider.csproj">
+      <Project>{57b8af65-e328-41b7-aeb7-42c26f0dae9e}</Project>
+      <Name>WebSocketDataProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

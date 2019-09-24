@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataBaseDataProvider.Model
 {
@@ -6,7 +7,8 @@ namespace DataBaseDataProvider.Model
     public class DataFrameModel
     {
         public int Id { get; set; }
-        public uint Time { get; set; }
+        public DateTime Time { get; set; }
+        public uint FrameNumber { get; set; }
         public string Board { get; set; }
         public string Response { get; set; }
 

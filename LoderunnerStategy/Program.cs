@@ -1,7 +1,6 @@
 ﻿using System;
 using BotBase;
 using FileSystemDataProvider;
-using LoderunnerStategy.AISolver;
 
 namespace LoderunnerStategy
 {

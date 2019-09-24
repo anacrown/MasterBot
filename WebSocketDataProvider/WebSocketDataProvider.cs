@@ -10,49 +10,42 @@ namespace WebSocketDataProvider
     [Serializable]
     public class WebSocketDataProvider : IDataProvider
     {
-        public IdentityUser IdentityUser
-        {
-            get => _identityUser ?? (_identityUser = new IdentityUser());
-            set => _identityUser = value;
-        }
+        public WebSocketDataProviderSettings Settings { get; }
 
         private WebSocket _webSocket;
-        private IdentityUser _identityUser;
         private static readonly Regex Pattern = new Regex("^board=(.*)$");
 
         public WebSocketDataProvider() { }
 
-        public WebSocketDataProvider(IdentityUser identityUser) : this()
+        public WebSocketDataProvider(WebSocketDataProviderSettings settings) : this()
         {
-            IdentityUser = identityUser;
+            Settings = settings;
         }
 
-        protected WebSocketDataProvider(SerializationInfo info, StreamingContext context) : this()
+        protected WebSocketDataProvider(SerializationInfo info, StreamingContext context) : this(
+            (WebSocketDataProviderSettings) info.GetValue("Settings", typeof(WebSocketDataProviderSettings)))
         {
-            IdentityUser = info.GetValue("IdentityUser", typeof(IdentityUser)) as IdentityUser;
+
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("IdentityUser", IdentityUser);
-        }
+        public void GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("Settings", Settings);
 
         public uint FrameNumber { get; private set; }
 
-        public string Title => IdentityUser.ToString();
+        public string Title => Settings.IdentityUser?.ToString();
 
-        public string Name => $"WEB [{IdentityUser?.UserName}]";
+        public string Name => $"WEB [{Settings.IdentityUser?.UserName}]";
 
         public void Start()
         {
-            if (IdentityUser.IsEmty)
+            if (Settings.IdentityUser.IsEmty)
             {
                 return;
             }
 
             FrameNumber = 0;
-            OnLogDataReceived($"Open {IdentityUser}");
-            _webSocket = new WebSocket(IdentityUser.ToString());
+            OnLogDataReceived($"Open {Settings.IdentityUser}");
+            _webSocket = new WebSocket(Settings.IdentityUser.ToString());
 
             _webSocket.MessageReceived += WebSocketOnMessageReceived;
 
@@ -129,7 +122,7 @@ namespace WebSocketDataProvider
 
         protected bool Equals(WebSocketDataProvider other)
         {
-            return Equals(_identityUser, other._identityUser);
+            return Equals(Settings.IdentityUser, other.Settings.IdentityUser);
         }
 
         public override bool Equals(object obj)
@@ -142,7 +135,7 @@ namespace WebSocketDataProvider
 
         public override int GetHashCode()
         {
-            return (_identityUser != null ? _identityUser.GetHashCode() : 0);
+            return (Settings.IdentityUser != null ? Settings.IdentityUser.GetHashCode() : 0);
         }
     }
 }
