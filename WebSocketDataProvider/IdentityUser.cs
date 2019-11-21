@@ -1,14 +1,66 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using WebSocketDataProvider.Annotations;
 
 namespace WebSocketDataProvider
 {
     [Serializable]
-    public class IdentityUser
+    public class IdentityUser : INotifyPropertyChanged, ISerializable
     {
-        public string ServerUri { get; set; }
-        public string UserName { get; set; }
-        public string SecretCode { get; set; }
+        private string _uri;
+        private string _secretCode;
+        private string _userName;
+        private string _serverUri;
+
+        public string ServerUri
+        {
+            get => _serverUri;
+            set
+            {
+                _serverUri = value;
+                _uri = ToUriString();
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Uri));
+            }
+        }
+
+        public string UserName
+        {
+            get => _userName;
+            set
+            {
+                _userName = value;
+                _uri = ToUriString();
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Uri));
+            }
+        }
+
+        public string SecretCode
+        {
+            get => _secretCode;
+            set
+            {
+                _secretCode = value;
+                _uri = ToUriString();
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Uri));
+            }
+        }
+
+        public string Uri
+        {
+            get => _uri;
+            set
+            {
+                _uri = value;
+                ParseUri(_uri);
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsEmty => string.IsNullOrEmpty(ServerUri) ||
                               string.IsNullOrEmpty(UserName) ||
@@ -28,7 +80,10 @@ namespace WebSocketDataProvider
             UserName = userName;
         }
 
+        public IdentityUser(SerializationInfo info, StreamingContext context) : this(info.GetString(nameof(ServerUri)), info.GetString(nameof(UserName)), info.GetString(nameof(SecretCode))) { }
+
         //http://codenjoy.com/codenjoy-contest/board/player/j99lpu1l8skamhdzbyq9?code=7040034271572867319
+        //http://localhost:8080/codenjoy-contest/board/player/nais@mail.ru?code=13476795611535248716
 
         public void ParseUri(string str)
         {
@@ -36,9 +91,13 @@ namespace WebSocketDataProvider
             {
                 var uri = new Uri(str);
 
-                ServerUri = $"ws://{uri.Host}:{uri.Port}/codenjoy-contest/ws";
-                UserName = uri.Segments.LastOrDefault();
-                SecretCode = uri.Query.Replace("?code=", string.Empty);
+                _serverUri = $"ws://{uri.Host}:{uri.Port}/codenjoy-contest/ws";
+                _userName = uri.Segments.LastOrDefault();
+                _secretCode = uri.Query.Replace("?code=", string.Empty);
+
+                OnPropertyChanged(nameof(ServerUri));
+                OnPropertyChanged(nameof(UserName));
+                OnPropertyChanged(nameof(SecretCode));
             }
             catch (Exception e)
             {
@@ -86,5 +145,17 @@ namespace WebSocketDataProvider
                 return hashCode;
             }
         }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(ServerUri), ServerUri);
+            info.AddValue(nameof(UserName), UserName);
+            info.AddValue(nameof(SecretCode), SecretCode);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

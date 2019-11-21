@@ -12,7 +12,7 @@ namespace WebSocketDataProvider
     public class WebSocketDataProviderSettings : DataProviderSettingsBase, INotifyPropertyChanged
     {
 
-        public IdentityUser IdentityUser { get; set; }
+        public IdentityUser IdentityUser { get; set; } = new IdentityUser();
 
         public override IDataProvider CreateDataProvider() => new WebSocketDataProvider(this);
 
@@ -20,7 +20,7 @@ namespace WebSocketDataProvider
 
         public WebSocketDataProviderSettings(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            IdentityUser = info.GetValue("IdentityUser", typeof(IdentityUser)) as IdentityUser;
+            IdentityUser = info.GetValue("IdentityUser", typeof(IdentityUser)) as IdentityUser ?? new IdentityUser();
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
