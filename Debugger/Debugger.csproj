@@ -138,6 +138,14 @@
       <Project>{fdbc9c2f-8cf1-46a9-8c0d-32473686ea17}</Project>
       <Name>PaperIoStrategy</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpaceRaceStrategyView\SpaceRaceStrategyView.csproj">
+      <Project>{73c61d84-8ea8-400c-a04d-aea0d4892b64}</Project>
+      <Name>SpaceRaceStrategyView</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpaceRaceStrategy\SpaceRaceStrategy.csproj">
+      <Project>{d70dc68c-440d-4080-8e1c-110a131255da}</Project>
+      <Name>SpaceRaceStrategy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VisioDataProviderView\VisioDataProviderView.csproj">
       <Project>{8e4c7352-6bfd-450c-82a8-e961afe54e8e}</Project>
       <Name>VisioDataProviderView</Name>

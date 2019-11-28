@@ -43,11 +43,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AISolver\Board.cs" />
+    <Compile Include="AISolver\Cell.cs" />
+    <Compile Include="AISolver\Element.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpaceRaceSolver.cs" />
+    <Compile Include="SpaceRaceSolverSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BotBase\BotBase.csproj">
+      <Project>{52C7BAF6-E076-4CEE-9C51-7843E0D87695}</Project>
+      <Name>BotBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileSystemDataProvider\FileSystemDataProvider.csproj">
+      <Project>{A06D9F81-7E4F-42B4-B152-1A7BB44D1E8A}</Project>
+      <Name>FileSystemDataProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebSocketDataProvider\WebSocketDataProvider.csproj">
+      <Project>{57B8AF65-E328-41B7-AEB7-42C26F0DAE9E}</Project>
+      <Name>WebSocketDataProvider</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

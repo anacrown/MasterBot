@@ -18,6 +18,11 @@ namespace WebSocketDataProvider
 
         public WebSocketDataProviderSettings() : base() { }
 
+        public WebSocketDataProviderSettings(IdentityUser identityUser) : this()
+        {
+            IdentityUser = identityUser;
+        }
+
         public WebSocketDataProviderSettings(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             IdentityUser = info.GetValue("IdentityUser", typeof(IdentityUser)) as IdentityUser ?? new IdentityUser();

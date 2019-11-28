@@ -91,7 +91,7 @@
       <Name>BotBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\PaperIoStrategy\PaperIoStrategy.csproj">
-      <Project>{FDBC9C2F-8CF1-46A9-8C0D-32473686EA17}</Project>
+      <Project>{fdbc9c2f-8cf1-46a9-8c0d-32473686ea17}</Project>
       <Name>PaperIoStrategy</Name>
     </ProjectReference>
   </ItemGroup>
