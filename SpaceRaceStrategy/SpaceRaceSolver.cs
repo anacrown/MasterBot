@@ -41,7 +41,7 @@ namespace SpaceRaceStrategy
             var board = new Board(instanceName, startTime, frame);
             BoardChanged?.Invoke(this, board);
 
-            return false;
+            return true;
         }
     }
 }

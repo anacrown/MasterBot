@@ -91,7 +91,7 @@ namespace WebSocketDataProvider
             {
                 var uri = new Uri(str);
 
-                _serverUri = $"ws://{uri.Host}:{uri.Port}/codenjoy-contest/ws";
+                _serverUri = $"ws://{uri.Host}:{uri.Port}/{uri.Segments[1]}ws";
                 _userName = uri.Segments.LastOrDefault();
                 _secretCode = uri.Query.Replace("?code=", string.Empty);
 

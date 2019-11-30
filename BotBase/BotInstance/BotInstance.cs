@@ -145,7 +145,7 @@ namespace BotBase
         {
             StartTime = DateTime.Now;
 
-            Solver.Initialize();
+            Solver?.Initialize();
 
             DataProvider.Start();
         }

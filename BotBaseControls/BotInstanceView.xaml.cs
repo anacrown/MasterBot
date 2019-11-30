@@ -86,10 +86,13 @@ namespace BotBaseControls
 
         private void BotInstanceOnStarted(object sender, IDataProvider e)
         {
-            if (VisualTreeHelper.GetChild(DataProviderPresenter, 0) is UIElement container)
+            DataProviderPresenter?.Dispatcher?.Invoke(() =>
             {
-                container.Focus();
-            }
+                if (VisualTreeHelper.GetChild(DataProviderPresenter, 0) is UIElement container)
+                {
+                    container.Focus();
+                }
+            });
         }
 
         private void BotInstanceOnLogDataReceived(object sender, LogRecord e)

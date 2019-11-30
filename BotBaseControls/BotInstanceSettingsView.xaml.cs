@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -129,8 +130,8 @@ namespace BotBaseControls
         {
             var newValue = e.AddedItems.Count > 0 ? e.AddedItems[0] as Type : null;
 
-            if (newValue != null && Settings != null)
-                Settings.SolverSettings = (SolverSettingsBase)Activator.CreateInstance(newValue);
+            if (Settings != null)
+                Settings.SolverSettings = newValue != null ? (SolverSettingsBase)Activator.CreateInstance(newValue) : null;
         }
     }
 }
